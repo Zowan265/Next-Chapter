@@ -88,19 +88,20 @@ function App() {
     e.preventDefault();
     const formDataToSend = new FormData();
     
-    Object.keys(formData).forEach(key => {
-      if (key === 'interests') {
-        formDataToSend.append(key, JSON.stringify(formData[key]));
-      } else if (key === 'mainPhoto' && formData[key]) {
-        formDataToSend.append('mainPhoto', formData[key]);
-      } else if (key === 'additionalPhotos' && formData[key].length > 0) {
-        formData[key].forEach((photo, index) => {
-          formDataToSend.append(`additionalPhoto_${index}`, photo);
-        });
-      } else if (formData[key]) {
-        formDataToSend.append(key, formData[key]);
-      }
-    });
+    formDataToSend.append('location', formData.location);
+    formDataToSend.append('bio', formData.bio);
+    formDataToSend.append('looking_for', formData.lookingFor);
+    formDataToSend.append('interests', JSON.stringify(formData.interests || []));
+    
+    if (formData.mainPhoto) {
+      formDataToSend.append('main_photo', formData.mainPhoto);
+    }
+    
+    if (formData.additionalPhotos && formData.additionalPhotos.length > 0) {
+      formData.additionalPhotos.forEach((photo, index) => {
+        formDataToSend.append(`additional_photo_${index}`, photo);
+      });
+    }
 
     try {
       const response = await fetch(`${API_BASE_URL}/api/profile/setup`, {
@@ -113,7 +114,7 @@ function App() {
 
       if (response.ok) {
         const userData = await response.json();
-        setUser(userData);
+        setUser(userData.user);
         setCurrentView('dashboard');
       } else {
         const error = await response.json();
