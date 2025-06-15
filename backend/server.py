@@ -117,6 +117,8 @@ def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(securit
         raise HTTPException(status_code=401, detail="Token expired")
     except jwt.exceptions.InvalidTokenError:
         raise HTTPException(status_code=401, detail="Invalid token")
+    except Exception as e:
+        raise HTTPException(status_code=401, detail=f"Authentication error: {str(e)}")
 
 async def save_upload_file(upload_file: UploadFile, user_id: str) -> str:
     """Save uploaded file and return the file path"""
