@@ -233,7 +233,7 @@ async def setup_profile(
     
     # Handle file upload
     main_photo_path = None
-    if main_photo:
+    if main_photo and main_photo.filename:
         main_photo_path = await save_upload_file(main_photo, current_user['id'])
     
     # Handle additional photos (up to 10)
