@@ -113,9 +113,9 @@ def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(securit
             raise HTTPException(status_code=401, detail="User not found")
         
         return user
-    except jwt.ExpiredSignatureError:
+    except jwt.exceptions.ExpiredSignatureError:
         raise HTTPException(status_code=401, detail="Token expired")
-    except jwt.JWTError:
+    except jwt.exceptions.InvalidTokenError:
         raise HTTPException(status_code=401, detail="Invalid token")
 
 async def save_upload_file(upload_file: UploadFile, user_id: str) -> str:
