@@ -533,14 +533,14 @@ function App() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Main Profile Photo</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Main Profile Photo (Optional)</label>
               <input
                 type="file"
                 accept="image/*"
-                required
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                 onChange={(e) => handleFileChange(e, 'mainPhoto')}
               />
+              <p className="text-sm text-gray-500 mt-1">You can add a photo later from your profile settings</p>
             </div>
 
             <div>
