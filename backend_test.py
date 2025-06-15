@@ -68,17 +68,26 @@ class NextChapterAPITest(unittest.TestCase):
             "password": self.test_password
         }
         response = requests.post(f"{self.base_url}/api/login", json=payload)
+        print(f"Login response status: {response.status_code}")
+        print(f"Login response: {response.text[:200]}...")
+        
         self.assertEqual(response.status_code, 200)
         data = response.json()
         self.assertIn("token", data)
         self.assertIn("user", data)
         self.token = data["token"]
         print(f"✅ Login successful: {data['message']}")
+        print(f"Token (first 20 chars): {self.token[:20]}...")
     
     def test_05_get_profile(self):
         """Test getting user profile"""
         headers = {"Authorization": f"Bearer {self.token}"}
+        print(f"Authorization header: Bearer {self.token[:20]}...")
+        
         response = requests.get(f"{self.base_url}/api/profile", headers=headers)
+        print(f"Get profile response status: {response.status_code}")
+        print(f"Get profile response: {response.text[:200]}...")
+        
         self.assertEqual(response.status_code, 200)
         data = response.json()
         self.assertEqual(data["email"], self.test_email)
@@ -89,6 +98,7 @@ class NextChapterAPITest(unittest.TestCase):
     def test_06_setup_profile(self):
         """Test profile setup"""
         headers = {"Authorization": f"Bearer {self.token}"}
+        print(f"Authorization header: Bearer {self.token[:20]}...")
         
         # Create form data
         form_data = {
@@ -106,6 +116,9 @@ class NextChapterAPITest(unittest.TestCase):
             headers=headers,
             data=form_data
         )
+        
+        print(f"Profile setup response status: {response.status_code}")
+        print(f"Profile setup response: {response.text[:200]}...")
         
         # Check if the request was successful
         if response.status_code != 200:
