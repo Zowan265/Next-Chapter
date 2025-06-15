@@ -76,7 +76,7 @@
 
 /* Card styling */
 .card-elegant {
-  @apply bg-white rounded-2xl shadow-warm p-6 transition-all duration-300 hover:shadow-elegant hover:transform hover:scale-105;
+  @apply bg-white rounded-2xl shadow-warm p-6 transition-all duration-300 hover:shadow-lg hover:transform hover:scale-105;
 }
 
 /* Text truncation */
