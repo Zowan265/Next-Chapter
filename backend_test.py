@@ -340,6 +340,143 @@ class NextChapterAPITest(unittest.TestCase):
         print(f"  - Subscription tier: {data['subscription_tier']}")
         print(f"  - Payment method: {data['payment_method']}")
 
+    def test_16_get_interaction_status(self):
+        """Test getting interaction status"""
+        if not self.token:
+            print("⚠️ Skipping interaction status test - not logged in")
+            return
+            
+        headers = {"Authorization": f"Bearer {self.token}"}
+        response = requests.get(f"{self.base_url}/api/interaction/status", headers=headers)
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        
+        # Check for required fields
+        self.assertIn("can_interact_freely", data)
+        self.assertIn("interaction_reason", data)
+        self.assertIn("daily_likes_used", data)
+        self.assertIn("daily_likes_limit", data)
+        self.assertIn("is_wednesday_discount", data)
+        self.assertIn("is_saturday_happy_hour", data)
+        self.assertIn("special_offers", data)
+        
+        # Check Saturday happy hour description
+        self.assertIn("saturday_happy_hour", data["special_offers"])
+        saturday_offer = data["special_offers"]["saturday_happy_hour"]
+        self.assertIn("description", saturday_offer)
+        self.assertTrue("Free premium interactions" in saturday_offer["description"])
+        
+        # Check if next Saturday happy hour info is present when not in happy hour
+        if not data["is_saturday_happy_hour"]:
+            self.assertIn("next_saturday_happy_hour", data)
+        
+        print(f"✅ Interaction status retrieved successfully")
+        print(f"  - Can interact freely: {data['can_interact_freely']}")
+        print(f"  - Interaction reason: {data['interaction_reason']}")
+        print(f"  - Daily likes used: {data['daily_likes_used']}/{data['daily_likes_limit'] if data['daily_likes_limit'] > 0 else 'Unlimited'}")
+        print(f"  - Saturday happy hour active: {data['is_saturday_happy_hour']}")
+        print(f"  - Saturday happy hour description: {data['special_offers']['saturday_happy_hour']['description']}")
+        
+    def test_17_check_subscription_tiers_saturday_messaging(self):
+        """Test subscription tiers for Saturday happy hour messaging"""
+        response = requests.get(f"{self.base_url}/api/subscription/tiers")
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        
+        # Check free tier for Saturday happy hour messaging
+        self.assertIn("free", data)
+        free_tier = data["free"]
+        
+        # Check for Saturday happy hour special status
+        self.assertIn("special_status", free_tier)
+        
+        # Verify the messaging shows "FREE interactions" not discounts
+        if "special_status" in free_tier:
+            special_status = free_tier["special_status"]
+            if "Active" in special_status:
+                self.assertTrue("FREE interactions for everyone" in special_status)
+            else:
+                self.assertTrue("Free interactions for all users" in special_status)
+        
+        # Check premium tier for Saturday happy hour messaging
+        self.assertIn("premium", data)
+        premium_tier = data["premium"]
+        
+        # Check for Saturday happy hour status in premium tier
+        self.assertIn("saturday_status", premium_tier)
+        saturday_status = premium_tier["saturday_status"]
+        
+        # Verify the messaging shows "free premium access" not discounts
+        self.assertTrue("free premium access" in saturday_status.lower())
+        
+        print(f"✅ Subscription tiers Saturday messaging verified")
+        print(f"  - Free tier special status: {free_tier['special_status']}")
+        print(f"  - Premium tier Saturday status: {premium_tier['saturday_status']}")
+        
+    def test_18_check_user_subscription_saturday_status(self):
+        """Test user subscription for Saturday happy hour status"""
+        if not self.token:
+            print("⚠️ Skipping user subscription test - not logged in")
+            return
+            
+        headers = {"Authorization": f"Bearer {self.token}"}
+        response = requests.get(f"{self.base_url}/api/user/subscription", headers=headers)
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        
+        # Check for required fields
+        self.assertIn("can_interact_freely", data)
+        self.assertIn("interaction_reason", data)
+        self.assertIn("is_saturday_happy_hour", data)
+        
+        # If it's Saturday happy hour, verify the interaction reason
+        if data["is_saturday_happy_hour"]:
+            self.assertTrue(data["can_interact_freely"])
+            self.assertTrue("Saturday Happy Hour" in data["interaction_reason"])
+            self.assertTrue("Free interactions for all" in data["interaction_reason"])
+        
+        print(f"✅ User subscription Saturday status verified")
+        print(f"  - Can interact freely: {data['can_interact_freely']}")
+        print(f"  - Interaction reason: {data['interaction_reason']}")
+        print(f"  - Saturday happy hour active: {data['is_saturday_happy_hour']}")
+        
+    def test_19_like_during_saturday_happy_hour(self):
+        """Test liking during Saturday happy hour (simulation)"""
+        if not hasattr(self, 'profile_to_like') or not self.profile_to_like:
+            print("⚠️ Skipping Saturday happy hour like test - no profile available to like")
+            return
+            
+        headers = {
+            "Authorization": f"Bearer {self.token}",
+            "Content-Type": "application/json"
+        }
+        payload = {"liked_user_id": self.profile_to_like}
+        
+        # First check if it's actually Saturday happy hour
+        status_response = requests.get(f"{self.base_url}/api/interaction/status", headers=headers)
+        status_data = status_response.json()
+        is_happy_hour = status_data.get("is_saturday_happy_hour", False)
+        
+        # Perform the like
+        response = requests.post(
+            f"{self.base_url}/api/like", 
+            headers=headers,
+            json=payload
+        )
+        
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        
+        # Check if the response indicates Saturday happy hour
+        if is_happy_hour:
+            self.assertIn("interaction_type", data)
+            self.assertTrue("Saturday Happy Hour" in data["interaction_type"])
+            print(f"✅ Like during Saturday happy hour successful")
+            print(f"  - Interaction type: {data['interaction_type']}")
+        else:
+            print(f"✅ Like successful (not during Saturday happy hour)")
+            print(f"  - Interaction type: {data.get('interaction_type', 'Not specified')}")
+
 def run_tests():
     # Create a test suite
     suite = unittest.TestSuite()
@@ -360,7 +497,11 @@ def run_tests():
         'test_12_get_country_codes',
         'test_13_get_subscription_tiers',
         'test_14_payment_otp_request',
-        'test_15_payment_checkout'
+        'test_15_payment_checkout',
+        'test_16_get_interaction_status',
+        'test_17_check_subscription_tiers_saturday_messaging',
+        'test_18_check_user_subscription_saturday_status',
+        'test_19_like_during_saturday_happy_hour'
     ]
     
     for test_case in test_cases:
