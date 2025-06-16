@@ -542,13 +542,30 @@ async def setup_profile(
     if main_photo and main_photo.filename:
         main_photo_path = await save_upload_file(main_photo, current_user['id'])
     
-    # Handle additional photos (up to 10)
-    additional_photos = []
-    # This would be extended to handle multiple additional photos
+    # Process location - if it doesn't have coordinates, store as is
+    # In a real app, you'd use a geocoding service to get coordinates
+    processed_location = location
+    if ':' not in location:
+        # For demo purposes, add dummy coordinates for major cities
+        city_coordinates = {
+            "lilongwe": "-13.9626,33.7741",
+            "blantyre": "-15.7861,35.0058", 
+            "london": "51.5074,0.1278",
+            "new york": "40.7128,74.0060",
+            "paris": "48.8566,2.3522",
+            "tokyo": "35.6762,139.6503",
+            "sydney": "-33.8688,151.2093"
+        }
+        
+        location_lower = location.lower()
+        for city, coords in city_coordinates.items():
+            if city in location_lower:
+                processed_location = f"{location}:{coords}"
+                break
     
     # Update user profile
     update_data = {
-        "location": location,
+        "location": processed_location,
         "bio": bio,
         "looking_for": looking_for,
         "interests": interests_list,
@@ -557,9 +574,6 @@ async def setup_profile(
     
     if main_photo_path:
         update_data["main_photo"] = main_photo_path
-    
-    if additional_photos:
-        update_data["additional_photos"] = additional_photos
     
     users_collection.update_one(
         {"id": current_user['id']},
@@ -571,9 +585,15 @@ async def setup_profile(
     updated_user.pop('password')
     updated_user.pop('_id')
     
+    # Add subscription info to response
+    subscription_tier = updated_user.get('subscription_tier', 'free')
+    matching_scope = get_matching_scope_description(subscription_tier)
+    
     return {
         "message": "Profile updated successfully",
-        "user": UserResponse(**updated_user)
+        "user": UserResponse(**updated_user),
+        "matching_scope": matching_scope,
+        "subscription_benefits": SUBSCRIPTION_TIERS.get(subscription_tier, {}).get("features", [])
     }
 
 @app.get("/api/profiles")
