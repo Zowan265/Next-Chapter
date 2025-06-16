@@ -740,6 +740,25 @@ async def get_subscription_tiers():
     
     return tiers_with_pricing
 
+@app.get("/api/user/subscription")
+async def get_user_subscription(current_user = Depends(get_current_user)):
+    """Get current user's subscription details"""
+    can_interact, interaction_reason = can_user_interact_freely(current_user)
+    
+    user_subscription = {
+        "user_id": current_user["id"],
+        "subscription_tier": current_user.get("subscription_tier", "free"),
+        "expires_at": None,
+        "daily_likes_used": current_user.get("daily_likes_used", 0),
+        "created_at": current_user.get("created_at"),
+        "features_unlocked": SUBSCRIPTION_TIERS.get(current_user.get("subscription_tier", "free"), {}).get("features", []),
+        "can_interact_freely": can_interact,
+        "interaction_reason": interaction_reason,
+        "is_saturday_happy_hour": is_saturday_happy_hour()
+    }
+    
+    return user_subscription
+
 @app.get("/api/interaction/status")
 async def get_interaction_status(current_user = Depends(get_current_user)):
     """Get current user's interaction status and special offers"""
