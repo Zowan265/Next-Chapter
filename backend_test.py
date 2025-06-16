@@ -357,7 +357,10 @@ def run_tests():
         'test_09_get_matches',
         'test_10_send_message',
         'test_11_get_messages',
-        'test_12_get_stats'
+        'test_12_get_country_codes',
+        'test_13_get_subscription_tiers',
+        'test_14_payment_otp_request',
+        'test_15_payment_checkout'
     ]
     
     for test_case in test_cases:
