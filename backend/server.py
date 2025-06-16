@@ -529,15 +529,35 @@ async def like_user(like_data: LikeCreate, current_user = Depends(get_current_us
     if existing_like:
         raise HTTPException(status_code=400, detail="User already liked")
     
+    # Check if user can interact freely (premium/vip or Saturday happy hour)
+    can_interact, interaction_reason = can_user_interact_freely(current_user)
+    
+    if not can_interact:
+        # Check daily like limit for free users (outside of happy hour)
+        daily_likes_used = current_user.get('daily_likes_used', 0)
+        if daily_likes_used >= 5:  # Free tier limit
+            raise HTTPException(
+                status_code=403, 
+                detail="Daily like limit reached! Upgrade to Premium for unlimited likes or wait for Saturday Happy Hour (7-8 PM CAT) for free interactions."
+            )
+    
     # Create like record
     like_doc = {
         "id": str(uuid.uuid4()),
         "user_id": user_id,
         "liked_user_id": liked_user_id,
-        "created_at": datetime.utcnow()
+        "created_at": datetime.utcnow(),
+        "interaction_type": interaction_reason if can_interact else "free_tier"
     }
     
     likes_collection.insert_one(like_doc)
+    
+    # Update daily likes count only for free tier users outside happy hour
+    if not can_interact:
+        users_collection.update_one(
+            {"id": user_id},
+            {"$inc": {"daily_likes_used": 1}}
+        )
     
     # Check for mutual like (match)
     mutual_like = likes_collection.find_one({
@@ -557,9 +577,14 @@ async def like_user(like_data: LikeCreate, current_user = Depends(get_current_us
         matches_collection.insert_one(match_doc)
         is_match = True
     
+    response_message = "Like recorded"
+    if can_interact and "Saturday Happy Hour" in interaction_reason:
+        response_message = "Like recorded during Saturday Happy Hour - Free interaction!"
+    
     return {
-        "message": "Like recorded",
-        "match": is_match
+        "message": response_message,
+        "match": is_match,
+        "interaction_type": interaction_reason if can_interact else "free_tier"
     }
 
 @app.get("/api/matches")
