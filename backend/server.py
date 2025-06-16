@@ -740,23 +740,50 @@ async def get_subscription_tiers():
     
     return tiers_with_pricing
 
-@app.get("/api/user/subscription")
-async def get_user_subscription(current_user = Depends(get_current_user)):
-    """Get current user's subscription details"""
-    # For now, return basic subscription info
-    # In a real app, you'd have a subscriptions collection
+@app.get("/api/interaction/status")
+async def get_interaction_status(current_user = Depends(get_current_user)):
+    """Get current user's interaction status and special offers"""
+    can_interact, interaction_reason = can_user_interact_freely(current_user)
     
-    # Simulate subscription data - you can extend this with real subscription logic
-    user_subscription = {
+    current_time = get_current_cat_time()
+    
+    status = {
         "user_id": current_user["id"],
         "subscription_tier": current_user.get("subscription_tier", "free"),
-        "expires_at": None,
+        "can_interact_freely": can_interact,
+        "interaction_reason": interaction_reason,
         "daily_likes_used": current_user.get("daily_likes_used", 0),
-        "created_at": current_user.get("created_at"),
-        "features_unlocked": SUBSCRIPTION_TIERS.get(current_user.get("subscription_tier", "free"), {}).get("features", [])
+        "daily_likes_limit": 5 if current_user.get("subscription_tier", "free") == "free" else -1,
+        "current_time_cat": current_time.strftime("%Y-%m-%d %H:%M:%S CAT"),
+        "is_wednesday_discount": is_wednesday_discount(),
+        "is_saturday_happy_hour": is_saturday_happy_hour(),
+        "special_offers": {
+            "wednesday_discount": {
+                "active": is_wednesday_discount(),
+                "description": "50% off all subscriptions every Wednesday!"
+            },
+            "saturday_happy_hour": {
+                "active": is_saturday_happy_hour(),
+                "description": "Free premium interactions for ALL users every Saturday 7-8 PM CAT!"
+            }
+        }
     }
     
-    return user_subscription
+    # Add next Saturday happy hour info if not currently active
+    if not is_saturday_happy_hour():
+        # Calculate next Saturday 7 PM CAT
+        days_until_saturday = (5 - current_time.weekday()) % 7
+        if days_until_saturday == 0 and current_time.hour >= 20:  # If it's Saturday but after 8 PM
+            days_until_saturday = 7
+        elif days_until_saturday == 0:  # If it's Saturday before 7 PM
+            next_happy_hour = current_time.replace(hour=19, minute=0, second=0, microsecond=0)
+        else:
+            next_happy_hour = current_time + timedelta(days=days_until_saturday)
+            next_happy_hour = next_happy_hour.replace(hour=19, minute=0, second=0, microsecond=0)
+        
+        status["next_saturday_happy_hour"] = next_happy_hour.strftime("%Y-%m-%d %H:%M:%S CAT")
+    
+    return status
 
 @app.post("/api/payment/request-otp")
 async def request_payment_otp(
