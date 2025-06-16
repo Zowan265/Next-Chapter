@@ -1049,8 +1049,242 @@ function App() {
     );
   }
 
-  // For simplicity, showing the enhanced dashboard for all other views
-  return (
+  // Enhanced subscription page with geographical distinctions
+  if (currentView === 'subscription') {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-cream-50 to-rose-50">
+        {/* Navigation */}
+        <nav className="bg-white/80 backdrop-blur-md shadow-sm border-b border-purple-100">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex justify-between items-center h-16">
+              <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-rose-500 bg-clip-text text-transparent">
+                NextChapter Enhanced
+              </h1>
+              <button
+                onClick={() => setCurrentView('dashboard')}
+                className="text-gray-600 hover:text-purple-600 font-medium"
+              >
+                ← Back to Dashboard
+              </button>
+            </div>
+          </div>
+        </nav>
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <div className="text-center mb-12">
+            <h2 className="text-5xl font-bold text-gray-800 mb-4">Choose Your Love Journey</h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Different subscription tiers offer different geographical matching ranges. 
+              Find love locally or expand your horizons globally.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8 mb-12">
+            {/* Free Tier */}
+            <div className="bg-white rounded-2xl shadow-xl p-8 border-2 border-blue-200 relative">
+              <div className="text-center">
+                <div className="w-20 h-20 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <span className="text-3xl">🏘️</span>
+                </div>
+                <h3 className="text-2xl font-bold text-gray-800 mb-2">Free - Local Only</h3>
+                <p className="text-4xl font-bold text-blue-600 mb-4">$0</p>
+                <p className="text-gray-600 mb-6">Perfect for finding love in your neighborhood</p>
+                
+                <div className="space-y-3 mb-8 text-left">
+                  <div className="flex items-center">
+                    <span className="text-green-500 mr-3">✓</span>
+                    <span className="text-sm">5 likes per day</span>
+                  </div>
+                  <div className="flex items-center">
+                    <span className="text-green-500 mr-3">✓</span>
+                    <span className="text-sm">Local area matching (50km radius)</span>
+                  </div>
+                  <div className="flex items-center">
+                    <span className="text-green-500 mr-3">✓</span>
+                    <span className="text-sm">Basic chat features</span>
+                  </div>
+                  <div className="flex items-center">
+                    <span className="text-green-500 mr-3">✓</span>
+                    <span className="text-sm">Saturday happy hour access</span>
+                  </div>
+                </div>
+
+                <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                  <p className="text-sm text-blue-800 font-semibold">📍 Geographical Range</p>
+                  <p className="text-xs text-blue-700">Within 50km of your current location</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Premium Tier */}
+            <div className="bg-white rounded-2xl shadow-xl p-8 border-2 border-purple-200 relative transform scale-105">
+              <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                <span className="bg-purple-500 text-white px-4 py-1 rounded-full text-sm font-semibold">Most Popular</span>
+              </div>
+              <div className="text-center">
+                <div className="w-20 h-20 bg-gradient-to-br from-purple-400 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <span className="text-3xl">🏙️</span>
+                </div>
+                <h3 className="text-2xl font-bold text-gray-800 mb-2">Premium - Local Love</h3>
+                <p className="text-4xl font-bold text-purple-600 mb-4">
+                  {subscriptionTiers.premium ? '$25/week' : '$25/week'}
+                </p>
+                <p className="text-gray-600 mb-6">Extended local area with unlimited interactions</p>
+                
+                <div className="space-y-3 mb-8 text-left">
+                  <div className="flex items-center">
+                    <span className="text-green-500 mr-3">✓</span>
+                    <span className="text-sm">Unlimited likes in your area</span>
+                  </div>
+                  <div className="flex items-center">
+                    <span className="text-green-500 mr-3">✓</span>
+                    <span className="text-sm">Extended local area (100km radius)</span>
+                  </div>
+                  <div className="flex items-center">
+                    <span className="text-green-500 mr-3">✓</span>
+                    <span className="text-sm">Advanced local filters</span>
+                  </div>
+                  <div className="flex items-center">
+                    <span className="text-green-500 mr-3">✓</span>
+                    <span className="text-sm">See who liked you locally</span>
+                  </div>
+                  <div className="flex items-center">
+                    <span className="text-green-500 mr-3">✓</span>
+                    <span className="text-sm">Priority customer support</span>
+                  </div>
+                </div>
+
+                <div className="bg-purple-50 p-4 rounded-lg border border-purple-200 mb-6">
+                  <p className="text-sm text-purple-800 font-semibold">📍 Geographical Range</p>
+                  <p className="text-xs text-purple-700">Within 100km of your location - perfect for regional connections</p>
+                </div>
+
+                <button
+                  onClick={() => requestPaymentOtp('premium')}
+                  className="w-full bg-gradient-to-r from-purple-600 to-purple-700 text-white py-3 rounded-lg font-semibold hover:from-purple-700 hover:to-purple-800 transition-all duration-300"
+                >
+                  Choose Premium
+                </button>
+              </div>
+            </div>
+
+            {/* VIP Tier */}
+            <div className="bg-white rounded-2xl shadow-xl p-8 border-2 border-rose-200 relative">
+              <div className="text-center">
+                <div className="w-20 h-20 bg-gradient-to-br from-rose-400 to-rose-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <span className="text-3xl">🌍</span>
+                </div>
+                <h3 className="text-2xl font-bold text-gray-800 mb-2">VIP - Global Hearts</h3>
+                <p className="text-4xl font-bold text-rose-600 mb-4">
+                  {subscriptionTiers.vip ? '$50/week' : '$50/week'}
+                </p>
+                <p className="text-gray-600 mb-6">Connect with anyone, anywhere in the world</p>
+                
+                <div className="space-y-3 mb-8 text-left">
+                  <div className="flex items-center">
+                    <span className="text-green-500 mr-3">✓</span>
+                    <span className="text-sm">Unlimited global matching</span>
+                  </div>
+                  <div className="flex items-center">
+                    <span className="text-green-500 mr-3">✓</span>
+                    <span className="text-sm">Connect with anyone worldwide</span>
+                  </div>
+                  <div className="flex items-center">
+                    <span className="text-green-500 mr-3">✓</span>
+                    <span className="text-sm">Travel mode for international connections</span>
+                  </div>
+                  <div className="flex items-center">
+                    <span className="text-green-500 mr-3">✓</span>
+                    <span className="text-sm">Language translation assistance</span>
+                  </div>
+                  <div className="flex items-center">
+                    <span className="text-green-500 mr-3">✓</span>
+                    <span className="text-sm">Cultural compatibility matching</span>
+                  </div>
+                  <div className="flex items-center">
+                    <span className="text-green-500 mr-3">✓</span>
+                    <span className="text-sm">International video calls</span>
+                  </div>
+                </div>
+
+                <div className="bg-rose-50 p-4 rounded-lg border border-rose-200 mb-6">
+                  <p className="text-sm text-rose-800 font-semibold">🌍 Geographical Range</p>
+                  <p className="text-xs text-rose-700">No boundaries - connect globally for international love</p>
+                </div>
+
+                <button
+                  onClick={() => requestPaymentOtp('vip')}
+                  className="w-full bg-gradient-to-r from-rose-600 to-rose-700 text-white py-3 rounded-lg font-semibold hover:from-rose-700 hover:to-rose-800 transition-all duration-300"
+                >
+                  Choose VIP
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Geographical Comparison */}
+          <div className="bg-white rounded-2xl shadow-lg p-8 mb-8">
+            <h3 className="text-2xl font-bold text-center text-gray-800 mb-8">Compare Geographical Reach</h3>
+            <div className="grid md:grid-cols-3 gap-8">
+              <div className="text-center">
+                <div className="w-32 h-32 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4 relative">
+                  <div className="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center">
+                    <span className="text-white text-xl">🏘️</span>
+                  </div>
+                  <div className="absolute inset-0 border-4 border-blue-300 rounded-full"></div>
+                </div>
+                <h4 className="font-semibold text-gray-800 mb-2">Free - 50km Range</h4>
+                <p className="text-sm text-gray-600">Perfect for neighborhood connections</p>
+              </div>
+              
+              <div className="text-center">
+                <div className="w-32 h-32 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4 relative">
+                  <div className="w-16 h-16 bg-purple-500 rounded-full flex items-center justify-center">
+                    <span className="text-white text-xl">🏙️</span>
+                  </div>
+                  <div className="absolute inset-0 border-4 border-purple-300 rounded-full"></div>
+                  <div className="absolute inset-2 border-2 border-purple-400 rounded-full"></div>
+                </div>
+                <h4 className="font-semibold text-gray-800 mb-2">Premium - 100km Range</h4>
+                <p className="text-sm text-gray-600">Extended area for regional love</p>
+              </div>
+              
+              <div className="text-center">
+                <div className="w-32 h-32 bg-rose-100 rounded-full flex items-center justify-center mx-auto mb-4 relative">
+                  <div className="w-16 h-16 bg-rose-500 rounded-full flex items-center justify-center">
+                    <span className="text-white text-xl">🌍</span>
+                  </div>
+                  <div className="absolute inset-0 border-4 border-rose-300 rounded-full"></div>
+                  <div className="absolute inset-2 border-2 border-rose-400 rounded-full"></div>
+                  <div className="absolute inset-4 border-2 border-rose-500 rounded-full"></div>
+                </div>
+                <h4 className="font-semibold text-gray-800 mb-2">VIP - Global Reach</h4>
+                <p className="text-sm text-gray-600">No limits - worldwide connections</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Special Offers */}
+          <div className="bg-gradient-to-r from-purple-600 to-rose-500 rounded-2xl p-8 text-white text-center">
+            <h3 className="text-2xl font-bold mb-4">Special Offers</h3>
+            <div className="grid md:grid-cols-2 gap-6">
+              <div className="bg-white/10 rounded-lg p-4">
+                <h4 className="font-semibold mb-2">🎯 Wednesday Special</h4>
+                <p className="text-sm">50% off all subscriptions every Wednesday!</p>
+              </div>
+              <div className="bg-white/10 rounded-lg p-4">
+                <h4 className="font-semibold mb-2">🎉 Saturday Happy Hour</h4>
+                <p className="text-sm">Free premium access for ALL users Saturday 7-8 PM CAT!</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        {/* Payment OTP Modal */}
+        {paymentOtpSent && <PaymentOtpModal />}
+      </div>
+    );
+  }
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-cream-50 to-rose-50">
       {/* Enhanced Navigation */}
       <nav className="bg-white/80 backdrop-blur-md shadow-sm border-b border-purple-100">
