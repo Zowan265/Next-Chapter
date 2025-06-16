@@ -307,9 +307,13 @@ async def register(user: UserCreate):
     if users_collection.find_one({"email": user.email}):
         raise HTTPException(status_code=400, detail="Email already registered")
     
-    # Validate age requirement
-    if user.age < 35:
-        raise HTTPException(status_code=400, detail="You must be 35 or older to join NextChapter")
+    # Validate age requirement - updated to 25+ for mature adults
+    if user.age < 25:
+        raise HTTPException(status_code=400, detail="You must be 25 or older to join NextChapter")
+    
+    # Validate phone country code
+    if user.phone_country and user.phone_country not in COUNTRY_CODES:
+        raise HTTPException(status_code=400, detail="Invalid country code")
     
     # Create user
     user_id = str(uuid.uuid4())
@@ -321,6 +325,8 @@ async def register(user: UserCreate):
         "email": user.email,
         "password": hashed_password,
         "age": user.age,
+        "phone_country": user.phone_country,
+        "phone_number": user.phone_number,
         "location": None,
         "bio": None,
         "looking_for": None,
@@ -328,22 +334,21 @@ async def register(user: UserCreate):
         "main_photo": None,
         "additional_photos": [],
         "created_at": datetime.utcnow(),
-        "profile_complete": False
+        "profile_complete": False,
+        "email_verified": False,
+        "subscription_tier": "free",
+        "daily_likes_used": 0
     }
     
     users_collection.insert_one(user_doc)
     
-    # Generate JWT token
-    token = create_jwt_token(user_id)
-    
-    # Return user data (without password)
-    user_doc.pop('password')
-    user_doc.pop('_id')
+    # In a real app, send email verification here
+    # For demo, we'll simulate email verification
     
     return {
-        "message": "Registration successful",
-        "token": token,
-        "user": UserResponse(**user_doc)
+        "message": "Registration successful. Please check your email for verification code.",
+        "email": user.email,
+        "simulation_note": "In demo mode - any 6-digit code will work for verification"
     }
 
 @app.post("/api/login")
