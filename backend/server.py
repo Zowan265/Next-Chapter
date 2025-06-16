@@ -578,26 +578,70 @@ async def setup_profile(
 
 @app.get("/api/profiles")
 async def get_profiles(current_user = Depends(get_current_user)):
+    """Get profiles based on user's subscription tier and geographical preferences"""
+    user_subscription = current_user.get('subscription_tier', 'free')
+    user_location = current_user.get('location')
+    
     # Get users that current user hasn't liked/disliked and aren't matches
     liked_users = likes_collection.find({"user_id": current_user['id']}).distinct("liked_user_id")
     
     # Find profiles excluding current user and already liked users
     exclude_ids = [current_user['id']] + liked_users
     
-    profiles = list(users_collection.find({
+    # Get all potential profiles first
+    all_profiles = list(users_collection.find({
         "id": {"$nin": exclude_ids},
         "profile_complete": True
-    }).limit(10))
+    }))
     
-    # Clean up profiles (remove sensitive data)
-    cleaned_profiles = []
-    for profile in profiles:
-        profile.pop('password', None)
-        profile.pop('_id', None)
-        profile.pop('email', None)
-        cleaned_profiles.append(profile)
+    # Filter profiles based on subscription tier and location
+    filtered_profiles = []
     
-    return cleaned_profiles
+    for profile in all_profiles:
+        profile_location = profile.get('location')
+        
+        # Check if profile is within user's matching scope
+        if is_within_local_area(user_location, profile_location, user_subscription):
+            # Clean up profile (remove sensitive data)
+            profile.pop('password', None)
+            profile.pop('_id', None)
+            profile.pop('email', None)
+            
+            # Add distance information for premium/vip users
+            if user_subscription in ['premium', 'vip'] and user_location and profile_location:
+                try:
+                    if ':' in user_location and ':' in profile_location:
+                        user_coords = user_location.split(':')[1].split(',')
+                        profile_coords = profile_location.split(':')[1].split(',')
+                        
+                        user_lat, user_lon = float(user_coords[0]), float(user_coords[1])
+                        profile_lat, profile_lon = float(profile_coords[0]), float(profile_coords[1])
+                        
+                        distance = calculate_distance(user_lat, user_lon, profile_lat, profile_lon)
+                        profile['distance_km'] = round(distance, 1)
+                except (ValueError, IndexError):
+                    profile['distance_km'] = None
+            
+            # Add matching scope info
+            profile['matching_scope'] = get_matching_scope_description(user_subscription)
+            profile['user_subscription_tier'] = user_subscription
+            
+            filtered_profiles.append(profile)
+    
+    # Limit results based on subscription tier
+    if user_subscription == 'free':
+        filtered_profiles = filtered_profiles[:10]  # Free users get 10 profiles
+    elif user_subscription == 'premium':
+        filtered_profiles = filtered_profiles[:50]  # Premium users get 50 profiles  
+    # VIP users get unlimited profiles
+    
+    return {
+        "profiles": filtered_profiles,
+        "total_available": len(filtered_profiles),
+        "matching_scope": get_matching_scope_description(user_subscription),
+        "subscription_tier": user_subscription,
+        "location_based_filtering": user_subscription != 'vip'
+    }
 
 @app.post("/api/like")
 async def like_user(like_data: LikeCreate, current_user = Depends(get_current_user)):
