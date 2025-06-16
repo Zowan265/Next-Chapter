@@ -607,9 +607,9 @@ function App() {
                     <p className="text-purple-200 text-sm">40+ countries supported</p>
                   </div>
                   <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20">
-                    <div className="text-3xl mb-2">💝</div>
-                    <p className="text-purple-100 font-medium">Special Pricing</p>
-                    <p className="text-purple-200 text-sm">Wednesday 50% off, Saturday happy hour</p>
+                    <div className="text-3xl mb-2">🎉</div>
+                    <p className="text-purple-100 font-medium">Saturday Happy Hour</p>
+                    <p className="text-purple-200 text-sm">FREE interactions 7-8pm CAT</p>
                   </div>
                 </div>
                 <div className="space-y-4">
