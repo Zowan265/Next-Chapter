@@ -627,48 +627,157 @@ function App() {
         </div>
 
         {/* Enhanced Features Section */}
-        <div className="py-20 px-4">
+        <div className="py-24 px-4 bg-gradient-to-br from-white via-purple-50 to-rose-50">
           <div className="max-w-7xl mx-auto">
-            <div className="text-center mb-16">
-              <h3 className="text-4xl font-bold text-gray-800 mb-4">Enhanced Security & Features</h3>
-              <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-                Experience the most secure and feature-rich dating platform designed for mature adults.
+            <div className="text-center mb-20">
+              <h3 className="text-5xl font-bold text-gray-800 mb-6">Why NextChapter is Perfect for You</h3>
+              <p className="text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
+                We understand that finding love later in life requires a different approach. Our platform is 
+                designed specifically for mature adults seeking genuine, meaningful connections.
               </p>
             </div>
             
-            <div className="grid md:grid-cols-3 gap-12">
+            <div className="grid md:grid-cols-3 gap-16">
               {/* Enhanced Security */}
-              <div className="text-center">
-                <div className="w-16 h-16 bg-gradient-to-br from-purple-400 to-rose-400 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <span className="text-2xl">🔐</span>
+              <div className="text-center group">
+                <div className="relative mb-8">
+                  <div 
+                    className="w-32 h-32 rounded-full mx-auto bg-cover bg-center shadow-2xl transform group-hover:scale-105 transition-all duration-300"
+                    style={{
+                      backgroundImage: `url('https://images.unsplash.com/photo-1745263863333-d567f45c4bae')`
+                    }}
+                  >
+                    <div className="absolute inset-0 bg-gradient-to-br from-purple-600/80 to-rose-500/80 rounded-full flex items-center justify-center">
+                      <span className="text-4xl">🔐</span>
+                    </div>
+                  </div>
                 </div>
-                <h4 className="text-2xl font-bold text-gray-800 mb-4">Enhanced Security</h4>
-                <p className="text-gray-600">
-                  Email OTP verification, age fraud prevention, and secure payment authorization protect your account.
+                <h4 className="text-3xl font-bold text-gray-800 mb-6">Secure & Trustworthy</h4>
+                <p className="text-gray-600 text-lg leading-relaxed">
+                  Email verification, age verification, and secure payment authorization protect your journey. 
+                  Every member is verified for your peace of mind.
                 </p>
+                <div className="mt-6 space-y-2">
+                  <div className="flex items-center justify-center text-green-600">
+                    <span className="mr-2">✓</span>
+                    <span className="text-sm">Email & Phone Verification</span>
+                  </div>
+                  <div className="flex items-center justify-center text-green-600">
+                    <span className="mr-2">✓</span>
+                    <span className="text-sm">Age Fraud Prevention</span>
+                  </div>
+                  <div className="flex items-center justify-center text-green-600">
+                    <span className="mr-2">✓</span>
+                    <span className="text-sm">Secure Payment Protection</span>
+                  </div>
+                </div>
               </div>
 
-              {/* Global Support */}
-              <div className="text-center">
-                <div className="w-16 h-16 bg-gradient-to-br from-rose-400 to-purple-400 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <span className="text-2xl">🌍</span>
+              {/* Global Community */}
+              <div className="text-center group">
+                <div className="relative mb-8">
+                  <div 
+                    className="w-32 h-32 rounded-full mx-auto bg-cover bg-center shadow-2xl transform group-hover:scale-105 transition-all duration-300"
+                    style={{
+                      backgroundImage: `url('https://images.unsplash.com/photo-1739303987880-59aa505ecfa6')`
+                    }}
+                  >
+                    <div className="absolute inset-0 bg-gradient-to-br from-rose-500/80 to-purple-600/80 rounded-full flex items-center justify-center">
+                      <span className="text-4xl">🌍</span>
+                    </div>
+                  </div>
                 </div>
-                <h4 className="text-2xl font-bold text-gray-800 mb-4">Global Support</h4>
-                <p className="text-gray-600">
-                  International phone numbers with 20+ country codes. Connect with people worldwide safely.
+                <h4 className="text-3xl font-bold text-gray-800 mb-6">Global Community</h4>
+                <p className="text-gray-600 text-lg leading-relaxed">
+                  Connect with amazing people worldwide! We support phone numbers from 40+ countries including 
+                  special pricing for our Malawi community.
                 </p>
+                <div className="mt-6 space-y-2">
+                  <div className="flex items-center justify-center text-blue-600">
+                    <span className="mr-2">🇲🇼</span>
+                    <span className="text-sm">Special Malawi Pricing: 2,500 MWK/day</span>
+                  </div>
+                  <div className="flex items-center justify-center text-blue-600">
+                    <span className="mr-2">🌍</span>
+                    <span className="text-sm">40+ Countries Supported</span>
+                  </div>
+                  <div className="flex items-center justify-center text-blue-600">
+                    <span className="mr-2">📱</span>
+                    <span className="text-sm">International Phone Verification</span>
+                  </div>
+                </div>
               </div>
 
-              {/* Premium Features */}
-              <div className="text-center">
-                <div className="w-16 h-16 bg-gradient-to-br from-purple-400 to-rose-400 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <span className="text-2xl">💎</span>
+              {/* Special Offers */}
+              <div className="text-center group">
+                <div className="relative mb-8">
+                  <div 
+                    className="w-32 h-32 rounded-full mx-auto bg-cover bg-center shadow-2xl transform group-hover:scale-105 transition-all duration-300"
+                    style={{
+                      backgroundImage: `url('https://images.pexels.com/photos/32580237/pexels-photo-32580237.jpeg')`
+                    }}
+                  >
+                    <div className="absolute inset-0 bg-gradient-to-br from-purple-600/80 to-rose-500/80 rounded-full flex items-center justify-center">
+                      <span className="text-4xl">💝</span>
+                    </div>
+                  </div>
                 </div>
-                <h4 className="text-2xl font-bold text-gray-800 mb-4">Premium Features</h4>
-                <p className="text-gray-600">
-                  Unlimited likes, advanced matching, priority support. All secured with payment authorization.
+                <h4 className="text-3xl font-bold text-gray-800 mb-6">Special Offers</h4>
+                <p className="text-gray-600 text-lg leading-relaxed">
+                  We believe love shouldn't break the bank. Enjoy our special discount days and 
+                  premium features at unbeatable prices.
                 </p>
+                <div className="mt-6 space-y-2">
+                  <div className="flex items-center justify-center text-purple-600">
+                    <span className="mr-2">🎯</span>
+                    <span className="text-sm">Wednesday: 50% Off All Subscriptions</span>
+                  </div>
+                  <div className="flex items-center justify-center text-purple-600">
+                    <span className="mr-2">🕖</span>
+                    <span className="text-sm">Saturday 7-8 PM CAT: Happy Hour Pricing</span>
+                  </div>
+                  <div className="flex items-center justify-center text-purple-600">
+                    <span className="mr-2">💎</span>
+                    <span className="text-sm">Premium Features: Unlimited Likes & More</span>
+                  </div>
+                </div>
               </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Success Stories Preview */}
+        <div className="py-20 px-4 bg-gradient-to-r from-purple-600 to-rose-500">
+          <div className="max-w-6xl mx-auto text-center">
+            <h3 className="text-4xl font-bold text-white mb-8">Real Love Stories from NextChapter</h3>
+            <div className="grid md:grid-cols-3 gap-8 mb-12">
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
+                <div className="text-4xl mb-4">💕</div>
+                <p className="text-purple-100 italic mb-4">
+                  "After my divorce at 45, I thought love was behind me. NextChapter proved me wrong. 
+                  Met my soulmate here and we're now happily married!"
+                </p>
+                <p className="text-rose-200 font-semibold">- Sarah, 47</p>
+              </div>
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
+                <div className="text-4xl mb-4">🌟</div>
+                <p className="text-purple-100 italic mb-4">
+                  "As a widower in my 50s, I was nervous about dating again. The community here is so 
+                  understanding and supportive. Found love again at 54!"
+                </p>
+                <p className="text-rose-200 font-semibold">- Michael, 54</p>
+              </div>
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
+                <div className="text-4xl mb-4">✨</div>
+                <p className="text-purple-100 italic mb-4">
+                  "I was a late bloomer who never dated seriously. At 35, I found my perfect match here. 
+                  Sometimes the best chapters come last!"
+                </p>
+                <p className="text-rose-200 font-semibold">- David, 37</p>
+              </div>
+            </div>
+            <div className="text-purple-100 text-lg">
+              <strong>Join 50,000+ members</strong> who found their next chapter of love ❤️
             </div>
           </div>
         </div>
