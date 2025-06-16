@@ -477,6 +477,120 @@ class NextChapterAPITest(unittest.TestCase):
             print(f"✅ Like successful (not during Saturday happy hour)")
             print(f"  - Interaction type: {data.get('interaction_type', 'Not specified')}")
 
+    def test_20_verify_subscription_tier_names(self):
+        """Test that subscription tiers have the correct names"""
+        response = requests.get(f"{self.base_url}/api/subscription/tiers")
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        
+        # Check premium tier name
+        self.assertIn("premium", data)
+        self.assertEqual(data["premium"]["name"], "Premium - Local Love")
+        
+        # Check VIP tier name
+        self.assertIn("vip", data)
+        self.assertEqual(data["vip"]["name"], "VIP - Global Hearts")
+        
+        print(f"✅ Subscription tier names verified")
+        print(f"  - Premium tier name: {data['premium']['name']}")
+        print(f"  - VIP tier name: {data['vip']['name']}")
+    
+    def test_21_verify_geographical_limits(self):
+        """Test geographical limits for each subscription tier"""
+        response = requests.get(f"{self.base_url}/api/subscription/tiers")
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        
+        # Check free tier geographical limits
+        self.assertIn("free", data)
+        self.assertEqual(data["free"]["matching_scope"], "local_limited")
+        
+        # Check premium tier geographical limits
+        self.assertIn("premium", data)
+        self.assertEqual(data["premium"]["matching_scope"], "local_unlimited")
+        self.assertEqual(data["premium"]["geographical_limit"], "same_city_region")
+        
+        # Check VIP tier geographical limits
+        self.assertIn("vip", data)
+        self.assertEqual(data["vip"]["matching_scope"], "global_unlimited")
+        self.assertEqual(data["vip"]["geographical_limit"], "worldwide")
+        
+        print(f"✅ Geographical limits verified")
+        print(f"  - Free tier matching scope: {data['free']['matching_scope']}")
+        print(f"  - Premium tier matching scope: {data['premium']['matching_scope']}")
+        print(f"  - Premium geographical limit: {data['premium']['geographical_limit']}")
+        print(f"  - VIP tier matching scope: {data['vip']['matching_scope']}")
+        print(f"  - VIP geographical limit: {data['vip']['geographical_limit']}")
+    
+    def test_22_verify_matching_scope_descriptions(self):
+        """Test matching scope descriptions for each tier"""
+        response = requests.get(f"{self.base_url}/api/subscription/tiers")
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        
+        # Get profiles to check matching scope descriptions
+        if not self.token:
+            print("⚠️ Skipping matching scope description test - not logged in")
+            return
+            
+        headers = {"Authorization": f"Bearer {self.token}"}
+        profiles_response = requests.get(f"{self.base_url}/api/profiles", headers=headers)
+        self.assertEqual(profiles_response.status_code, 200)
+        profiles_data = profiles_response.json()
+        
+        # Check matching scope description
+        self.assertIn("matching_scope", profiles_data)
+        
+        # Free tier should be local area only (within 50km)
+        if profiles_data.get("subscription_tier") == "free":
+            self.assertTrue("50km" in profiles_data["matching_scope"])
+            
+        # Premium tier should be extended local area (within 100km)
+        elif profiles_data.get("subscription_tier") == "premium":
+            self.assertTrue("100km" in profiles_data["matching_scope"])
+            
+        # VIP tier should be worldwide with no geographical boundaries
+        elif profiles_data.get("subscription_tier") == "vip":
+            self.assertTrue("Worldwide" in profiles_data["matching_scope"])
+            self.assertTrue("no geographical boundaries" in profiles_data["matching_scope"])
+        
+        print(f"✅ Matching scope descriptions verified")
+        print(f"  - Current tier: {profiles_data.get('subscription_tier', 'unknown')}")
+        print(f"  - Matching scope: {profiles_data.get('matching_scope', 'unknown')}")
+    
+    def test_23_verify_profile_filtering_by_location(self):
+        """Test that profiles are filtered by location based on subscription tier"""
+        if not self.token:
+            print("⚠️ Skipping location filtering test - not logged in")
+            return
+            
+        headers = {"Authorization": f"Bearer {self.token}"}
+        
+        # Get user subscription
+        sub_response = requests.get(f"{self.base_url}/api/user/subscription", headers=headers)
+        self.assertEqual(sub_response.status_code, 200)
+        sub_data = sub_response.json()
+        current_tier = sub_data.get("subscription_tier", "free")
+        
+        # Get profiles
+        profiles_response = requests.get(f"{self.base_url}/api/profiles", headers=headers)
+        self.assertEqual(profiles_response.status_code, 200)
+        profiles_data = profiles_response.json()
+        
+        # Check location-based filtering flag
+        self.assertIn("location_based_filtering", profiles_data)
+        
+        # VIP users should have location_based_filtering = False
+        if current_tier == "vip":
+            self.assertFalse(profiles_data["location_based_filtering"])
+        else:
+            self.assertTrue(profiles_data["location_based_filtering"])
+        
+        print(f"✅ Location-based profile filtering verified")
+        print(f"  - Current tier: {current_tier}")
+        print(f"  - Location-based filtering: {profiles_data['location_based_filtering']}")
+        print(f"  - Total available profiles: {profiles_data.get('total_available', 'unknown')}")
+
 def run_tests():
     # Create a test suite
     suite = unittest.TestSuite()
@@ -501,7 +615,11 @@ def run_tests():
         'test_16_get_interaction_status',
         'test_17_check_subscription_tiers_saturday_messaging',
         'test_18_check_user_subscription_saturday_status',
-        'test_19_like_during_saturday_happy_hour'
+        'test_19_like_during_saturday_happy_hour',
+        'test_20_verify_subscription_tier_names',
+        'test_21_verify_geographical_limits',
+        'test_22_verify_matching_scope_descriptions',
+        'test_23_verify_profile_filtering_by_location'
     ]
     
     for test_case in test_cases:
