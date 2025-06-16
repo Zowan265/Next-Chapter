@@ -575,37 +575,52 @@ function App() {
 
         {/* Enhanced Hero Section */}
         <div className="relative">
-          <div className="absolute inset-0 bg-gradient-to-r from-purple-900/20 to-rose-900/20"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-purple-900/40 to-rose-900/40"></div>
           <div 
-            className="h-96 bg-cover bg-center relative"
+            className="h-[500px] bg-cover bg-center relative"
             style={{
               backgroundImage: `url('https://images.unsplash.com/photo-1514415008039-efa173293080')`
             }}
           >
-            <div className="absolute inset-0 bg-gradient-to-r from-purple-900/50 to-rose-900/50"></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-purple-900/60 to-rose-900/50"></div>
             <div className="relative z-10 h-full flex items-center justify-center text-center px-4">
-              <div className="max-w-4xl">
-                <h2 className="text-5xl md:text-6xl font-bold text-white mb-6">
+              <div className="max-w-5xl">
+                <h2 className="text-6xl md:text-7xl font-bold text-white mb-6 leading-tight">
                   Your Next Chapter
-                  <span className="block text-3xl md:text-4xl font-light text-purple-100 mt-2">
-                    Begins Here
+                  <span className="block text-4xl md:text-5xl font-light text-rose-100 mt-3">
+                    of Love Begins Here ✨
                   </span>
                 </h2>
-                <p className="text-xl text-purple-100 mb-8 max-w-2xl mx-auto">
-                  A meaningful dating community for mature adults (25+) ready to write their next chapter. 
-                  Whether you're divorced, a late bloomer, or starting fresh - you belong here.
+                <p className="text-xl md:text-2xl text-purple-100 mb-8 max-w-3xl mx-auto leading-relaxed">
+                  A welcoming dating community designed for mature adults (25+) ready for meaningful connections. 
+                  Whether you're divorced, widowed, a late bloomer, or simply starting fresh - your perfect match awaits.
                 </p>
-                <div className="space-y-2 mb-8">
-                  <p className="text-purple-100">✅ Secure Email Verification</p>
-                  <p className="text-purple-100">🌍 Global Phone Support</p>
-                  <p className="text-purple-100">🔐 Payment Protection</p>
+                <div className="grid md:grid-cols-3 gap-6 mb-10 max-w-4xl mx-auto">
+                  <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20">
+                    <div className="text-3xl mb-2">🔐</div>
+                    <p className="text-purple-100 font-medium">Secure Email Verification</p>
+                    <p className="text-purple-200 text-sm">Protected registration process</p>
+                  </div>
+                  <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20">
+                    <div className="text-3xl mb-2">🌍</div>
+                    <p className="text-purple-100 font-medium">Global Community</p>
+                    <p className="text-purple-200 text-sm">40+ countries supported</p>
+                  </div>
+                  <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20">
+                    <div className="text-3xl mb-2">💝</div>
+                    <p className="text-purple-100 font-medium">Special Pricing</p>
+                    <p className="text-purple-200 text-sm">Wednesday 50% off, Saturday happy hour</p>
+                  </div>
                 </div>
-                <button
-                  onClick={() => { setAuthMode('register'); setCurrentView('auth'); }}
-                  className="bg-gradient-to-r from-rose-500 to-purple-600 text-white px-8 py-4 rounded-full text-lg font-semibold hover:from-rose-600 hover:to-purple-700 transition-all duration-300 shadow-xl transform hover:scale-105"
-                >
-                  Start Your Journey
-                </button>
+                <div className="space-y-4">
+                  <button
+                    onClick={() => { setAuthMode('register'); setCurrentView('auth'); }}
+                    className="bg-gradient-to-r from-rose-500 to-purple-600 text-white px-10 py-4 rounded-full text-xl font-semibold hover:from-rose-600 hover:to-purple-700 transition-all duration-300 shadow-2xl transform hover:scale-105 mx-4"
+                  >
+                    🌟 Start Your Journey Free
+                  </button>
+                  <p className="text-purple-100 text-sm">Join thousands finding love in their next chapter</p>
+                </div>
               </div>
             </div>
           </div>
