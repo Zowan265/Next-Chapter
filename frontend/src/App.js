@@ -782,19 +782,73 @@ function App() {
           </div>
         </div>
 
-        {/* CTA Section */}
-        <div className="bg-gradient-to-r from-purple-600 to-rose-500 py-16 px-4 text-center">
-          <div className="max-w-4xl mx-auto">
-            <h3 className="text-4xl font-bold text-white mb-4">Ready to Begin?</h3>
-            <p className="text-xl text-purple-100 mb-8">
-              Join our secure community of mature adults finding meaningful connections.
-            </p>
-            <button
-              onClick={() => { setAuthMode('register'); setCurrentView('auth'); }}
-              className="bg-white text-purple-600 px-8 py-4 rounded-full text-lg font-semibold hover:bg-purple-50 transition-all duration-300 shadow-xl transform hover:scale-105"
-            >
-              Join NextChapter Today
-            </button>
+        {/* Enhanced CTA Section */}
+        <div className="bg-gradient-to-br from-purple-50 via-white to-rose-50 py-20 px-4 text-center">
+          <div className="max-w-5xl mx-auto">
+            <div className="bg-white rounded-3xl shadow-2xl p-12 border border-purple-100">
+              <h3 className="text-5xl font-bold text-gray-800 mb-6">Ready to Write Your Next Chapter?</h3>
+              <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto leading-relaxed">
+                Join our secure, welcoming community of mature adults finding meaningful connections. 
+                Your perfect match is waiting to meet you.
+              </p>
+              
+              <div className="grid md:grid-cols-2 gap-8 mb-10">
+                <div className="text-left">
+                  <h4 className="text-lg font-semibold text-purple-700 mb-4">✨ What Makes Us Special:</h4>
+                  <ul className="space-y-3 text-gray-600">
+                    <li className="flex items-center">
+                      <span className="text-green-500 mr-3">✓</span>
+                      Designed specifically for mature adults (25+)
+                    </li>
+                    <li className="flex items-center">
+                      <span className="text-green-500 mr-3">✓</span>
+                      Email & phone verification for safety
+                    </li>
+                    <li className="flex items-center">
+                      <span className="text-green-500 mr-3">✓</span>
+                      Understanding community for divorced, widowed
+                    </li>
+                    <li className="flex items-center">
+                      <span className="text-green-500 mr-3">✓</span>
+                      Support for late bloomers starting fresh
+                    </li>
+                  </ul>
+                </div>
+                <div className="text-left">
+                  <h4 className="text-lg font-semibold text-rose-700 mb-4">🎁 Special Offers:</h4>
+                  <ul className="space-y-3 text-gray-600">
+                    <li className="flex items-center">
+                      <span className="text-purple-500 mr-3">🎯</span>
+                      Wednesday: 50% off all subscriptions
+                    </li>
+                    <li className="flex items-center">
+                      <span className="text-purple-500 mr-3">🕖</span>
+                      Saturday 7-8 PM CAT: Happy hour pricing
+                    </li>
+                    <li className="flex items-center">
+                      <span className="text-purple-500 mr-3">🇲🇼</span>
+                      Malawi: Special local pricing available
+                    </li>
+                    <li className="flex items-center">
+                      <span className="text-purple-500 mr-3">🌍</span>
+                      40+ countries with phone support
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              
+              <div className="space-y-4">
+                <button
+                  onClick={() => { setAuthMode('register'); setCurrentView('auth'); }}
+                  className="bg-gradient-to-r from-purple-600 to-rose-500 text-white px-12 py-4 rounded-full text-xl font-semibold hover:from-purple-700 hover:to-rose-600 transition-all duration-300 shadow-xl transform hover:scale-105"
+                >
+                  🌟 Join Free & Find Your Match Today
+                </button>
+                <p className="text-gray-500">
+                  💝 Free to join • ⚡ Instant verification • 🔒 100% secure • 💬 Start chatting immediately
+                </p>
+              </div>
+            </div>
           </div>
         </div>
 
