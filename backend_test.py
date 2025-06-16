@@ -30,18 +30,18 @@ class NextChapterAPITest(unittest.TestCase):
         print(f"✅ API Root: {data['message']}")
     
     def test_02_register_invalid_age(self):
-        """Test registration with invalid age (under 35)"""
+        """Test registration with invalid age (under 25)"""
         payload = {
             "name": self.test_name,
             "email": self.test_email,
             "password": self.test_password,
-            "age": 30  # Invalid age (under 35)
+            "age": 20  # Invalid age (under 25)
         }
         response = requests.post(f"{self.base_url}/api/register", json=payload)
         self.assertEqual(response.status_code, 400)
         data = response.json()
         self.assertIn("detail", data)
-        self.assertIn("35", data["detail"])
+        self.assertIn("25", data["detail"])
         print(f"✅ Registration with invalid age rejected: {data['detail']}")
     
     def test_03_register_valid(self):
