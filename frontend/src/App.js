@@ -852,13 +852,73 @@ function App() {
           </div>
         </div>
 
-        {/* Footer */}
-        <footer className="bg-gray-800 text-white py-12 px-4">
-          <div className="max-w-7xl mx-auto text-center">
-            <h4 className="text-2xl font-bold mb-4">NextChapter Enhanced v2.0</h4>
-            <p className="text-gray-400 mb-4">Where every ending is a new beginning - now with enhanced security.</p>
-            <div className="text-sm text-gray-500">
-              © 2025 NextChapter. Made with ❤️ for meaningful connections.
+        {/* Enhanced Footer */}
+        <footer className="bg-gray-900 text-white py-16 px-4">
+          <div className="max-w-7xl mx-auto">
+            <div className="grid md:grid-cols-4 gap-8 mb-12">
+              <div>
+                <h4 className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-rose-400 bg-clip-text text-transparent mb-4">
+                  NextChapter
+                </h4>
+                <p className="text-gray-400 mb-4">
+                  Where every ending is a beautiful new beginning. Join thousands finding love in their next chapter.
+                </p>
+                <div className="flex space-x-4">
+                  <span className="text-2xl">💕</span>
+                  <span className="text-2xl">🌟</span>
+                  <span className="text-2xl">✨</span>
+                </div>
+              </div>
+              
+              <div>
+                <h5 className="font-semibold mb-4 text-purple-300">Special Features</h5>
+                <ul className="space-y-2 text-gray-400">
+                  <li>🔐 Secure verification</li>
+                  <li>🌍 Global community</li>
+                  <li>💝 Special pricing</li>
+                  <li>📱 Mobile friendly</li>
+                </ul>
+              </div>
+              
+              <div>
+                <h5 className="font-semibold mb-4 text-rose-300">Discount Schedule</h5>
+                <ul className="space-y-2 text-gray-400">
+                  <li>🎯 Wednesday: 50% off</li>
+                  <li>🕖 Saturday 7-8 PM CAT</li>
+                  <li>🇲🇼 Malawi special rates</li>
+                  <li>💎 Premium features</li>
+                </ul>
+              </div>
+              
+              <div>
+                <h5 className="font-semibold mb-4 text-purple-300">Support</h5>
+                <ul className="space-y-2 text-gray-400">
+                  <li>❓ Help Center</li>
+                  <li>🛡️ Safety Tips</li>
+                  <li>📞 Contact Support</li>
+                  <li>🌍 40+ Countries</li>
+                </ul>
+              </div>
+            </div>
+            
+            <div className="border-t border-gray-700 pt-8 text-center">
+              <div className="mb-4">
+                <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium mr-2">
+                  ✅ Enhanced v2.0
+                </span>
+                <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium mr-2">
+                  🔒 Secure Platform
+                </span>
+                <span className="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm font-medium">
+                  💝 50,000+ Members
+                </span>
+              </div>
+              <p className="text-gray-400 mb-2">
+                © 2025 NextChapter Enhanced. Made with ❤️ for meaningful connections.
+              </p>
+              <p className="text-gray-500 text-sm">
+                Bringing together mature adults worldwide for authentic, lasting relationships.
+              </p>
             </div>
           </div>
         </footer>
