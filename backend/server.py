@@ -88,18 +88,29 @@ COUNTRY_CODES = {
     "HU": {"flag": "🇭🇺", "code": "+36", "name": "Hungary"}
 }
 
-# Subscription pricing with Malawi-specific rates and discounts
+# Subscription pricing with Malawi-specific rates and distinct features
 SUBSCRIPTION_TIERS = {
     "free": {
         "name": "Free",
         "daily_likes": 5,
-        "features": ["Basic browsing", "5 likes per day", "Basic matching"],
+        "matching_scope": "local_limited",
+        "features": ["Basic browsing", "5 likes per day", "Local area matching only", "Basic chat"],
         "prices": {}
     },
     "premium": {
-        "name": "Premium",
+        "name": "Premium - Local Love",
         "daily_likes": -1,  # Unlimited
-        "features": ["Unlimited likes", "Advanced filters", "Priority support", "See who liked you"],
+        "matching_scope": "local_unlimited", 
+        "features": [
+            "Unlimited likes in your area", 
+            "Advanced local filters", 
+            "Priority support", 
+            "See who liked you locally",
+            "Enhanced chat features",
+            "Local event notifications",
+            "Area-based matching algorithm"
+        ],
+        "geographical_limit": "same_city_region",
         "prices": {
             "MW": {
                 "daily": {"amount": 2500, "currency": "MWK"},
@@ -114,9 +125,23 @@ SUBSCRIPTION_TIERS = {
         }
     },
     "vip": {
-        "name": "VIP",
+        "name": "VIP - Global Hearts", 
         "daily_likes": -1,  # Unlimited
-        "features": ["All Premium features", "Profile boost", "Read receipts", "Advanced analytics"],
+        "matching_scope": "global_unlimited",
+        "features": [
+            "Unlimited global matching",
+            "Connect with anyone worldwide", 
+            "Advanced global filters",
+            "Travel mode for international connections",
+            "Language translation assistance",
+            "Cultural compatibility matching",
+            "Priority customer support",
+            "Profile boost in any country",
+            "International video calls",
+            "Cross-border relationship guidance",
+            "Visa/immigration resources access"
+        ],
+        "geographical_limit": "worldwide",
         "prices": {
             "MW": {
                 "daily": {"amount": 5000, "currency": "MWK"},
