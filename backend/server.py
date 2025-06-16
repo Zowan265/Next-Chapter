@@ -43,6 +43,140 @@ EMAIL_PASSWORD = os.environ.get('EMAIL_PASSWORD', '')
 UPLOAD_DIR = Path("uploads")
 UPLOAD_DIR.mkdir(exist_ok=True)
 
+# Country codes for international support
+COUNTRY_CODES = {
+    "US": {"flag": "🇺🇸", "code": "+1", "name": "United States"},
+    "CA": {"flag": "🇨🇦", "code": "+1", "name": "Canada"},
+    "GB": {"flag": "🇬🇧", "code": "+44", "name": "United Kingdom"},
+    "AU": {"flag": "🇦🇺", "code": "+61", "name": "Australia"},
+    "DE": {"flag": "🇩🇪", "code": "+49", "name": "Germany"},
+    "FR": {"flag": "🇫🇷", "code": "+33", "name": "France"},
+    "ES": {"flag": "🇪🇸", "code": "+34", "name": "Spain"},
+    "IT": {"flag": "🇮🇹", "code": "+39", "name": "Italy"},
+    "NL": {"flag": "🇳🇱", "code": "+31", "name": "Netherlands"},
+    "SE": {"flag": "🇸🇪", "code": "+46", "name": "Sweden"},
+    "NO": {"flag": "🇳🇴", "code": "+47", "name": "Norway"},
+    "DK": {"flag": "🇩🇰", "code": "+45", "name": "Denmark"},
+    "FI": {"flag": "🇫🇮", "code": "+358", "name": "Finland"},
+    "BR": {"flag": "🇧🇷", "code": "+55", "name": "Brazil"},
+    "MX": {"flag": "🇲🇽", "code": "+52", "name": "Mexico"},
+    "AR": {"flag": "🇦🇷", "code": "+54", "name": "Argentina"},
+    "CL": {"flag": "🇨🇱", "code": "+56", "name": "Chile"},
+    "CO": {"flag": "🇨🇴", "code": "+57", "name": "Colombia"},
+    "PE": {"flag": "🇵🇪", "code": "+51", "name": "Peru"},
+    "IN": {"flag": "🇮🇳", "code": "+91", "name": "India"},
+    "CN": {"flag": "🇨🇳", "code": "+86", "name": "China"},
+    "JP": {"flag": "🇯🇵", "code": "+81", "name": "Japan"},
+    "KR": {"flag": "🇰🇷", "code": "+82", "name": "South Korea"},
+    "TH": {"flag": "🇹🇭", "code": "+66", "name": "Thailand"},
+    "VN": {"flag": "🇻🇳", "code": "+84", "name": "Vietnam"},
+    "PH": {"flag": "🇵🇭", "code": "+63", "name": "Philippines"},
+    "MY": {"flag": "🇲🇾", "code": "+60", "name": "Malaysia"},
+    "SG": {"flag": "🇸🇬", "code": "+65", "name": "Singapore"},
+    "ID": {"flag": "🇮🇩", "code": "+62", "name": "Indonesia"},
+    "ZA": {"flag": "🇿🇦", "code": "+27", "name": "South Africa"},
+    "NG": {"flag": "🇳🇬", "code": "+234", "name": "Nigeria"},
+    "KE": {"flag": "🇰🇪", "code": "+254", "name": "Kenya"},
+    "GH": {"flag": "🇬🇭", "code": "+233", "name": "Ghana"},
+    "MW": {"flag": "🇲🇼", "code": "+265", "name": "Malawi"},
+    "EG": {"flag": "🇪🇬", "code": "+20", "name": "Egypt"},
+    "MA": {"flag": "🇲🇦", "code": "+212", "name": "Morocco"},
+    "RU": {"flag": "🇷🇺", "code": "+7", "name": "Russia"},
+    "UA": {"flag": "🇺🇦", "code": "+380", "name": "Ukraine"},
+    "PL": {"flag": "🇵🇱", "code": "+48", "name": "Poland"},
+    "CZ": {"flag": "🇨🇿", "code": "+420", "name": "Czech Republic"},
+    "HU": {"flag": "🇭🇺", "code": "+36", "name": "Hungary"}
+}
+
+# Subscription pricing with Malawi-specific rates and discounts
+SUBSCRIPTION_TIERS = {
+    "free": {
+        "name": "Free",
+        "daily_likes": 5,
+        "features": ["Basic browsing", "5 likes per day", "Basic matching"],
+        "prices": {}
+    },
+    "premium": {
+        "name": "Premium",
+        "daily_likes": -1,  # Unlimited
+        "features": ["Unlimited likes", "Advanced filters", "Priority support", "See who liked you"],
+        "prices": {
+            "MW": {
+                "daily": {"amount": 2500, "currency": "MWK"},
+                "weekly": {"amount": 15000, "currency": "MWK"},
+                "monthly": {"amount": 35000, "currency": "MWK"}
+            },
+            "default": {
+                "daily": {"amount": 5, "currency": "USD"},
+                "weekly": {"amount": 25, "currency": "USD"},
+                "monthly": {"amount": 50, "currency": "USD"}
+            }
+        }
+    },
+    "vip": {
+        "name": "VIP",
+        "daily_likes": -1,  # Unlimited
+        "features": ["All Premium features", "Profile boost", "Read receipts", "Advanced analytics"],
+        "prices": {
+            "MW": {
+                "daily": {"amount": 5000, "currency": "MWK"},
+                "weekly": {"amount": 30000, "currency": "MWK"},
+                "monthly": {"amount": 70000, "currency": "MWK"}
+            },
+            "default": {
+                "daily": {"amount": 10, "currency": "USD"},
+                "weekly": {"amount": 50, "currency": "USD"},
+                "monthly": {"amount": 100, "currency": "USD"}
+            }
+        }
+    }
+}
+
+def get_current_cat_time():
+    """Get current time in CAT (Central Africa Time)"""
+    cat_tz = pytz.timezone('Africa/Maputo')  # CAT timezone
+    return datetime.now(cat_tz)
+
+def is_wednesday_discount():
+    """Check if it's Wednesday (50% discount day)"""
+    cat_time = get_current_cat_time()
+    return cat_time.weekday() == 2  # Wednesday = 2
+
+def is_saturday_happy_hour():
+    """Check if it's Saturday 7-8 PM CAT (special discount hour)"""
+    cat_time = get_current_cat_time()
+    return cat_time.weekday() == 5 and 19 <= cat_time.hour < 20  # Saturday = 5, 7-8 PM
+
+def calculate_discounted_price(price, country_code="default"):
+    """Calculate price with applicable discounts"""
+    discount = 0
+    discount_reason = ""
+    
+    if is_wednesday_discount():
+        discount = 50
+        discount_reason = "Wednesday 50% Off Special!"
+    elif is_saturday_happy_hour():
+        discount = 50
+        discount_reason = "Saturday Happy Hour (7-8 PM CAT)!"
+    
+    if discount > 0:
+        discounted_amount = price * (1 - discount / 100)
+        return {
+            "original_price": price,
+            "discounted_price": round(discounted_amount),
+            "discount_percentage": discount,
+            "discount_reason": discount_reason,
+            "has_discount": True
+        }
+    
+    return {
+        "original_price": price,
+        "discounted_price": price,
+        "discount_percentage": 0,
+        "discount_reason": "",
+        "has_discount": False
+    }
+
 # FastAPI app
 app = FastAPI(title="NextChapter Dating API", version="1.0.0")
 
