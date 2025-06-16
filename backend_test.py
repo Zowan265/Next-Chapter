@@ -15,7 +15,7 @@ class NextChapterAPITest(unittest.TestCase):
         self.test_email = f"test_{self.random_string(8)}@example.com"
         self.test_password = "TestPassword123!"
         self.test_name = f"Test User {self.random_string(4)}"
-        self.test_age = 40  # Valid age for NextChapter (35+)
+        self.test_age = 30  # Valid age for NextChapter (25+)
         
     def random_string(self, length=8):
         """Generate a random string for test data"""
