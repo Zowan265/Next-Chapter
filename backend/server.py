@@ -602,18 +602,115 @@ async def get_messages(match_id: str, current_user = Depends(get_current_user)):
     
     return cleaned_messages
 
-@app.get("/api/stats")
-async def get_stats():
-    total_users = users_collection.count_documents({})
-    active_users = users_collection.count_documents({"profile_complete": True})
-    total_matches = matches_collection.count_documents({})
-    total_messages = messages_collection.count_documents({})
+@app.get("/api/country-codes")
+async def get_country_codes():
+    """Get list of supported country codes with flags and phone codes"""
+    return COUNTRY_CODES
+
+@app.get("/api/subscription/tiers")
+async def get_subscription_tiers():
+    """Get subscription tiers with pricing and discounts"""
+    # Detect user's country for localized pricing (for now, default to global pricing)
+    # In a real app, you'd use IP geolocation or user preferences
+    
+    tiers_with_pricing = {}
+    
+    for tier_id, tier_data in SUBSCRIPTION_TIERS.items():
+        if tier_id == "free":
+            tiers_with_pricing[tier_id] = tier_data
+            continue
+            
+        # Apply pricing with discounts
+        tier_with_pricing = tier_data.copy()
+        pricing = {}
+        
+        # Use Malawi pricing if available, otherwise default
+        country_prices = tier_data["prices"].get("MW", tier_data["prices"]["default"])
+        
+        for duration, price_info in country_prices.items():
+            price_data = calculate_discounted_price(price_info["amount"])
+            pricing[duration] = {
+                **price_info,
+                **price_data
+            }
+        
+        tier_with_pricing["pricing"] = pricing
+        tier_with_pricing["current_time_cat"] = get_current_cat_time().strftime("%Y-%m-%d %H:%M:%S CAT")
+        tier_with_pricing["is_wednesday_discount"] = is_wednesday_discount()
+        tier_with_pricing["is_saturday_happy_hour"] = is_saturday_happy_hour()
+        
+        tiers_with_pricing[tier_id] = tier_with_pricing
+    
+    return tiers_with_pricing
+
+@app.get("/api/user/subscription")
+async def get_user_subscription(current_user = Depends(get_current_user)):
+    """Get current user's subscription details"""
+    # For now, return basic subscription info
+    # In a real app, you'd have a subscriptions collection
+    
+    # Simulate subscription data - you can extend this with real subscription logic
+    user_subscription = {
+        "user_id": current_user["id"],
+        "subscription_tier": current_user.get("subscription_tier", "free"),
+        "expires_at": None,
+        "daily_likes_used": current_user.get("daily_likes_used", 0),
+        "created_at": current_user.get("created_at"),
+        "features_unlocked": SUBSCRIPTION_TIERS.get(current_user.get("subscription_tier", "free"), {}).get("features", [])
+    }
+    
+    return user_subscription
+
+@app.post("/api/payment/request-otp")
+async def request_payment_otp(
+    request_data: dict,
+    current_user = Depends(get_current_user)
+):
+    """Request OTP for payment authorization (simulation)"""
+    subscription_tier = request_data.get("subscription_tier")
+    
+    if subscription_tier not in ["premium", "vip"]:
+        raise HTTPException(status_code=400, detail="Invalid subscription tier")
+    
+    # In a real app, you'd send actual OTP via SMS/email
+    # For demo purposes, we'll simulate it
     
     return {
-        "total_users": total_users,
-        "active_users": active_users,
-        "total_matches": total_matches,
-        "total_messages": total_messages
+        "message": f"Payment authorization code sent to your verified email for {subscription_tier} subscription!",
+        "simulation_otp": "123456",  # In real app, don't return the OTP!
+        "subscription_tier": subscription_tier
+    }
+
+@app.post("/api/checkout/session")
+async def create_checkout_session(
+    checkout_data: dict,
+    current_user = Depends(get_current_user)
+):
+    """Process payment with OTP verification (simulation)"""
+    otp = checkout_data.get("otp")
+    verification_method = checkout_data.get("verification_method", "email")
+    
+    # In a real app, verify the OTP against stored values
+    if otp != "123456":  # Simulation - accept hardcoded OTP
+        raise HTTPException(status_code=400, detail="Invalid authorization code")
+    
+    # Simulate successful payment and upgrade user subscription
+    # In a real app, you'd integrate with actual payment processor
+    
+    # Update user's subscription (simulate)
+    users_collection.update_one(
+        {"id": current_user["id"]},
+        {"$set": {
+            "subscription_tier": "premium",  # or get from request
+            "daily_likes_used": 0,
+            "subscription_updated_at": datetime.utcnow()
+        }}
+    )
+    
+    return {
+        "message": "Payment authorized successfully! Your subscription has been upgraded.",
+        "subscription_tier": "premium",
+        "payment_method": f"Verified via {verification_method}"
     }
 
 if __name__ == "__main__":
