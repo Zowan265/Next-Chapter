@@ -822,8 +822,8 @@ function App() {
                       Wednesday: 50% off all subscriptions
                     </li>
                     <li className="flex items-center">
-                      <span className="text-purple-500 mr-3">🕖</span>
-                      Saturday 7-8 PM CAT: Happy hour pricing
+                      <span className="text-green-500 mr-3">🎉</span>
+                      <span className="font-semibold">Saturday 7-8 PM CAT: FREE interactions for everyone!</span>
                     </li>
                     <li className="flex items-center">
                       <span className="text-purple-500 mr-3">🇲🇼</span>
