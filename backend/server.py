@@ -229,9 +229,47 @@ class ProfileSetup(BaseModel):
 class LikeCreate(BaseModel):
     liked_user_id: str
 
+class EmailVerification(BaseModel):
+    email: EmailStr
+    otp: str
+
 class MessageCreate(BaseModel):
     match_id: str
     content: str
+
+@app.post("/api/verify-registration")
+async def verify_registration(verification: EmailVerification):
+    # Find user by email
+    user = users_collection.find_one({"email": verification.email})
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    if user.get("email_verified"):
+        raise HTTPException(status_code=400, detail="Email already verified")
+    
+    # In a real app, verify OTP against stored value
+    # For demo, accept any 6-digit code
+    if len(verification.otp) != 6 or not verification.otp.isdigit():
+        raise HTTPException(status_code=400, detail="Invalid verification code format")
+    
+    # Mark email as verified
+    users_collection.update_one(
+        {"email": verification.email},
+        {"$set": {"email_verified": True}}
+    )
+    
+    # Generate JWT token
+    token = create_jwt_token(user['id'])
+    
+    # Return user data (without password)
+    user.pop('password', None)
+    user.pop('_id', None)
+    
+    return {
+        "message": "Email verified successfully",
+        "token": token,
+        "user": UserResponse(**user)
+    }
 
 class UserResponse(BaseModel):
     id: str
