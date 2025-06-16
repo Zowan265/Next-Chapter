@@ -213,6 +213,8 @@ class UserCreate(BaseModel):
     email: EmailStr
     password: str
     age: int
+    phone_country: Optional[str] = "US"
+    phone_number: Optional[str] = None
 
 class UserLogin(BaseModel):
     email: EmailStr
