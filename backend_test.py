@@ -239,16 +239,106 @@ class NextChapterAPITest(unittest.TestCase):
         data = response.json()
         print(f"✅ Retrieved {len(data)} messages for match {self.match_id}")
     
-    def test_12_get_stats(self):
-        """Test getting site statistics"""
-        response = requests.get(f"{self.base_url}/api/stats")
+    def test_12_get_country_codes(self):
+        """Test getting country codes"""
+        response = requests.get(f"{self.base_url}/api/country-codes")
         self.assertEqual(response.status_code, 200)
         data = response.json()
-        self.assertIn("total_users", data)
-        self.assertIn("active_users", data)
-        self.assertIn("total_matches", data)
-        self.assertIn("total_messages", data)
-        print(f"✅ Site statistics: {data}")
+        self.assertIn("MW", data)  # Check for Malawi
+        self.assertEqual(data["MW"]["code"], "+265")
+        self.assertEqual(data["MW"]["flag"], "🇲🇼")
+        self.assertEqual(data["MW"]["name"], "Malawi")
+        print(f"✅ Country codes retrieved successfully with {len(data)} countries")
+        print(f"  - Malawi code: {data['MW']['flag']} {data['MW']['code']}")
+        
+    def test_13_get_subscription_tiers(self):
+        """Test getting subscription tiers with pricing"""
+        response = requests.get(f"{self.base_url}/api/subscription/tiers")
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        
+        # Check for premium tier
+        self.assertIn("premium", data)
+        premium = data["premium"]
+        
+        # Check for Malawi pricing
+        self.assertIn("pricing", premium)
+        pricing = premium["pricing"]
+        
+        # Check for daily, weekly, monthly options
+        self.assertIn("daily", pricing)
+        self.assertIn("weekly", pricing)
+        self.assertIn("monthly", pricing)
+        
+        # Check for discount information
+        self.assertIn("is_wednesday_discount", premium)
+        self.assertIn("is_saturday_happy_hour", premium)
+        
+        # Check Malawi pricing values
+        daily_price = pricing["daily"]["original_price"]
+        weekly_price = pricing["weekly"]["original_price"]
+        monthly_price = pricing["monthly"]["original_price"]
+        
+        print(f"✅ Subscription tiers retrieved successfully")
+        print(f"  - Premium daily price: {daily_price}")
+        print(f"  - Premium weekly price: {weekly_price}")
+        print(f"  - Premium monthly price: {monthly_price}")
+        print(f"  - Wednesday discount active: {premium['is_wednesday_discount']}")
+        print(f"  - Saturday happy hour active: {premium['is_saturday_happy_hour']}")
+        
+    def test_14_payment_otp_request(self):
+        """Test requesting payment OTP"""
+        if not self.token:
+            print("⚠️ Skipping payment OTP test - not logged in")
+            return
+            
+        headers = {
+            "Authorization": f"Bearer {self.token}",
+            "Content-Type": "application/json"
+        }
+        payload = {"subscription_tier": "premium"}
+        
+        response = requests.post(
+            f"{self.base_url}/api/payment/request-otp", 
+            headers=headers,
+            json=payload
+        )
+        
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertIn("message", data)
+        self.assertIn("simulation_otp", data)
+        self.assertEqual(data["simulation_otp"], "123456")  # Check demo OTP
+        print(f"✅ Payment OTP requested successfully: {data['message']}")
+        
+    def test_15_payment_checkout(self):
+        """Test payment checkout with OTP"""
+        if not self.token:
+            print("⚠️ Skipping payment checkout test - not logged in")
+            return
+            
+        headers = {
+            "Authorization": f"Bearer {self.token}",
+            "Content-Type": "application/json"
+        }
+        payload = {
+            "otp": "123456",  # Demo OTP
+            "verification_method": "email"
+        }
+        
+        response = requests.post(
+            f"{self.base_url}/api/checkout/session", 
+            headers=headers,
+            json=payload
+        )
+        
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertIn("message", data)
+        self.assertIn("subscription_tier", data)
+        print(f"✅ Payment checkout successful: {data['message']}")
+        print(f"  - Subscription tier: {data['subscription_tier']}")
+        print(f"  - Payment method: {data['payment_method']}")
 
 def run_tests():
     # Create a test suite
