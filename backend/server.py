@@ -669,18 +669,24 @@ async def get_country_codes():
 
 @app.get("/api/subscription/tiers")
 async def get_subscription_tiers():
-    """Get subscription tiers with pricing and discounts"""
-    # Detect user's country for localized pricing (for now, default to global pricing)
-    # In a real app, you'd use IP geolocation or user preferences
+    """Get subscription tiers with pricing and special offers"""
     
     tiers_with_pricing = {}
     
     for tier_id, tier_data in SUBSCRIPTION_TIERS.items():
         if tier_id == "free":
-            tiers_with_pricing[tier_id] = tier_data
+            tier_with_features = tier_data.copy()
+            # Add special Saturday feature for free users
+            if is_free_interaction_time():
+                tier_with_features["special_status"] = "Saturday Happy Hour Active - Free interactions for everyone!"
+                tier_with_features["temporary_features"] = ["Unlimited likes", "Unlimited messages", "Premium features access"]
+            else:
+                tier_with_features["special_status"] = "Next Saturday 7-8 PM CAT: Free interactions for all users!"
+            
+            tiers_with_pricing[tier_id] = tier_with_features
             continue
             
-        # Apply pricing with discounts
+        # Apply pricing with discounts (Wednesday only)
         tier_with_pricing = tier_data.copy()
         pricing = {}
         
@@ -698,6 +704,12 @@ async def get_subscription_tiers():
         tier_with_pricing["current_time_cat"] = get_current_cat_time().strftime("%Y-%m-%d %H:%M:%S CAT")
         tier_with_pricing["is_wednesday_discount"] = is_wednesday_discount()
         tier_with_pricing["is_saturday_happy_hour"] = is_saturday_happy_hour()
+        
+        # Add Saturday happy hour info
+        if is_saturday_happy_hour():
+            tier_with_pricing["saturday_status"] = "Saturday Happy Hour Active - All users get free premium access!"
+        else:
+            tier_with_pricing["saturday_status"] = "Next Saturday 7-8 PM CAT: Free premium access for all users!"
         
         tiers_with_pricing[tier_id] = tier_with_pricing
     
