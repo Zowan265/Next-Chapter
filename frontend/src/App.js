@@ -881,10 +881,10 @@ function App() {
               </div>
               
               <div>
-                <h5 className="font-semibold mb-4 text-rose-300">Discount Schedule</h5>
+                <h5 className="font-semibold mb-4 text-rose-300">Special Times</h5>
                 <ul className="space-y-2 text-gray-400">
                   <li>🎯 Wednesday: 50% off</li>
-                  <li>🕖 Saturday 7-8 PM CAT</li>
+                  <li>🎉 Saturday 7-8 PM: FREE for all</li>
                   <li>🇲🇼 Malawi special rates</li>
                   <li>💎 Premium features</li>
                 </ul>
