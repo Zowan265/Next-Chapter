@@ -203,6 +203,70 @@ def is_free_interaction_time():
     """Check if it's free interaction time (Saturday 7-8 PM CAT)"""
     return is_saturday_happy_hour()
 
+import math
+
+def calculate_distance(lat1, lon1, lat2, lon2):
+    """Calculate distance between two coordinates in kilometers using Haversine formula"""
+    if not all([lat1, lon1, lat2, lon2]):
+        return float('inf')  # Return infinite distance if coordinates are missing
+    
+    # Convert latitude and longitude from degrees to radians
+    lat1, lon1, lat2, lon2 = map(math.radians, [lat1, lon1, lat2, lon2])
+    
+    # Haversine formula
+    dlat = lat2 - lat1
+    dlon = lon2 - lon1
+    a = math.sin(dlat/2)**2 + math.cos(lat1) * math.cos(lat2) * math.sin(dlon/2)**2
+    c = 2 * math.asin(math.sqrt(a))
+    
+    # Radius of earth in kilometers
+    r = 6371
+    
+    return c * r
+
+def is_within_local_area(user_location, target_location, subscription_tier):
+    """Check if target is within user's matching area based on subscription"""
+    if subscription_tier == "vip":
+        return True  # VIP has no geographical boundaries
+    
+    if not user_location or not target_location:
+        return subscription_tier == "vip"  # Only VIP can match without location data
+    
+    # Extract coordinates from location (assuming format: "City, Country:lat,lon")
+    try:
+        if ':' in user_location and ':' in target_location:
+            user_coords = user_location.split(':')[1].split(',')
+            target_coords = target_location.split(':')[1].split(',')
+            
+            user_lat, user_lon = float(user_coords[0]), float(user_coords[1])
+            target_lat, target_lon = float(target_coords[0]), float(target_coords[1])
+            
+            distance = calculate_distance(user_lat, user_lon, target_lat, target_lon)
+            
+            # Premium: within 100km, Free: within 50km
+            max_distance = 100 if subscription_tier == "premium" else 50
+            return distance <= max_distance
+        else:
+            # Fallback to simple text matching for same city/region
+            user_city = user_location.split(',')[0].strip().lower()
+            target_city = target_location.split(',')[0].strip().lower()
+            return user_city == target_city
+            
+    except (ValueError, IndexError):
+        # If coordinates are invalid, fall back to text comparison
+        user_city = user_location.split(',')[0].strip().lower()
+        target_city = target_location.split(',')[0].strip().lower()
+        return user_city == target_city
+
+def get_matching_scope_description(subscription_tier):
+    """Get description of matching scope for subscription tier"""
+    scope_descriptions = {
+        "free": "Local area only (within 50km of your location)",
+        "premium": "Extended local area (within 100km of your location)", 
+        "vip": "Worldwide - no geographical boundaries"
+    }
+    return scope_descriptions.get(subscription_tier, "Local area only")
+
 def can_user_interact_freely(user):
     """Check if user can interact freely (premium/vip subscription or free interaction time)"""
     subscription_tier = user.get("subscription_tier", "free")
