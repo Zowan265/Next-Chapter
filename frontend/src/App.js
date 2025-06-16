@@ -1141,10 +1141,10 @@ function App() {
 
           {/* Enhanced subscription status */}
           {userSubscription && (
-            <div className="bg-white rounded-2xl shadow-lg p-6 mb-8 max-w-2xl mx-auto">
-              <div className="flex items-center justify-between">
+            <div className="bg-white rounded-2xl shadow-lg p-6 mb-8 max-w-4xl mx-auto">
+              <div className="flex items-center justify-between mb-4">
                 <div>
-                  <h3 className="text-lg font-semibold mb-2">Your Enhanced Subscription</h3>
+                  <h3 className="text-lg font-semibold mb-2">Your Subscription & Matching Range</h3>
                   <div className="flex items-center space-x-3">
                     <PremiumBadge tier={userSubscription.subscription_tier} />
                     {userSubscription.subscription_tier === 'free' && userSubscription.daily_likes_used !== null && (
@@ -1159,9 +1159,39 @@ function App() {
                     onClick={() => setCurrentView('subscription')}
                     className="bg-gradient-to-r from-purple-600 to-rose-500 text-white px-4 py-2 rounded-lg font-semibold hover:from-purple-700 hover:to-rose-600 transition-all duration-300"
                   >
-                    🔐 Secure Upgrade
+                    🔐 Upgrade for Global Access
                   </button>
                 )}
+              </div>
+              
+              {/* Matching Scope Information */}
+              <div className="grid md:grid-cols-3 gap-4 mt-4">
+                <div className={`p-4 rounded-lg border-2 ${userSubscription.subscription_tier === 'free' ? 'border-blue-200 bg-blue-50' : 'border-gray-200 bg-gray-50'}`}>
+                  <div className="flex items-center mb-2">
+                    <span className="text-blue-500 text-xl mr-2">🏘️</span>
+                    <h4 className="font-semibold text-gray-800">Free - Local Only</h4>
+                  </div>
+                  <p className="text-sm text-gray-600">Match within 50km of your location</p>
+                  <p className="text-xs text-gray-500 mt-1">5 likes per day</p>
+                </div>
+                
+                <div className={`p-4 rounded-lg border-2 ${userSubscription.subscription_tier === 'premium' ? 'border-purple-200 bg-purple-50' : 'border-gray-200 bg-gray-50'}`}>
+                  <div className="flex items-center mb-2">
+                    <span className="text-purple-500 text-xl mr-2">🏙️</span>
+                    <h4 className="font-semibold text-gray-800">Premium - Extended Area</h4>
+                  </div>
+                  <p className="text-sm text-gray-600">Match within 100km of your location</p>
+                  <p className="text-xs text-gray-500 mt-1">Unlimited local likes</p>
+                </div>
+                
+                <div className={`p-4 rounded-lg border-2 ${userSubscription.subscription_tier === 'vip' ? 'border-rose-200 bg-rose-50' : 'border-gray-200 bg-gray-50'}`}>
+                  <div className="flex items-center mb-2">
+                    <span className="text-rose-500 text-xl mr-2">🌍</span>
+                    <h4 className="font-semibold text-gray-800">VIP - Global Hearts</h4>
+                  </div>
+                  <p className="text-sm text-gray-600">Match with anyone worldwide</p>
+                  <p className="text-xs text-gray-500 mt-1">No boundaries, unlimited access</p>
+                </div>
               </div>
             </div>
           )}
