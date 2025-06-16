@@ -430,13 +430,13 @@ function App() {
   );
 
   const AgeWarning = () => (
-    <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
+    <div className="bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-lg p-4 mb-6">
       <div className="flex items-center">
-        <span className="text-2xl mr-3">⚠️</span>
+        <span className="text-2xl mr-3">💫</span>
         <div>
-          <h4 className="text-yellow-800 font-semibold">Age Requirement Updated</h4>
-          <p className="text-yellow-700 text-sm">
-            NextChapter welcomes mature adults aged 25 and above seeking meaningful relationships.
+          <h4 className="text-blue-800 font-semibold">Welcome to Your Next Chapter</h4>
+          <p className="text-blue-700 text-sm">
+            NextChapter welcomes mature adults aged 25 and above seeking meaningful, lasting relationships.
           </p>
         </div>
       </div>
