@@ -143,21 +143,18 @@ def is_wednesday_discount():
     return cat_time.weekday() == 2  # Wednesday = 2
 
 def is_saturday_happy_hour():
-    """Check if it's Saturday 7-8 PM CAT (special discount hour)"""
+    """Check if it's Saturday 7-8 PM CAT (free interaction hour)"""
     cat_time = get_current_cat_time()
     return cat_time.weekday() == 5 and 19 <= cat_time.hour < 20  # Saturday = 5, 7-8 PM
 
 def calculate_discounted_price(price, country_code="default"):
-    """Calculate price with applicable discounts"""
+    """Calculate price with applicable discounts (Wednesday only)"""
     discount = 0
     discount_reason = ""
     
     if is_wednesday_discount():
         discount = 50
         discount_reason = "Wednesday 50% Off Special!"
-    elif is_saturday_happy_hour():
-        discount = 50
-        discount_reason = "Saturday Happy Hour (7-8 PM CAT)!"
     
     if discount > 0:
         discounted_amount = price * (1 - discount / 100)
@@ -176,6 +173,24 @@ def calculate_discounted_price(price, country_code="default"):
         "discount_reason": "",
         "has_discount": False
     }
+
+def is_free_interaction_time():
+    """Check if it's free interaction time (Saturday 7-8 PM CAT)"""
+    return is_saturday_happy_hour()
+
+def can_user_interact_freely(user):
+    """Check if user can interact freely (premium/vip subscription or free interaction time)"""
+    subscription_tier = user.get("subscription_tier", "free")
+    
+    # Premium/VIP users can always interact freely
+    if subscription_tier in ["premium", "vip"]:
+        return True, "Premium/VIP member"
+    
+    # Free interaction during Saturday happy hour
+    if is_free_interaction_time():
+        return True, "Saturday Happy Hour - Free interactions for all!"
+    
+    return False, "Free tier limitations apply"
 
 # FastAPI app
 app = FastAPI(title="NextChapter Dating API", version="1.0.0")
