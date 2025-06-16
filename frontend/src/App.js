@@ -718,23 +718,23 @@ function App() {
                     }}
                   >
                     <div className="absolute inset-0 bg-gradient-to-br from-purple-600/80 to-rose-500/80 rounded-full flex items-center justify-center">
-                      <span className="text-4xl">💝</span>
+                      <span className="text-4xl">🎉</span>
                     </div>
                   </div>
                 </div>
                 <h4 className="text-3xl font-bold text-gray-800 mb-6">Special Offers</h4>
                 <p className="text-gray-600 text-lg leading-relaxed">
-                  We believe love shouldn't break the bank. Enjoy our special discount days and 
-                  premium features at unbeatable prices.
+                  We believe love shouldn't break the bank. Enjoy weekly free interaction time 
+                  and special discount days for premium features.
                 </p>
                 <div className="mt-6 space-y-2">
                   <div className="flex items-center justify-center text-purple-600">
                     <span className="mr-2">🎯</span>
                     <span className="text-sm">Wednesday: 50% Off All Subscriptions</span>
                   </div>
-                  <div className="flex items-center justify-center text-purple-600">
-                    <span className="mr-2">🕖</span>
-                    <span className="text-sm">Saturday 7-8 PM CAT: Happy Hour Pricing</span>
+                  <div className="flex items-center justify-center text-green-600">
+                    <span className="mr-2">🎉</span>
+                    <span className="text-sm font-semibold">Saturday 7-8 PM CAT: FREE Interactions for Everyone!</span>
                   </div>
                   <div className="flex items-center justify-center text-purple-600">
                     <span className="mr-2">💎</span>
