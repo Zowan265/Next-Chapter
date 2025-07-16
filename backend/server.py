@@ -428,36 +428,53 @@ class MessageCreate(BaseModel):
 
 @app.post("/api/verify-registration")
 async def verify_registration(verification: EmailVerification):
-    # Find user by email
-    user = users_collection.find_one({"email": verification.email})
-    if not user:
-        raise HTTPException(status_code=404, detail="User not found")
+    # Check if OTP exists for this email
+    stored_otp_data = otp_storage.get(verification.email)
     
-    if user.get("email_verified"):
-        raise HTTPException(status_code=400, detail="Email already verified")
+    if not stored_otp_data:
+        raise HTTPException(status_code=404, detail="No pending registration found for this email")
     
-    # In a real app, verify OTP against stored value
-    # For demo, accept any 6-digit code
-    if len(verification.otp) != 6 or not verification.otp.isdigit():
-        raise HTTPException(status_code=400, detail="Invalid verification code format")
+    # Check if OTP has expired
+    if datetime.utcnow() > stored_otp_data["expires_at"]:
+        # Clean up expired OTP
+        del otp_storage[verification.email]
+        raise HTTPException(status_code=400, detail="Verification code has expired. Please register again.")
     
-    # Mark email as verified
-    users_collection.update_one(
-        {"email": verification.email},
-        {"$set": {"email_verified": True}}
-    )
+    # Verify OTP
+    if verification.otp != stored_otp_data["otp"]:
+        # Check if it's a valid 6-digit code for demo mode fallback
+        if len(verification.otp) != 6 or not verification.otp.isdigit():
+            raise HTTPException(status_code=400, detail="Invalid verification code format")
+        
+        # If email credentials are not configured, accept any 6-digit code
+        if not EMAIL_USER or not EMAIL_PASSWORD:
+            print("⚠️ Demo mode: Accepting any 6-digit code")
+        else:
+            raise HTTPException(status_code=400, detail="Invalid verification code")
+    
+    # Create user account
+    user_id = str(uuid.uuid4())
+    user_data = stored_otp_data["user_data"]
+    user_data["id"] = user_id
+    user_data["email_verified"] = True
+    
+    # Insert user into database
+    users_collection.insert_one(user_data)
+    
+    # Clean up OTP storage
+    del otp_storage[verification.email]
     
     # Generate JWT token
-    token = create_jwt_token(user['id'])
+    token = create_jwt_token(user_id)
     
     # Return user data (without password)
-    user.pop('password', None)
-    user.pop('_id', None)
+    user_data.pop('password', None)
+    user_data.pop('_id', None)
     
     return {
-        "message": "Email verified successfully",
+        "message": "Email verified successfully! Welcome to NextChapter!",
         "token": token,
-        "user": UserResponse(**user)
+        "user": UserResponse(**user_data)
     }
 
 class UserResponse(BaseModel):
