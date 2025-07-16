@@ -5,6 +5,91 @@ import string
 from datetime import datetime, timedelta
 from typing import Optional, List
 import pytz
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+import smtplib
+
+# Add OTP storage (in production, use Redis)
+otp_storage = {}
+
+def generate_otp():
+    """Generate a 6-digit OTP"""
+    return ''.join(random.choices(string.digits, k=6))
+
+def send_email_otp(email, otp):
+    """Send OTP via email"""
+    try:
+        if not EMAIL_USER or not EMAIL_PASSWORD:
+            print("⚠️ Email credentials not configured - using demo mode")
+            return True
+            
+        msg = MIMEMultipart()
+        msg['From'] = EMAIL_USER
+        msg['To'] = email
+        msg['Subject'] = "NextChapter - Your Verification Code"
+        
+        html_body = f"""
+        <html>
+        <body style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+            <div style="background: linear-gradient(135deg, #8B5CF6 0%, #EC4899 100%); padding: 30px; border-radius: 10px; text-align: center;">
+                <h1 style="color: white; margin: 0;">NextChapter</h1>
+                <p style="color: #E879F9; margin: 10px 0 0 0;">Your Next Chapter of Love</p>
+            </div>
+            
+            <div style="padding: 30px; background: #f8f9fa; border-radius: 10px; margin: 20px 0;">
+                <h2 style="color: #374151; margin-bottom: 20px;">Welcome to NextChapter!</h2>
+                <p style="color: #6B7280; font-size: 16px; line-height: 1.6;">
+                    Thank you for joining our community of mature adults seeking meaningful connections. 
+                    To complete your registration, please use the verification code below:
+                </p>
+                
+                <div style="background: white; padding: 20px; border-radius: 8px; text-align: center; margin: 20px 0; border: 2px solid #E5E7EB;">
+                    <p style="color: #6B7280; margin: 0 0 10px 0;">Your verification code:</p>
+                    <h1 style="color: #8B5CF6; font-size: 36px; letter-spacing: 8px; margin: 0; font-family: 'Courier New', monospace;">
+                        {otp}
+                    </h1>
+                </div>
+                
+                <p style="color: #6B7280; font-size: 14px; margin-top: 20px;">
+                    This code will expire in 10 minutes. If you didn't request this code, please ignore this email.
+                </p>
+                
+                <div style="margin-top: 30px; padding: 20px; background: #EEF2FF; border-radius: 8px; border-left: 4px solid #8B5CF6;">
+                    <h3 style="color: #8B5CF6; margin: 0 0 10px 0;">Why NextChapter?</h3>
+                    <ul style="color: #6B7280; margin: 0; padding-left: 20px;">
+                        <li>🔐 Secure verification process</li>
+                        <li>🌍 Global community (40+ countries)</li>
+                        <li>💝 Special offers: Saturday free interactions</li>
+                        <li>🎯 Wednesday 50% discounts</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div style="text-align: center; padding: 20px; color: #9CA3AF; font-size: 14px;">
+                <p>© 2025 NextChapter. Where every ending is a new beginning.</p>
+                <p>Made with ❤️ for meaningful connections</p>
+            </div>
+        </body>
+        </html>
+        """
+        
+        msg.attach(MIMEText(html_body, 'html'))
+        
+        # Connect to Gmail SMTP
+        server = smtplib.SMTP('smtp.gmail.com', 587)
+        server.starttls()
+        server.login(EMAIL_USER, EMAIL_PASSWORD)
+        
+        # Send email
+        server.send_message(msg)
+        server.quit()
+        
+        print(f"✅ OTP email sent to {email}")
+        return True
+        
+    except Exception as e:
+        print(f"❌ Failed to send email: {str(e)}")
+        return False
 from fastapi import FastAPI, HTTPException, Depends, UploadFile, File, Form, status, Header
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from fastapi.responses import FileResponse
