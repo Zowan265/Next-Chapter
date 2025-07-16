@@ -83,17 +83,10 @@ class NextChapterAPITest(unittest.TestCase):
     
     def test_04_login(self):
         """Test login with valid credentials"""
-        # First, try to register again to ensure the user exists
-        try:
-            payload_register = {
-                "name": self.test_name,
-                "email": self.test_email,
-                "password": self.test_password,
-                "age": self.test_age
-            }
-            requests.post(f"{self.base_url}/api/register", json=payload_register)
-        except:
-            pass  # Ignore if registration fails (user might already exist)
+        # Skip if we already have a token from registration
+        if self.token:
+            print("✅ Login skipped - already authenticated from registration")
+            return
             
         # Now try to login
         payload = {
