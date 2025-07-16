@@ -180,6 +180,8 @@ function App() {
 
   const handleOtpVerification = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    setError('');
     
     try {
       const response = await fetch(`${API_BASE_URL}/api/verify-registration`, {
@@ -197,15 +199,21 @@ function App() {
       if (response.ok) {
         localStorage.setItem('token', data.token);
         setUser(data.user);
-        setCurrentView('profile-setup');
+        setCurrentView('dashboard');
+        fetchUserSubscription();
         setOtpSent(false);
-        alert('🎉 Email verified successfully! Welcome to NextChapter!');
+        setError('');
+        alert('🎉 Account verified successfully! Welcome to NextChapter!');
       } else {
+        setError(data.detail || 'Verification failed');
         alert(data.detail || 'Verification failed');
       }
     } catch (error) {
       console.error('OTP verification error:', error);
-      alert('Network error occurred');
+      setError('Network error occurred. Please check your connection and try again.');
+      alert('Network error occurred. Please check your connection and try again.');
+    } finally {
+      setLoading(false);
     }
   };
 
