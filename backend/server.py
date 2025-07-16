@@ -173,7 +173,7 @@ COUNTRY_CODES = {
     "HU": {"flag": "🇭🇺", "code": "+36", "name": "Hungary"}
 }
 
-# Subscription pricing with Malawi-specific rates and distinct features
+# Subscription pricing with Malawian-specific rates and features
 SUBSCRIPTION_TIERS = {
     "free": {
         "name": "Free",
@@ -193,9 +193,9 @@ SUBSCRIPTION_TIERS = {
             "See who liked you locally",
             "Enhanced chat features",
             "Local event notifications",
-            "Area-based matching algorithm"
+            "Extended area matching"
         ],
-        "geographical_limit": "same_city_region",
+        "geographical_limit": "extended_local",
         "prices": {
             "MW": {
                 "daily": {"amount": 2500, "currency": "MWK"},
@@ -210,23 +210,22 @@ SUBSCRIPTION_TIERS = {
         }
     },
     "vip": {
-        "name": "VIP - Global Hearts", 
+        "name": "VIP - Malawian Hearts", 
         "daily_likes": -1,  # Unlimited
-        "matching_scope": "global_unlimited",
+        "matching_scope": "malawian_worldwide",
         "features": [
-            "Unlimited global matching",
-            "Connect with anyone worldwide", 
-            "Advanced global filters",
+            "Connect with Malawians worldwide",
+            "Special filters for Malawians abroad", 
+            "Advanced matching algorithms",
             "Travel mode for international connections",
-            "Language translation assistance",
             "Cultural compatibility matching",
             "Priority customer support",
             "Profile boost in any country",
-            "International video calls",
+            "International communication tools",
             "Cross-border relationship guidance",
-            "Visa/immigration resources access"
+            "Connect with homeland community"
         ],
-        "geographical_limit": "worldwide",
+        "geographical_limit": "malawian_global",
         "prices": {
             "MW": {
                 "daily": {"amount": 5000, "currency": "MWK"},
