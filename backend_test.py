@@ -59,11 +59,27 @@ class NextChapterAPITest(unittest.TestCase):
         response = requests.post(f"{self.base_url}/api/register", json=payload)
         self.assertEqual(response.status_code, 200)
         data = response.json()
-        self.assertIn("token", data)
-        self.assertIn("user", data)
-        self.token = data["token"]
-        self.user_id = data["user"]["id"]
+        self.assertIn("message", data)
+        self.assertIn("email", data)
         print(f"✅ Registration successful: {data['message']}")
+        print(f"  - Email: {data['email']}")
+        print(f"  - OTP sent: {data.get('otp_sent', False)}")
+        
+        # Now verify with demo OTP (123456 or any 6-digit code)
+        otp_payload = {
+            "email": self.test_email,
+            "otp": "123456"  # Demo OTP
+        }
+        verify_response = requests.post(f"{self.base_url}/api/verify-registration", json=otp_payload)
+        self.assertEqual(verify_response.status_code, 200)
+        verify_data = verify_response.json()
+        self.assertIn("token", verify_data)
+        self.assertIn("user", verify_data)
+        self.token = verify_data["token"]
+        self.user_id = verify_data["user"]["id"]
+        print(f"✅ Email verification successful: {verify_data['message']}")
+        print(f"  - User ID: {self.user_id}")
+        print(f"  - Token (first 20 chars): {self.token[:20]}...")
     
     def test_04_login(self):
         """Test login with valid credentials"""
