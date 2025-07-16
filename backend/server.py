@@ -308,13 +308,25 @@ def calculate_distance(lat1, lon1, lat2, lon2):
     
     return c * r
 
-def is_within_local_area(user_location, target_location, subscription_tier):
-    """Check if target is within user's matching area based on subscription"""
+def is_malawian_user(user_location, phone_country):
+    """Check if user is Malawian based on location or phone country"""
+    if phone_country == "MW":
+        return True
+    if user_location and ("malawi" in user_location.lower() or "lilongwe" in user_location.lower() or "blantyre" in user_location.lower()):
+        return True
+    return False
+
+def is_within_local_area(user_location, target_location, subscription_tier, user_phone_country="", target_phone_country=""):
+    """Check if target is within user's matching area based on subscription tier"""
     if subscription_tier == "vip":
-        return True  # VIP has no geographical boundaries
+        # VIP users can connect with all Malawians worldwide
+        user_is_malawian = is_malawian_user(user_location, user_phone_country)
+        target_is_malawian = is_malawian_user(target_location, target_phone_country)
+        return user_is_malawian and target_is_malawian
     
     if not user_location or not target_location:
-        return subscription_tier == "vip"  # Only VIP can match without location data
+        # Only VIP (Malawian Hearts) can match without location data
+        return subscription_tier == "vip"
     
     # Extract coordinates from location (assuming format: "City, Country:lat,lon")
     try:
@@ -327,8 +339,12 @@ def is_within_local_area(user_location, target_location, subscription_tier):
             
             distance = calculate_distance(user_lat, user_lon, target_lat, target_lon)
             
-            # Premium: within 100km, Free: within 50km
-            max_distance = 100 if subscription_tier == "premium" else 50
+            # Updated distances for Malawian users: Free 300km, Premium 500km
+            if subscription_tier == "premium":
+                max_distance = 500
+            else:  # free tier
+                max_distance = 300
+                
             return distance <= max_distance
         else:
             # Fallback to simple text matching for same city/region
@@ -345,9 +361,9 @@ def is_within_local_area(user_location, target_location, subscription_tier):
 def get_matching_scope_description(subscription_tier):
     """Get description of matching scope for subscription tier"""
     scope_descriptions = {
-        "free": "Local area only (within 50km of your location)",
-        "premium": "Extended local area (within 100km of your location)", 
-        "vip": "Worldwide - no geographical boundaries"
+        "free": "Local area only (within 300km of your location in Malawi)",
+        "premium": "Extended local area (within 500km of your location in Malawi)", 
+        "vip": "Connect with Malawians worldwide - no geographical boundaries"
     }
     return scope_descriptions.get(subscription_tier, "Local area only")
 
