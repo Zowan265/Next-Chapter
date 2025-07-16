@@ -798,21 +798,21 @@ function App() {
             <div className="absolute bottom-20 left-1/3 w-5 h-5 bg-purple-400/30 rounded-full animate-bounce delay-500"></div>
             <div className="absolute bottom-40 right-1/4 w-3 h-3 bg-rose-400/30 rounded-full animate-bounce delay-700"></div>
           </div>
-          <div className="max-w-5xl mx-auto">
+          <div className="max-w-5xl mx-auto relative z-10">
             <div className="bg-white rounded-3xl shadow-2xl p-12 border border-purple-100">
               <h3 className="text-5xl font-bold text-gray-800 mb-6">Ready to Write Your Next Chapter?</h3>
               <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto leading-relaxed">
-                Join our secure, welcoming community of mature adults finding meaningful connections. 
-                Your perfect match is waiting to meet you.
+                Join our secure, welcoming community of mature Malawians finding meaningful connections. 
+                Whether you're in Malawi or abroad, your perfect match is waiting.
               </p>
               
               <div className="grid md:grid-cols-2 gap-8 mb-10">
                 <div className="text-left">
-                  <h4 className="text-lg font-semibold text-purple-700 mb-4">✨ What Makes Us Special:</h4>
+                  <h4 className="text-lg font-semibold text-purple-700 mb-4">What Makes Us Special:</h4>
                   <ul className="space-y-3 text-gray-600">
                     <li className="flex items-center">
                       <span className="text-green-500 mr-3">✓</span>
-                      Designed specifically for mature adults (25+)
+                      Designed specifically for mature Malawians (25+)
                     </li>
                     <li className="flex items-center">
                       <span className="text-green-500 mr-3">✓</span>
@@ -829,23 +829,23 @@ function App() {
                   </ul>
                 </div>
                 <div className="text-left">
-                  <h4 className="text-lg font-semibold text-rose-700 mb-4">🎁 Special Offers:</h4>
+                  <h4 className="text-lg font-semibold text-rose-700 mb-4">Special Offers:</h4>
                   <ul className="space-y-3 text-gray-600">
                     <li className="flex items-center">
-                      <span className="text-purple-500 mr-3">🎯</span>
+                      <span className="text-purple-500 mr-3">📅</span>
                       Wednesday: 50% off all subscriptions
                     </li>
                     <li className="flex items-center">
-                      <span className="text-green-500 mr-3">🎉</span>
-                      <span className="font-semibold">Saturday 7-8 PM CAT: FREE interactions for everyone!</span>
+                      <span className="text-purple-500 mr-3">⏰</span>
+                      Saturday 7-8 PM CAT: Free interactions
                     </li>
                     <li className="flex items-center">
                       <span className="text-purple-500 mr-3">🇲🇼</span>
-                      Malawi: Special local pricing available
+                      Malawi: Special MWK pricing available
                     </li>
                     <li className="flex items-center">
-                      <span className="text-purple-500 mr-3">🌍</span>
-                      40+ countries with phone support
+                      <span className="text-purple-500 mr-3">✈️</span>
+                      Connect with Malawians worldwide
                     </li>
                   </ul>
                 </div>
@@ -856,10 +856,10 @@ function App() {
                   onClick={() => { setAuthMode('register'); setCurrentView('auth'); }}
                   className="bg-gradient-to-r from-purple-600 to-rose-500 text-white px-12 py-4 rounded-full text-xl font-semibold hover:from-purple-700 hover:to-rose-600 transition-all duration-300 shadow-xl transform hover:scale-105"
                 >
-                  🌟 Join Free & Find Your Match Today
+                  Join Free & Find Your Match Today
                 </button>
                 <p className="text-gray-500">
-                  💝 Free to join • ⚡ Instant verification • 🔒 100% secure • 💬 Start chatting immediately
+                  Free to join • Instant verification • 100% secure • Start chatting immediately
                 </p>
               </div>
             </div>
