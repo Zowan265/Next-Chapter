@@ -18,6 +18,8 @@ function App() {
   const [paymentOtpMethod, setPaymentOtpMethod] = useState('email');
   const [paymentOtpSent, setPaymentOtpSent] = useState(false);
   const [selectedTier, setSelectedTier] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
   const [formData, setFormData] = useState({
     email: '',
     password: '',
