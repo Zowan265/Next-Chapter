@@ -106,6 +106,8 @@ function App() {
 
   const handleAuth = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    setError('');
     
     if (authMode === 'register') {
       // Registration with phone number
@@ -128,13 +130,18 @@ function App() {
         const data = await response.json();
         if (response.ok) {
           setOtpSent(true);
+          setError('');
           alert('✅ Verification code sent to your email! Check your inbox.');
         } else {
+          setError(data.detail || 'Registration failed');
           alert(data.detail || 'Registration failed');
         }
       } catch (error) {
         console.error('Registration error:', error);
-        alert('Network error occurred');
+        setError('Network error occurred. Please check your connection and try again.');
+        alert('Network error occurred. Please check your connection and try again.');
+      } finally {
+        setLoading(false);
       }
     } else {
       // Login
@@ -156,12 +163,17 @@ function App() {
           setUser(data.user);
           setCurrentView('dashboard');
           fetchUserSubscription();
+          setError('');
         } else {
+          setError(data.detail || 'Login failed');
           alert(data.detail || 'Login failed');
         }
       } catch (error) {
         console.error('Login error:', error);
-        alert('Network error occurred');
+        setError('Network error occurred. Please check your connection and try again.');
+        alert('Network error occurred. Please check your connection and try again.');
+      } finally {
+        setLoading(false);
       }
     }
   };
