@@ -1077,8 +1077,8 @@ function App() {
           <div className="text-center mb-12">
             <h2 className="text-5xl font-bold text-gray-800 mb-4">Choose Your Love Journey</h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Different subscription tiers offer different geographical matching ranges. 
-              Find love locally or expand your horizons globally.
+              Different subscription tiers offer different geographical matching ranges for Malawians. 
+              Find love locally in Malawi or connect with fellow Malawians worldwide.
             </p>
           </div>
 
@@ -1087,11 +1087,11 @@ function App() {
             <div className="bg-white rounded-2xl shadow-xl p-8 border-2 border-blue-200 relative">
               <div className="text-center">
                 <div className="w-20 h-20 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <span className="text-3xl">🏘️</span>
+                  <span className="text-3xl">🏠</span>
                 </div>
                 <h3 className="text-2xl font-bold text-gray-800 mb-2">Free - Local Only</h3>
-                <p className="text-4xl font-bold text-blue-600 mb-4">$0</p>
-                <p className="text-gray-600 mb-6">Perfect for finding love in your neighborhood</p>
+                <p className="text-4xl font-bold text-blue-600 mb-4">Free</p>
+                <p className="text-gray-600 mb-6">Perfect for finding love in your local area</p>
                 
                 <div className="space-y-3 mb-8 text-left">
                   <div className="flex items-center">
@@ -1100,7 +1100,7 @@ function App() {
                   </div>
                   <div className="flex items-center">
                     <span className="text-green-500 mr-3">✓</span>
-                    <span className="text-sm">Local area matching (50km radius)</span>
+                    <span className="text-sm">Local area matching (300km radius)</span>
                   </div>
                   <div className="flex items-center">
                     <span className="text-green-500 mr-3">✓</span>
@@ -1113,8 +1113,8 @@ function App() {
                 </div>
 
                 <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
-                  <p className="text-sm text-blue-800 font-semibold">📍 Geographical Range</p>
-                  <p className="text-xs text-blue-700">Within 50km of your current location</p>
+                  <p className="text-sm text-blue-800 font-semibold">Geographical Range</p>
+                  <p className="text-xs text-blue-700">Within 300km of your location in Malawi</p>
                 </div>
               </div>
             </div>
@@ -1130,7 +1130,7 @@ function App() {
                 </div>
                 <h3 className="text-2xl font-bold text-gray-800 mb-2">Premium - Local Love</h3>
                 <p className="text-4xl font-bold text-purple-600 mb-4">
-                  {subscriptionTiers.premium ? '$25/week' : '$25/week'}
+                  {subscriptionTiers.premium ? 'MWK 15,000/week' : 'MWK 15,000/week'}
                 </p>
                 <p className="text-gray-600 mb-6">Extended local area with unlimited interactions</p>
                 
@@ -1141,7 +1141,7 @@ function App() {
                   </div>
                   <div className="flex items-center">
                     <span className="text-green-500 mr-3">✓</span>
-                    <span className="text-sm">Extended local area (100km radius)</span>
+                    <span className="text-sm">Extended local area (500km radius)</span>
                   </div>
                   <div className="flex items-center">
                     <span className="text-green-500 mr-3">✓</span>
@@ -1158,8 +1158,8 @@ function App() {
                 </div>
 
                 <div className="bg-purple-50 p-4 rounded-lg border border-purple-200 mb-6">
-                  <p className="text-sm text-purple-800 font-semibold">📍 Geographical Range</p>
-                  <p className="text-xs text-purple-700">Within 100km of your location - perfect for regional connections</p>
+                  <p className="text-sm text-purple-800 font-semibold">Geographical Range</p>
+                  <p className="text-xs text-purple-700">Within 500km of your location - perfect for regional connections</p>
                 </div>
 
                 <button
@@ -1175,22 +1175,22 @@ function App() {
             <div className="bg-white rounded-2xl shadow-xl p-8 border-2 border-rose-200 relative">
               <div className="text-center">
                 <div className="w-20 h-20 bg-gradient-to-br from-rose-400 to-rose-600 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <span className="text-3xl">🌍</span>
+                  <span className="text-3xl">🇲🇼</span>
                 </div>
-                <h3 className="text-2xl font-bold text-gray-800 mb-2">VIP - Global Hearts</h3>
+                <h3 className="text-2xl font-bold text-gray-800 mb-2">VIP - Malawian Hearts</h3>
                 <p className="text-4xl font-bold text-rose-600 mb-4">
-                  {subscriptionTiers.vip ? '$50/week' : '$50/week'}
+                  {subscriptionTiers.vip ? 'MWK 30,000/week' : 'MWK 30,000/week'}
                 </p>
-                <p className="text-gray-600 mb-6">Connect with anyone, anywhere in the world</p>
+                <p className="text-gray-600 mb-6">Connect with Malawians anywhere in the world</p>
                 
                 <div className="space-y-3 mb-8 text-left">
                   <div className="flex items-center">
                     <span className="text-green-500 mr-3">✓</span>
-                    <span className="text-sm">Unlimited global matching</span>
+                    <span className="text-sm">Connect with Malawians worldwide</span>
                   </div>
                   <div className="flex items-center">
                     <span className="text-green-500 mr-3">✓</span>
-                    <span className="text-sm">Connect with anyone worldwide</span>
+                    <span className="text-sm">Special filters for Malawians abroad</span>
                   </div>
                   <div className="flex items-center">
                     <span className="text-green-500 mr-3">✓</span>
@@ -1198,21 +1198,21 @@ function App() {
                   </div>
                   <div className="flex items-center">
                     <span className="text-green-500 mr-3">✓</span>
-                    <span className="text-sm">Language translation assistance</span>
-                  </div>
-                  <div className="flex items-center">
-                    <span className="text-green-500 mr-3">✓</span>
                     <span className="text-sm">Cultural compatibility matching</span>
                   </div>
                   <div className="flex items-center">
                     <span className="text-green-500 mr-3">✓</span>
-                    <span className="text-sm">International video calls</span>
+                    <span className="text-sm">International communication tools</span>
+                  </div>
+                  <div className="flex items-center">
+                    <span className="text-green-500 mr-3">✓</span>
+                    <span className="text-sm">Connect with homeland community</span>
                   </div>
                 </div>
 
                 <div className="bg-rose-50 p-4 rounded-lg border border-rose-200 mb-6">
-                  <p className="text-sm text-rose-800 font-semibold">🌍 Geographical Range</p>
-                  <p className="text-xs text-rose-700">No boundaries - connect globally for international love</p>
+                  <p className="text-sm text-rose-800 font-semibold">Geographical Range</p>
+                  <p className="text-xs text-rose-700">Connect with Malawians worldwide - no boundaries</p>
                 </div>
 
                 <button
@@ -1232,12 +1232,12 @@ function App() {
               <div className="text-center">
                 <div className="w-32 h-32 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4 relative">
                   <div className="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center">
-                    <span className="text-white text-xl">🏘️</span>
+                    <span className="text-white text-xl">🏠</span>
                   </div>
                   <div className="absolute inset-0 border-4 border-blue-300 rounded-full"></div>
                 </div>
-                <h4 className="font-semibold text-gray-800 mb-2">Free - 50km Range</h4>
-                <p className="text-sm text-gray-600">Perfect for neighborhood connections</p>
+                <h4 className="font-semibold text-gray-800 mb-2">Free - 300km Range</h4>
+                <p className="text-sm text-gray-600">Perfect for local connections in Malawi</p>
               </div>
               
               <div className="text-center">
@@ -1248,21 +1248,21 @@ function App() {
                   <div className="absolute inset-0 border-4 border-purple-300 rounded-full"></div>
                   <div className="absolute inset-2 border-2 border-purple-400 rounded-full"></div>
                 </div>
-                <h4 className="font-semibold text-gray-800 mb-2">Premium - 100km Range</h4>
+                <h4 className="font-semibold text-gray-800 mb-2">Premium - 500km Range</h4>
                 <p className="text-sm text-gray-600">Extended area for regional love</p>
               </div>
               
               <div className="text-center">
                 <div className="w-32 h-32 bg-rose-100 rounded-full flex items-center justify-center mx-auto mb-4 relative">
                   <div className="w-16 h-16 bg-rose-500 rounded-full flex items-center justify-center">
-                    <span className="text-white text-xl">🌍</span>
+                    <span className="text-white text-xl">🇲🇼</span>
                   </div>
                   <div className="absolute inset-0 border-4 border-rose-300 rounded-full"></div>
                   <div className="absolute inset-2 border-2 border-rose-400 rounded-full"></div>
                   <div className="absolute inset-4 border-2 border-rose-500 rounded-full"></div>
                 </div>
-                <h4 className="font-semibold text-gray-800 mb-2">VIP - Global Reach</h4>
-                <p className="text-sm text-gray-600">No limits - worldwide connections</p>
+                <h4 className="font-semibold text-gray-800 mb-2">VIP - Malawian Global</h4>
+                <p className="text-sm text-gray-600">Connect with Malawians worldwide</p>
               </div>
             </div>
           </div>
