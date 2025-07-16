@@ -578,12 +578,22 @@ function App() {
           <div className="absolute inset-0 bg-gradient-to-br from-purple-900 via-purple-700 to-rose-600"></div>
           <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-black/20"></div>
           
+          {/* Floating Elements */}
+          <div className="absolute inset-0 overflow-hidden">
+            <div className="absolute top-20 left-10 w-8 h-8 bg-white/10 rounded-full animate-bounce"></div>
+            <div className="absolute top-40 right-20 w-6 h-6 bg-rose-300/20 rounded-full animate-pulse"></div>
+            <div className="absolute bottom-32 left-1/4 w-10 h-10 bg-purple-300/15 rounded-full animate-bounce delay-1000"></div>
+            <div className="absolute bottom-20 right-1/3 w-12 h-12 bg-white/5 rounded-full animate-pulse delay-500"></div>
+            <div className="absolute top-1/3 left-1/2 w-4 h-4 bg-rose-200/20 rounded-full animate-bounce delay-700"></div>
+            <div className="absolute top-60 left-20 w-6 h-6 bg-purple-200/15 rounded-full animate-pulse delay-300"></div>
+          </div>
+          
           {/* Geometric background patterns */}
-          <div className="absolute inset-0 opacity-10">
-            <div className="absolute top-10 left-10 w-32 h-32 border-2 border-white rounded-full"></div>
-            <div className="absolute top-40 right-20 w-24 h-24 border-2 border-white rounded-full"></div>
-            <div className="absolute bottom-20 left-1/4 w-16 h-16 border-2 border-white rounded-full"></div>
-            <div className="absolute bottom-40 right-1/3 w-20 h-20 border-2 border-white rounded-full"></div>
+          <div className="absolute inset-0 opacity-5">
+            <div className="absolute top-10 left-10 w-32 h-32 border-2 border-white rounded-full animate-spin-slow"></div>
+            <div className="absolute top-40 right-20 w-24 h-24 border-2 border-white rounded-full animate-spin-slow delay-1000"></div>
+            <div className="absolute bottom-20 left-1/4 w-16 h-16 border-2 border-white rounded-full animate-spin-slow delay-500"></div>
+            <div className="absolute bottom-40 right-1/3 w-20 h-20 border-2 border-white rounded-full animate-spin-slow delay-700"></div>
           </div>
           
           <div className="relative z-10 py-24 px-4">
@@ -592,13 +602,13 @@ function App() {
                 <h2 className="text-7xl md:text-8xl font-bold text-white mb-6 leading-tight">
                   Your Next Chapter
                   <span className="block text-4xl md:text-6xl font-light text-rose-200 mt-4">
-                    of Love Starts Here ✨
+                    of Love Starts Here
                   </span>
                 </h2>
               </div>
               
               <p className="text-xl md:text-2xl text-purple-100 mb-12 max-w-4xl mx-auto leading-relaxed">
-                A sophisticated dating community designed for mature adults (25+) seeking meaningful connections. 
+                A sophisticated dating community designed for mature Malawians (25+) seeking meaningful connections. 
                 Whether you're divorced, widowed, a late bloomer, or simply starting fresh - discover love that respects your journey.
               </p>
               
@@ -610,13 +620,13 @@ function App() {
                 </div>
                 
                 <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20 hover:bg-white/20 transition-all duration-300">
-                  <div className="text-4xl mb-4">🌍</div>
-                  <h3 className="text-xl font-semibold text-white mb-2">Global Community</h3>
-                  <p className="text-purple-200 text-sm">Connect locally or globally with 40+ countries supported</p>
+                  <div className="text-4xl mb-4">🇲🇼</div>
+                  <h3 className="text-xl font-semibold text-white mb-2">Malawian Community</h3>
+                  <p className="text-purple-200 text-sm">Connect locally in Malawi or with fellow Malawians worldwide</p>
                 </div>
                 
                 <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20 hover:bg-white/20 transition-all duration-300">
-                  <div className="text-4xl mb-4">🎉</div>
+                  <div className="text-4xl mb-4">💝</div>
                   <h3 className="text-xl font-semibold text-white mb-2">Special Offers</h3>
                   <p className="text-purple-200 text-sm">Saturday free interactions & Wednesday 50% discounts</p>
                 </div>
@@ -627,12 +637,8 @@ function App() {
                   onClick={() => { setAuthMode('register'); setCurrentView('auth'); }}
                   className="bg-gradient-to-r from-rose-500 to-purple-600 text-white px-12 py-5 rounded-full text-xl font-semibold hover:from-rose-600 hover:to-purple-700 transition-all duration-300 shadow-2xl transform hover:scale-105 hover:shadow-rose-500/25"
                 >
-                  🌟 Begin Your Journey - It's Free
+                  Begin Your Journey - It's Free
                 </button>
-                
-                <p className="text-purple-100 text-base">
-                  Join <strong className="text-rose-200">50,000+ verified members</strong> finding meaningful connections
-                </p>
                 
                 <div className="flex items-center justify-center space-x-6 text-purple-200 text-sm">
                   <div className="flex items-center">
