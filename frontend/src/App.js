@@ -573,53 +573,80 @@ function App() {
           </div>
         </nav>
 
-        {/* Enhanced Hero Section */}
-        <div className="relative">
-          <div className="absolute inset-0 bg-gradient-to-r from-purple-900/40 to-rose-900/40"></div>
-          <div 
-            className="h-[500px] bg-cover bg-center relative"
-            style={{
-              backgroundImage: `url('https://images.unsplash.com/photo-1514415008039-efa173293080')`
-            }}
-          >
-            <div className="absolute inset-0 bg-gradient-to-r from-purple-900/60 to-rose-900/50"></div>
-            <div className="relative z-10 h-full flex items-center justify-center text-center px-4">
-              <div className="max-w-5xl">
-                <h2 className="text-6xl md:text-7xl font-bold text-white mb-6 leading-tight">
+        {/* Beautiful Hero Section - No Images */}
+        <div className="relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-br from-purple-900 via-purple-700 to-rose-600"></div>
+          <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-black/20"></div>
+          
+          {/* Geometric background patterns */}
+          <div className="absolute inset-0 opacity-10">
+            <div className="absolute top-10 left-10 w-32 h-32 border-2 border-white rounded-full"></div>
+            <div className="absolute top-40 right-20 w-24 h-24 border-2 border-white rounded-full"></div>
+            <div className="absolute bottom-20 left-1/4 w-16 h-16 border-2 border-white rounded-full"></div>
+            <div className="absolute bottom-40 right-1/3 w-20 h-20 border-2 border-white rounded-full"></div>
+          </div>
+          
+          <div className="relative z-10 py-24 px-4">
+            <div className="max-w-6xl mx-auto text-center">
+              <div className="mb-8">
+                <h2 className="text-7xl md:text-8xl font-bold text-white mb-6 leading-tight">
                   Your Next Chapter
-                  <span className="block text-4xl md:text-5xl font-light text-rose-100 mt-3">
-                    of Love Begins Here ✨
+                  <span className="block text-4xl md:text-6xl font-light text-rose-200 mt-4">
+                    of Love Starts Here ✨
                   </span>
                 </h2>
-                <p className="text-xl md:text-2xl text-purple-100 mb-8 max-w-3xl mx-auto leading-relaxed">
-                  A welcoming dating community designed for mature adults (25+) ready for meaningful connections. 
-                  Whether you're divorced, widowed, a late bloomer, or simply starting fresh - your perfect match awaits.
-                </p>
-                <div className="grid md:grid-cols-3 gap-6 mb-10 max-w-4xl mx-auto">
-                  <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20">
-                    <div className="text-3xl mb-2">🔐</div>
-                    <p className="text-purple-100 font-medium">Secure Email Verification</p>
-                    <p className="text-purple-200 text-sm">Protected registration process</p>
-                  </div>
-                  <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20">
-                    <div className="text-3xl mb-2">🌍</div>
-                    <p className="text-purple-100 font-medium">Global Community</p>
-                    <p className="text-purple-200 text-sm">40+ countries supported</p>
-                  </div>
-                  <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20">
-                    <div className="text-3xl mb-2">🎉</div>
-                    <p className="text-purple-100 font-medium">Saturday Happy Hour</p>
-                    <p className="text-purple-200 text-sm">FREE interactions 7-8pm CAT</p>
-                  </div>
+              </div>
+              
+              <p className="text-xl md:text-2xl text-purple-100 mb-12 max-w-4xl mx-auto leading-relaxed">
+                A sophisticated dating community designed for mature adults (25+) seeking meaningful connections. 
+                Whether you're divorced, widowed, a late bloomer, or simply starting fresh - discover love that respects your journey.
+              </p>
+              
+              <div className="grid md:grid-cols-3 gap-6 mb-12 max-w-5xl mx-auto">
+                <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20 hover:bg-white/20 transition-all duration-300">
+                  <div className="text-4xl mb-4">🔐</div>
+                  <h3 className="text-xl font-semibold text-white mb-2">Secure & Verified</h3>
+                  <p className="text-purple-200 text-sm">Email verification and secure registration protect your privacy</p>
                 </div>
-                <div className="space-y-4">
-                  <button
-                    onClick={() => { setAuthMode('register'); setCurrentView('auth'); }}
-                    className="bg-gradient-to-r from-rose-500 to-purple-600 text-white px-10 py-4 rounded-full text-xl font-semibold hover:from-rose-600 hover:to-purple-700 transition-all duration-300 shadow-2xl transform hover:scale-105 mx-4"
-                  >
-                    🌟 Start Your Journey Free
-                  </button>
-                  <p className="text-purple-100 text-sm">Join thousands finding love in their next chapter</p>
+                
+                <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20 hover:bg-white/20 transition-all duration-300">
+                  <div className="text-4xl mb-4">🌍</div>
+                  <h3 className="text-xl font-semibold text-white mb-2">Global Community</h3>
+                  <p className="text-purple-200 text-sm">Connect locally or globally with 40+ countries supported</p>
+                </div>
+                
+                <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20 hover:bg-white/20 transition-all duration-300">
+                  <div className="text-4xl mb-4">🎉</div>
+                  <h3 className="text-xl font-semibold text-white mb-2">Special Offers</h3>
+                  <p className="text-purple-200 text-sm">Saturday free interactions & Wednesday 50% discounts</p>
+                </div>
+              </div>
+              
+              <div className="space-y-6">
+                <button
+                  onClick={() => { setAuthMode('register'); setCurrentView('auth'); }}
+                  className="bg-gradient-to-r from-rose-500 to-purple-600 text-white px-12 py-5 rounded-full text-xl font-semibold hover:from-rose-600 hover:to-purple-700 transition-all duration-300 shadow-2xl transform hover:scale-105 hover:shadow-rose-500/25"
+                >
+                  🌟 Begin Your Journey - It's Free
+                </button>
+                
+                <p className="text-purple-100 text-base">
+                  Join <strong className="text-rose-200">50,000+ verified members</strong> finding meaningful connections
+                </p>
+                
+                <div className="flex items-center justify-center space-x-6 text-purple-200 text-sm">
+                  <div className="flex items-center">
+                    <span className="w-2 h-2 bg-green-400 rounded-full mr-2"></span>
+                    <span>Free to join</span>
+                  </div>
+                  <div className="flex items-center">
+                    <span className="w-2 h-2 bg-green-400 rounded-full mr-2"></span>
+                    <span>Instant verification</span>
+                  </div>
+                  <div className="flex items-center">
+                    <span className="w-2 h-2 bg-green-400 rounded-full mr-2"></span>
+                    <span>Start matching immediately</span>
+                  </div>
                 </div>
               </div>
             </div>
