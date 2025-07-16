@@ -509,7 +509,7 @@ class NextChapterAPITest(unittest.TestCase):
         print(f"  - VIP tier name: {data['vip']['name']}")
     
     def test_21_verify_geographical_limits(self):
-        """Test geographical limits for each subscription tier"""
+        """Test geographical limits for each subscription tier - Malawian focused"""
         response = requests.get(f"{self.base_url}/api/subscription/tiers")
         self.assertEqual(response.status_code, 200)
         data = response.json()
@@ -521,12 +521,12 @@ class NextChapterAPITest(unittest.TestCase):
         # Check premium tier geographical limits
         self.assertIn("premium", data)
         self.assertEqual(data["premium"]["matching_scope"], "local_unlimited")
-        self.assertEqual(data["premium"]["geographical_limit"], "same_city_region")
+        self.assertEqual(data["premium"]["geographical_limit"], "extended_local")
         
-        # Check VIP tier geographical limits
+        # Check VIP tier geographical limits - should be Malawian worldwide
         self.assertIn("vip", data)
-        self.assertEqual(data["vip"]["matching_scope"], "global_unlimited")
-        self.assertEqual(data["vip"]["geographical_limit"], "worldwide")
+        self.assertEqual(data["vip"]["matching_scope"], "malawian_worldwide")
+        self.assertEqual(data["vip"]["geographical_limit"], "malawian_global")
         
         print(f"✅ Geographical limits verified")
         print(f"  - Free tier matching scope: {data['free']['matching_scope']}")
