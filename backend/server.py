@@ -724,9 +724,10 @@ async def setup_profile(
 
 @app.get("/api/profiles")
 async def get_profiles(current_user = Depends(get_current_user)):
-    """Get profiles based on user's subscription tier and geographical preferences"""
+    """Get profiles based on user's subscription tier and Malawian geographical preferences"""
     user_subscription = current_user.get('subscription_tier', 'free')
     user_location = current_user.get('location')
+    user_phone_country = current_user.get('phone_country', '')
     
     # Get users that current user hasn't liked/disliked and aren't matches
     liked_users = likes_collection.find({"user_id": current_user['id']}).distinct("liked_user_id")
@@ -740,14 +741,15 @@ async def get_profiles(current_user = Depends(get_current_user)):
         "profile_complete": True
     }))
     
-    # Filter profiles based on subscription tier and location
+    # Filter profiles based on subscription tier and Malawian location rules
     filtered_profiles = []
     
     for profile in all_profiles:
         profile_location = profile.get('location')
+        profile_phone_country = profile.get('phone_country', '')
         
         # Check if profile is within user's matching scope
-        if is_within_local_area(user_location, profile_location, user_subscription):
+        if is_within_local_area(user_location, profile_location, user_subscription, user_phone_country, profile_phone_country):
             # Clean up profile (remove sensitive data)
             profile.pop('password', None)
             profile.pop('_id', None)
@@ -768,6 +770,9 @@ async def get_profiles(current_user = Depends(get_current_user)):
                 except (ValueError, IndexError):
                     profile['distance_km'] = None
             
+            # Add Malawian status
+            profile['is_malawian'] = is_malawian_user(profile_location, profile_phone_country)
+            
             # Add matching scope info
             profile['matching_scope'] = get_matching_scope_description(user_subscription)
             profile['user_subscription_tier'] = user_subscription
@@ -786,6 +791,7 @@ async def get_profiles(current_user = Depends(get_current_user)):
         "total_available": len(filtered_profiles),
         "matching_scope": get_matching_scope_description(user_subscription),
         "subscription_tier": user_subscription,
+        "malawian_focused": True,
         "location_based_filtering": user_subscription != 'vip'
     }
 
