@@ -604,6 +604,99 @@ class NextChapterAPITest(unittest.TestCase):
         print(f"  - Location-based filtering: {profiles_data['location_based_filtering']}")
         print(f"  - Total available profiles: {profiles_data.get('total_available', 'unknown')}")
 
+    def test_24_register_with_malawian_phone(self):
+        """Test registration with Malawian phone number (+265)"""
+        malawi_email = f"malawi_test_{self.random_string(8)}@example.com"
+        payload = {
+            "name": f"Malawi Test User {self.random_string(4)}",
+            "email": malawi_email,
+            "password": self.test_password,
+            "age": self.test_age,
+            "phone_country": "MW",  # Malawi country code
+            "phone_number": "991234567"  # Sample Malawi phone number
+        }
+        response = requests.post(f"{self.base_url}/api/register", json=payload)
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertIn("message", data)
+        self.assertIn("email", data)
+        print(f"✅ Malawian phone registration successful: {data['message']}")
+        print(f"  - Email: {data['email']}")
+        print(f"  - OTP sent: {data.get('otp_sent', False)}")
+        
+        # Verify with demo OTP
+        otp_payload = {
+            "email": malawi_email,
+            "otp": "123456"  # Demo OTP
+        }
+        verify_response = requests.post(f"{self.base_url}/api/verify-registration", json=otp_payload)
+        self.assertEqual(verify_response.status_code, 200)
+        verify_data = verify_response.json()
+        self.assertIn("token", verify_data)
+        self.assertIn("user", verify_data)
+        
+        # Check that user has MW phone country
+        user_data = verify_data["user"]
+        self.assertEqual(user_data.get("phone_country"), "MW")
+        print(f"✅ Malawian user verified successfully")
+        print(f"  - Phone country: {user_data.get('phone_country')}")
+        print(f"  - User ID: {user_data['id']}")
+
+    def test_25_verify_mwk_pricing(self):
+        """Test that MWK pricing is displayed correctly"""
+        response = requests.get(f"{self.base_url}/api/subscription/tiers")
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        
+        # Check premium tier MWK pricing
+        self.assertIn("premium", data)
+        premium = data["premium"]
+        self.assertIn("pricing", premium)
+        pricing = premium["pricing"]
+        
+        # Check for MWK currency in pricing
+        for duration in ["daily", "weekly", "monthly"]:
+            self.assertIn(duration, pricing)
+            price_info = pricing[duration]
+            self.assertIn("currency", price_info)
+            # Should be MWK for Malawian users
+            
+        # Check VIP tier MWK pricing
+        self.assertIn("vip", data)
+        vip = data["vip"]
+        self.assertIn("pricing", vip)
+        vip_pricing = vip["pricing"]
+        
+        # Check for MWK currency in VIP pricing
+        for duration in ["daily", "weekly", "monthly"]:
+            self.assertIn(duration, vip_pricing)
+            price_info = vip_pricing[duration]
+            self.assertIn("currency", price_info)
+            
+        print(f"✅ MWK pricing verified")
+        print(f"  - Premium weekly: {pricing['weekly']['original_price']} {pricing['weekly']['currency']}")
+        print(f"  - VIP weekly: {vip_pricing['weekly']['original_price']} {vip_pricing['weekly']['currency']}")
+
+    def test_26_verify_malawian_community_focus(self):
+        """Test that the API responses show Malawian community focus"""
+        if not self.token:
+            print("⚠️ Skipping Malawian community focus test - not logged in")
+            return
+            
+        headers = {"Authorization": f"Bearer {self.token}"}
+        profiles_response = requests.get(f"{self.base_url}/api/profiles", headers=headers)
+        self.assertEqual(profiles_response.status_code, 200)
+        profiles_data = profiles_response.json()
+        
+        # Check for Malawian focused flag
+        self.assertIn("malawian_focused", profiles_data)
+        self.assertTrue(profiles_data["malawian_focused"])
+        
+        print(f"✅ Malawian community focus verified")
+        print(f"  - Malawian focused: {profiles_data['malawian_focused']}")
+        print(f"  - Location based filtering: {profiles_data.get('location_based_filtering', 'unknown')}")
+        print(f"  - Subscription tier: {profiles_data.get('subscription_tier', 'unknown')}")
+
 def run_tests():
     # Create a test suite
     suite = unittest.TestSuite()
