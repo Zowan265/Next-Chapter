@@ -542,41 +542,50 @@ async def register(user: UserCreate):
     if user.phone_country and user.phone_country not in COUNTRY_CODES:
         raise HTTPException(status_code=400, detail="Invalid country code")
     
-    # Create user
-    user_id = str(uuid.uuid4())
-    hashed_password = hash_password(user.password)
-    
-    user_doc = {
-        "id": user_id,
-        "name": user.name,
-        "email": user.email,
-        "password": hashed_password,
-        "age": user.age,
-        "phone_country": user.phone_country,
-        "phone_number": user.phone_number,
-        "location": None,
-        "bio": None,
-        "looking_for": None,
-        "interests": [],
-        "main_photo": None,
-        "additional_photos": [],
+    # Generate and store OTP
+    otp = generate_otp()
+    otp_storage[user.email] = {
+        "otp": otp,
         "created_at": datetime.utcnow(),
-        "profile_complete": False,
-        "email_verified": False,
-        "subscription_tier": "free",
-        "daily_likes_used": 0
+        "expires_at": datetime.utcnow() + timedelta(minutes=10),
+        "user_data": {
+            "name": user.name,
+            "email": user.email,
+            "password": hash_password(user.password),
+            "age": user.age,
+            "phone_country": user.phone_country,
+            "phone_number": user.phone_number,
+            "location": None,
+            "bio": None,
+            "looking_for": None,
+            "interests": [],
+            "main_photo": None,
+            "additional_photos": [],
+            "created_at": datetime.utcnow(),
+            "profile_complete": False,
+            "email_verified": False,
+            "subscription_tier": "free",
+            "daily_likes_used": 0
+        }
     }
     
-    users_collection.insert_one(user_doc)
+    # Send OTP email
+    email_sent = send_email_otp(user.email, otp)
     
-    # In a real app, send email verification here
-    # For demo, we'll simulate email verification
-    
-    return {
-        "message": "Registration successful. Please check your email for verification code.",
-        "email": user.email,
-        "simulation_note": "In demo mode - any 6-digit code will work for verification"
-    }
+    if email_sent:
+        return {
+            "message": "Registration successful! Please check your email for the verification code.",
+            "email": user.email,
+            "otp_sent": True
+        }
+    else:
+        # Fallback to demo mode if email sending fails
+        return {
+            "message": "Registration successful. Demo mode: Use any 6-digit code for verification.",
+            "email": user.email,
+            "otp_sent": False,
+            "demo_mode": True
+        }
 
 @app.post("/api/login")
 async def login(user: UserLogin):
