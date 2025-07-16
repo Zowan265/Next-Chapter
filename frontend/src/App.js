@@ -916,22 +916,11 @@ function App() {
             </div>
             
             <div className="border-t border-gray-700 pt-8 text-center">
-              <div className="mb-4">
-                <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium mr-2">
-                  ✅ Enhanced v2.0
-                </span>
-                <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium mr-2">
-                  🔒 Secure Platform
-                </span>
-                <span className="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm font-medium">
-                  💝 50,000+ Members
-                </span>
-              </div>
               <p className="text-gray-400 mb-2">
-                © 2025 NextChapter Enhanced. Made with ❤️ for meaningful connections.
+                © 2025 NextChapter. Made with ❤️ for meaningful connections.
               </p>
               <p className="text-gray-500 text-sm">
-                Bringing together mature adults worldwide for authentic, lasting relationships.
+                Bringing together mature Malawians worldwide for authentic, lasting relationships.
               </p>
             </div>
           </div>
