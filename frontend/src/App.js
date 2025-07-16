@@ -788,44 +788,16 @@ function App() {
           </div>
         </div>
 
-        {/* Success Stories Preview */}
-        <div className="py-20 px-4 bg-gradient-to-r from-purple-600 to-rose-500">
-          <div className="max-w-6xl mx-auto text-center">
-            <h3 className="text-4xl font-bold text-white mb-8">Real Love Stories from NextChapter</h3>
-            <div className="grid md:grid-cols-3 gap-8 mb-12">
-              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
-                <div className="text-4xl mb-4">💕</div>
-                <p className="text-purple-100 italic mb-4">
-                  "After my divorce at 45, I thought love was behind me. NextChapter proved me wrong. 
-                  Met my soulmate here and we're now happily married!"
-                </p>
-                <p className="text-rose-200 font-semibold">- Sarah, 47</p>
-              </div>
-              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
-                <div className="text-4xl mb-4">🌟</div>
-                <p className="text-purple-100 italic mb-4">
-                  "As a widower in my 50s, I was nervous about dating again. The community here is so 
-                  understanding and supportive. Found love again at 54!"
-                </p>
-                <p className="text-rose-200 font-semibold">- Michael, 54</p>
-              </div>
-              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
-                <div className="text-4xl mb-4">✨</div>
-                <p className="text-purple-100 italic mb-4">
-                  "I was a late bloomer who never dated seriously. At 35, I found my perfect match here. 
-                  Sometimes the best chapters come last!"
-                </p>
-                <p className="text-rose-200 font-semibold">- David, 37</p>
-              </div>
-            </div>
-            <div className="text-purple-100 text-lg">
-              <strong>Join 50,000+ members</strong> who found their next chapter of love ❤️
-            </div>
-          </div>
-        </div>
-
         {/* Enhanced CTA Section */}
-        <div className="bg-gradient-to-br from-purple-50 via-white to-rose-50 py-20 px-4 text-center">
+        <div className="bg-gradient-to-br from-purple-50 via-white to-rose-50 py-20 px-4 text-center relative overflow-hidden">
+          
+          {/* Floating Elements */}
+          <div className="absolute inset-0">
+            <div className="absolute top-10 left-20 w-4 h-4 bg-purple-300/30 rounded-full animate-bounce"></div>
+            <div className="absolute top-40 right-10 w-6 h-6 bg-rose-300/30 rounded-full animate-bounce delay-1000"></div>
+            <div className="absolute bottom-20 left-1/3 w-5 h-5 bg-purple-400/30 rounded-full animate-bounce delay-500"></div>
+            <div className="absolute bottom-40 right-1/4 w-3 h-3 bg-rose-400/30 rounded-full animate-bounce delay-700"></div>
+          </div>
           <div className="max-w-5xl mx-auto">
             <div className="bg-white rounded-3xl shadow-2xl p-12 border border-purple-100">
               <h3 className="text-5xl font-bold text-gray-800 mb-6">Ready to Write Your Next Chapter?</h3>
