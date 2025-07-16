@@ -725,7 +725,10 @@ def run_tests():
         'test_20_verify_subscription_tier_names',
         'test_21_verify_geographical_limits',
         'test_22_verify_matching_scope_descriptions',
-        'test_23_verify_profile_filtering_by_location'
+        'test_23_verify_profile_filtering_by_location',
+        'test_24_register_with_malawian_phone',
+        'test_25_verify_mwk_pricing',
+        'test_26_verify_malawian_community_focus'
     ]
     
     for test_case in test_cases:
