@@ -491,7 +491,7 @@ class NextChapterAPITest(unittest.TestCase):
             print(f"  - Interaction type: {data.get('interaction_type', 'Not specified')}")
 
     def test_20_verify_subscription_tier_names(self):
-        """Test that subscription tiers have the correct names"""
+        """Test that subscription tiers have the correct Malawian-focused names"""
         response = requests.get(f"{self.base_url}/api/subscription/tiers")
         self.assertEqual(response.status_code, 200)
         data = response.json()
@@ -502,7 +502,7 @@ class NextChapterAPITest(unittest.TestCase):
         
         # Check VIP tier name
         self.assertIn("vip", data)
-        self.assertEqual(data["vip"]["name"], "VIP - Global Hearts")
+        self.assertEqual(data["vip"]["name"], "VIP - Malawian Hearts")
         
         print(f"✅ Subscription tier names verified")
         print(f"  - Premium tier name: {data['premium']['name']}")
