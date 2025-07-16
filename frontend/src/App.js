@@ -485,6 +485,13 @@ function App() {
       <h2 className="text-2xl font-bold mb-4">{title}</h2>
       <p className="text-gray-600 mb-6">{subtitle}</p>
       
+      {/* Error Display */}
+      {error && (
+        <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-4">
+          <p className="text-red-800 text-sm">{error}</p>
+        </div>
+      )}
+      
       <form onSubmit={onSubmit} className="space-y-4">
         <input
           type="text"
@@ -495,14 +502,32 @@ function App() {
           maxLength="6"
           pattern="[0-9]{6}"
           required
+          disabled={loading}
         />
         <button
           type="submit"
-          className="w-full bg-gradient-to-r from-purple-600 to-rose-500 text-white py-3 rounded-lg font-semibold hover:from-purple-700 hover:to-rose-600 transition-all duration-300"
+          disabled={loading}
+          className={`w-full py-3 rounded-lg font-semibold transition-all duration-300 ${
+            loading 
+              ? 'bg-gray-400 cursor-not-allowed' 
+              : 'bg-gradient-to-r from-purple-600 to-rose-500 text-white hover:from-purple-700 hover:to-rose-600'
+          }`}
         >
-          Verify Code
+          {loading ? (
+            <div className="flex items-center justify-center">
+              <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+              Verifying...
+            </div>
+          ) : (
+            'Verify Code'
+          )}
         </button>
       </form>
+      
+      <div className="mt-4 text-sm text-gray-500">
+        <p>Demo mode: Use <strong>123456</strong> as verification code</p>
+        <p>In production, check your email for the actual code</p>
+      </div>
     </div>
   );
 
