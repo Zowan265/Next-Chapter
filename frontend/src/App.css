@@ -2,6 +2,30 @@
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 
+/* Custom animations for floating elements */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-20px); }
+}
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.animate-spin-slow {
+  animation: spin-slow 20s linear infinite;
+}
+
+/* Custom gradient backgrounds */
+.bg-gradient-malawi {
+  background: linear-gradient(135deg, #8B5CF6 0%, #EC4899 100%);
+}
+
 /* Custom styles for NextChapter Dating App */
 
 /* Custom color classes */
