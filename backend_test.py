@@ -536,7 +536,7 @@ class NextChapterAPITest(unittest.TestCase):
         print(f"  - VIP geographical limit: {data['vip']['geographical_limit']}")
     
     def test_22_verify_matching_scope_descriptions(self):
-        """Test matching scope descriptions for each tier"""
+        """Test matching scope descriptions for each tier - Malawian focused"""
         response = requests.get(f"{self.base_url}/api/subscription/tiers")
         self.assertEqual(response.status_code, 200)
         data = response.json()
@@ -554,17 +554,17 @@ class NextChapterAPITest(unittest.TestCase):
         # Check matching scope description
         self.assertIn("matching_scope", profiles_data)
         
-        # Free tier should be local area only (within 50km)
+        # Free tier should be local area only (within 300km for Malawians)
         if profiles_data.get("subscription_tier") == "free":
-            self.assertTrue("50km" in profiles_data["matching_scope"])
+            self.assertTrue("300km" in profiles_data["matching_scope"])
             
-        # Premium tier should be extended local area (within 100km)
+        # Premium tier should be extended local area (within 500km for Malawians)
         elif profiles_data.get("subscription_tier") == "premium":
-            self.assertTrue("100km" in profiles_data["matching_scope"])
+            self.assertTrue("500km" in profiles_data["matching_scope"])
             
-        # VIP tier should be worldwide with no geographical boundaries
+        # VIP tier should be Malawians worldwide with no geographical boundaries
         elif profiles_data.get("subscription_tier") == "vip":
-            self.assertTrue("Worldwide" in profiles_data["matching_scope"])
+            self.assertTrue("Malawians worldwide" in profiles_data["matching_scope"])
             self.assertTrue("no geographical boundaries" in profiles_data["matching_scope"])
         
         print(f"✅ Matching scope descriptions verified")
