@@ -660,13 +660,22 @@ function App() {
         </div>
 
         {/* Beautiful Features Section - No Images */}
-        <div className="py-24 px-4 bg-gradient-to-br from-gray-50 via-purple-50 to-rose-50">
-          <div className="max-w-7xl mx-auto">
+        <div className="py-24 px-4 bg-gradient-to-br from-gray-50 via-purple-50 to-rose-50 relative overflow-hidden">
+          
+          {/* Floating Elements */}
+          <div className="absolute inset-0">
+            <div className="absolute top-20 left-10 w-6 h-6 bg-purple-200/30 rounded-full animate-float"></div>
+            <div className="absolute top-60 right-20 w-8 h-8 bg-rose-200/30 rounded-full animate-float delay-1000"></div>
+            <div className="absolute bottom-40 left-1/4 w-5 h-5 bg-purple-300/30 rounded-full animate-float delay-500"></div>
+            <div className="absolute bottom-20 right-1/3 w-7 h-7 bg-rose-300/30 rounded-full animate-float delay-700"></div>
+          </div>
+          
+          <div className="max-w-7xl mx-auto relative z-10">
             <div className="text-center mb-20">
               <h3 className="text-5xl font-bold text-gray-800 mb-6">Why Choose NextChapter?</h3>
               <p className="text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
-                Experience a dating platform that understands your journey. We've designed every feature 
-                with mature adults in mind, ensuring safety, authenticity, and meaningful connections.
+                Experience a dating platform designed specifically for mature Malawians. We understand your culture, 
+                values, and the importance of meaningful connections in our community.
               </p>
             </div>
             
@@ -706,37 +715,37 @@ function App() {
                 </div>
               </div>
 
-              {/* Global Community */}
+              {/* Malawian Community */}
               <div className="text-center group">
                 <div className="relative mb-8">
                   <div className="w-32 h-32 bg-gradient-to-br from-green-500 to-blue-600 rounded-full mx-auto flex items-center justify-center transform group-hover:scale-105 transition-all duration-300 shadow-2xl">
-                    <div className="text-5xl">🌍</div>
+                    <div className="text-5xl">🇲🇼</div>
                   </div>
                   <div className="absolute inset-0 bg-green-200 rounded-full mx-auto w-32 h-32 opacity-20 animate-pulse"></div>
                 </div>
-                <h4 className="text-3xl font-bold text-gray-800 mb-6">Choose Your Range</h4>
+                <h4 className="text-3xl font-bold text-gray-800 mb-6">Malawian Community</h4>
                 <p className="text-gray-600 text-lg leading-relaxed mb-6">
-                  Start local or go global! Choose from local connections (50km), regional matching (100km), 
-                  or worldwide connections based on your subscription.
+                  Connect with fellow Malawians locally or abroad. Our platform understands Malawian culture 
+                  and values, making it easier to find compatible matches.
                 </p>
                 <div className="space-y-3">
                   <div className="flex items-center justify-center text-blue-600">
                     <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center mr-3">
-                      <span className="text-sm">🏘️</span>
+                      <span className="text-sm">🏠</span>
                     </div>
-                    <span className="text-sm">Free: Local 50km radius</span>
+                    <span className="text-sm">Local: Within 300km in Malawi</span>
                   </div>
                   <div className="flex items-center justify-center text-purple-600">
                     <div className="w-6 h-6 bg-purple-100 rounded-full flex items-center justify-center mr-3">
-                      <span className="text-sm">🏙️</span>
+                      <span className="text-sm">✈️</span>
                     </div>
-                    <span className="text-sm">Premium: Extended 100km radius</span>
+                    <span className="text-sm">Abroad: Connect with Malawians worldwide</span>
                   </div>
                   <div className="flex items-center justify-center text-rose-600">
                     <div className="w-6 h-6 bg-rose-100 rounded-full flex items-center justify-center mr-3">
-                      <span className="text-sm">🌍</span>
+                      <span className="text-sm">💰</span>
                     </div>
-                    <span className="text-sm">VIP: Global - No boundaries</span>
+                    <span className="text-sm">Local MWK pricing available</span>
                   </div>
                 </div>
               </div>
@@ -745,19 +754,19 @@ function App() {
               <div className="text-center group">
                 <div className="relative mb-8">
                   <div className="w-32 h-32 bg-gradient-to-br from-rose-500 to-purple-600 rounded-full mx-auto flex items-center justify-center transform group-hover:scale-105 transition-all duration-300 shadow-2xl">
-                    <div className="text-5xl">🎉</div>
+                    <div className="text-5xl">💝</div>
                   </div>
                   <div className="absolute inset-0 bg-rose-200 rounded-full mx-auto w-32 h-32 opacity-20 animate-pulse"></div>
                 </div>
                 <h4 className="text-3xl font-bold text-gray-800 mb-6">Special Offers</h4>
                 <p className="text-gray-600 text-lg leading-relaxed mb-6">
                   Love shouldn't be expensive. Enjoy our special weekly offers and premium features 
-                  at unbeatable prices, plus special regional pricing.
+                  at affordable prices designed for Malawian users.
                 </p>
                 <div className="space-y-3">
                   <div className="flex items-center justify-center text-purple-600">
                     <div className="w-6 h-6 bg-purple-100 rounded-full flex items-center justify-center mr-3">
-                      <span className="text-sm">🎯</span>
+                      <span className="text-sm">📅</span>
                     </div>
                     <span className="text-sm">Wednesday: 50% Off Subscriptions</span>
                   </div>
@@ -769,9 +778,9 @@ function App() {
                   </div>
                   <div className="flex items-center justify-center text-blue-600">
                     <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center mr-3">
-                      <span className="text-sm">🇲🇼</span>
+                      <span className="text-sm">💳</span>
                     </div>
-                    <span className="text-sm">Malawi: Special local pricing</span>
+                    <span className="text-sm">MWK: 2,500/day, 15,000/week</span>
                   </div>
                 </div>
               </div>
