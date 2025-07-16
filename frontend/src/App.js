@@ -653,49 +653,49 @@ function App() {
           </div>
         </div>
 
-        {/* Enhanced Features Section */}
-        <div className="py-24 px-4 bg-gradient-to-br from-white via-purple-50 to-rose-50">
+        {/* Beautiful Features Section - No Images */}
+        <div className="py-24 px-4 bg-gradient-to-br from-gray-50 via-purple-50 to-rose-50">
           <div className="max-w-7xl mx-auto">
             <div className="text-center mb-20">
-              <h3 className="text-5xl font-bold text-gray-800 mb-6">Why NextChapter is Perfect for You</h3>
+              <h3 className="text-5xl font-bold text-gray-800 mb-6">Why Choose NextChapter?</h3>
               <p className="text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
-                We understand that finding love later in life requires a different approach. Our platform is 
-                designed specifically for mature adults seeking genuine, meaningful connections.
+                Experience a dating platform that understands your journey. We've designed every feature 
+                with mature adults in mind, ensuring safety, authenticity, and meaningful connections.
               </p>
             </div>
             
-            <div className="grid md:grid-cols-3 gap-16">
+            <div className="grid md:grid-cols-3 gap-12">
               {/* Enhanced Security */}
               <div className="text-center group">
                 <div className="relative mb-8">
-                  <div 
-                    className="w-32 h-32 rounded-full mx-auto bg-cover bg-center shadow-2xl transform group-hover:scale-105 transition-all duration-300"
-                    style={{
-                      backgroundImage: `url('https://images.unsplash.com/photo-1745263863333-d567f45c4bae')`
-                    }}
-                  >
-                    <div className="absolute inset-0 bg-gradient-to-br from-purple-600/80 to-rose-500/80 rounded-full flex items-center justify-center">
-                      <span className="text-4xl">🔐</span>
-                    </div>
+                  <div className="w-32 h-32 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full mx-auto flex items-center justify-center transform group-hover:scale-105 transition-all duration-300 shadow-2xl">
+                    <div className="text-5xl">🔐</div>
                   </div>
+                  <div className="absolute inset-0 bg-blue-200 rounded-full mx-auto w-32 h-32 opacity-20 animate-pulse"></div>
                 </div>
                 <h4 className="text-3xl font-bold text-gray-800 mb-6">Secure & Trustworthy</h4>
-                <p className="text-gray-600 text-lg leading-relaxed">
-                  Email verification, age verification, and secure payment authorization protect your journey. 
-                  Every member is verified for your peace of mind.
+                <p className="text-gray-600 text-lg leading-relaxed mb-6">
+                  Your safety is our priority. Every member goes through email verification, and our 
+                  secure platform protects your personal information with industry-leading encryption.
                 </p>
-                <div className="mt-6 space-y-2">
+                <div className="space-y-3">
                   <div className="flex items-center justify-center text-green-600">
-                    <span className="mr-2">✓</span>
+                    <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center mr-3">
+                      <span className="text-sm">✓</span>
+                    </div>
                     <span className="text-sm">Email & Phone Verification</span>
                   </div>
                   <div className="flex items-center justify-center text-green-600">
-                    <span className="mr-2">✓</span>
-                    <span className="text-sm">Age Fraud Prevention</span>
+                    <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center mr-3">
+                      <span className="text-sm">✓</span>
+                    </div>
+                    <span className="text-sm">Age Verification Protection</span>
                   </div>
                   <div className="flex items-center justify-center text-green-600">
-                    <span className="mr-2">✓</span>
-                    <span className="text-sm">Secure Payment Protection</span>
+                    <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center mr-3">
+                      <span className="text-sm">✓</span>
+                    </div>
+                    <span className="text-sm">Secure Payment Processing</span>
                   </div>
                 </div>
               </div>
@@ -703,34 +703,34 @@ function App() {
               {/* Global Community */}
               <div className="text-center group">
                 <div className="relative mb-8">
-                  <div 
-                    className="w-32 h-32 rounded-full mx-auto bg-cover bg-center shadow-2xl transform group-hover:scale-105 transition-all duration-300"
-                    style={{
-                      backgroundImage: `url('https://images.unsplash.com/photo-1739303987880-59aa505ecfa6')`
-                    }}
-                  >
-                    <div className="absolute inset-0 bg-gradient-to-br from-rose-500/80 to-purple-600/80 rounded-full flex items-center justify-center">
-                      <span className="text-4xl">🌍</span>
-                    </div>
+                  <div className="w-32 h-32 bg-gradient-to-br from-green-500 to-blue-600 rounded-full mx-auto flex items-center justify-center transform group-hover:scale-105 transition-all duration-300 shadow-2xl">
+                    <div className="text-5xl">🌍</div>
                   </div>
+                  <div className="absolute inset-0 bg-green-200 rounded-full mx-auto w-32 h-32 opacity-20 animate-pulse"></div>
                 </div>
-                <h4 className="text-3xl font-bold text-gray-800 mb-6">Global Community</h4>
-                <p className="text-gray-600 text-lg leading-relaxed">
-                  Connect with amazing people worldwide! We support phone numbers from 40+ countries including 
-                  special pricing for our Malawi community.
+                <h4 className="text-3xl font-bold text-gray-800 mb-6">Choose Your Range</h4>
+                <p className="text-gray-600 text-lg leading-relaxed mb-6">
+                  Start local or go global! Choose from local connections (50km), regional matching (100km), 
+                  or worldwide connections based on your subscription.
                 </p>
-                <div className="mt-6 space-y-2">
+                <div className="space-y-3">
                   <div className="flex items-center justify-center text-blue-600">
-                    <span className="mr-2">🇲🇼</span>
-                    <span className="text-sm">Special Malawi Pricing: 2,500 MWK/day</span>
+                    <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center mr-3">
+                      <span className="text-sm">🏘️</span>
+                    </div>
+                    <span className="text-sm">Free: Local 50km radius</span>
                   </div>
-                  <div className="flex items-center justify-center text-blue-600">
-                    <span className="mr-2">🌍</span>
-                    <span className="text-sm">40+ Countries Supported</span>
+                  <div className="flex items-center justify-center text-purple-600">
+                    <div className="w-6 h-6 bg-purple-100 rounded-full flex items-center justify-center mr-3">
+                      <span className="text-sm">🏙️</span>
+                    </div>
+                    <span className="text-sm">Premium: Extended 100km radius</span>
                   </div>
-                  <div className="flex items-center justify-center text-blue-600">
-                    <span className="mr-2">📱</span>
-                    <span className="text-sm">International Phone Verification</span>
+                  <div className="flex items-center justify-center text-rose-600">
+                    <div className="w-6 h-6 bg-rose-100 rounded-full flex items-center justify-center mr-3">
+                      <span className="text-sm">🌍</span>
+                    </div>
+                    <span className="text-sm">VIP: Global - No boundaries</span>
                   </div>
                 </div>
               </div>
@@ -738,34 +738,34 @@ function App() {
               {/* Special Offers */}
               <div className="text-center group">
                 <div className="relative mb-8">
-                  <div 
-                    className="w-32 h-32 rounded-full mx-auto bg-cover bg-center shadow-2xl transform group-hover:scale-105 transition-all duration-300"
-                    style={{
-                      backgroundImage: `url('https://images.pexels.com/photos/32580237/pexels-photo-32580237.jpeg')`
-                    }}
-                  >
-                    <div className="absolute inset-0 bg-gradient-to-br from-purple-600/80 to-rose-500/80 rounded-full flex items-center justify-center">
-                      <span className="text-4xl">🎉</span>
-                    </div>
+                  <div className="w-32 h-32 bg-gradient-to-br from-rose-500 to-purple-600 rounded-full mx-auto flex items-center justify-center transform group-hover:scale-105 transition-all duration-300 shadow-2xl">
+                    <div className="text-5xl">🎉</div>
                   </div>
+                  <div className="absolute inset-0 bg-rose-200 rounded-full mx-auto w-32 h-32 opacity-20 animate-pulse"></div>
                 </div>
                 <h4 className="text-3xl font-bold text-gray-800 mb-6">Special Offers</h4>
-                <p className="text-gray-600 text-lg leading-relaxed">
-                  We believe love shouldn't break the bank. Enjoy weekly free interaction time 
-                  and special discount days for premium features.
+                <p className="text-gray-600 text-lg leading-relaxed mb-6">
+                  Love shouldn't be expensive. Enjoy our special weekly offers and premium features 
+                  at unbeatable prices, plus special regional pricing.
                 </p>
-                <div className="mt-6 space-y-2">
+                <div className="space-y-3">
                   <div className="flex items-center justify-center text-purple-600">
-                    <span className="mr-2">🎯</span>
-                    <span className="text-sm">Wednesday: 50% Off All Subscriptions</span>
+                    <div className="w-6 h-6 bg-purple-100 rounded-full flex items-center justify-center mr-3">
+                      <span className="text-sm">🎯</span>
+                    </div>
+                    <span className="text-sm">Wednesday: 50% Off Subscriptions</span>
                   </div>
                   <div className="flex items-center justify-center text-green-600">
-                    <span className="mr-2">🎉</span>
-                    <span className="text-sm font-semibold">Saturday 7-8 PM CAT: FREE Interactions for Everyone!</span>
+                    <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center mr-3">
+                      <span className="text-sm">🎉</span>
+                    </div>
+                    <span className="text-sm font-semibold">Saturday 7-8 PM: FREE for Everyone!</span>
                   </div>
-                  <div className="flex items-center justify-center text-purple-600">
-                    <span className="mr-2">💎</span>
-                    <span className="text-sm">Premium Features: Unlimited Likes & More</span>
+                  <div className="flex items-center justify-center text-blue-600">
+                    <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center mr-3">
+                      <span className="text-sm">🇲🇼</span>
+                    </div>
+                    <span className="text-sm">Malawi: Special local pricing</span>
                   </div>
                 </div>
               </div>
