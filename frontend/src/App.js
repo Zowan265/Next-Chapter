@@ -1049,9 +1049,21 @@ function App() {
 
             <button
               type="submit"
-              className="w-full bg-gradient-to-r from-purple-600 to-rose-500 text-white py-3 rounded-lg font-semibold hover:from-purple-700 hover:to-rose-600 transition-all duration-300 shadow-lg"
+              disabled={loading}
+              className={`w-full py-3 rounded-lg font-semibold transition-all duration-300 shadow-lg ${
+                loading 
+                  ? 'bg-gray-400 cursor-not-allowed' 
+                  : 'bg-gradient-to-r from-purple-600 to-rose-500 text-white hover:from-purple-700 hover:to-rose-600'
+              }`}
             >
-              {authMode === 'login' ? 'Sign In' : 'Create Account & Verify'}
+              {loading ? (
+                <div className="flex items-center justify-center">
+                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                  {authMode === 'login' ? 'Signing In...' : 'Creating Account...'}
+                </div>
+              ) : (
+                authMode === 'login' ? 'Sign In' : 'Create Account & Verify'
+              )}
             </button>
           </form>
 
