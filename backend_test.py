@@ -9,7 +9,7 @@ from datetime import datetime
 class NextChapterAPITest(unittest.TestCase):
     def setUp(self):
         # Get the backend URL from environment variable or use the default
-        self.base_url = os.environ.get('REACT_APP_BACKEND_URL', 'https://1abeb3f1-959a-44ac-8791-370b609401db.preview.emergentagent.com')
+        self.base_url = os.environ.get('REACT_APP_BACKEND_URL', 'https://46106240-d86e-4578-973d-bf618bc75cd9.preview.emergentagent.com')
         self.token = None
         self.user_id = None
         self.test_email = f"test_{self.random_string(8)}@example.com"
