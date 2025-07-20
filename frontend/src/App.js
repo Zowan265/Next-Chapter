@@ -236,6 +236,120 @@ function App() {
     }
   };
 
+  // Password Recovery Functions
+  const startOtpTimer = () => {
+    setOtpTimer(60);
+    const timer = setInterval(() => {
+      setOtpTimer((prev) => {
+        if (prev <= 1) {
+          clearInterval(timer);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+  };
+
+  const handlePasswordResetRequest = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/password-reset-request`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: resetData.email || null,
+          phone_number: resetData.phoneNumber || null,
+          phone_country: resetData.phoneCountry
+        }),
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        setResetIdentifier(data.identifier);
+        setResetOtpSent(true);
+        setPasswordResetStep('verify');
+        startOtpTimer();
+        alert('✅ Password reset code sent! Check your email.');
+      } else {
+        setError(data.detail || 'Failed to send reset code');
+        alert(data.detail || 'Failed to send reset code');
+      }
+    } catch (error) {
+      console.error('Password reset request error:', error);
+      setError('Network error occurred. Please try again.');
+      alert('Network error occurred. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handlePasswordReset = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
+
+    if (resetData.newPassword !== resetData.confirmPassword) {
+      setError('Passwords do not match');
+      alert('Passwords do not match');
+      setLoading(false);
+      return;
+    }
+
+    if (resetData.newPassword.length < 6) {
+      setError('Password must be at least 6 characters long');
+      alert('Password must be at least 6 characters long');
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/password-reset`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: resetData.email || null,
+          phone_number: resetData.phoneNumber || null,
+          phone_country: resetData.phoneCountry,
+          otp: resetData.otp,
+          new_password: resetData.newPassword
+        }),
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        alert('🎉 Password reset successful! You can now log in with your new password.');
+        setPasswordResetStep('request');
+        setResetData({
+          email: '',
+          phoneNumber: '',
+          phoneCountry: 'US',
+          otp: '',
+          newPassword: '',
+          confirmPassword: ''
+        });
+        setResetOtpSent(false);
+        setAuthMode('login');
+        setError('');
+      } else {
+        setError(data.detail || 'Password reset failed');
+        alert(data.detail || 'Password reset failed');
+      }
+    } catch (error) {
+      console.error('Password reset error:', error);
+      setError('Network error occurred. Please try again.');
+      alert('Network error occurred. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const requestPaymentOtp = async (tier) => {
     try {
       const response = await fetch(`${API_BASE_URL}/api/payment/request-otp`, {
