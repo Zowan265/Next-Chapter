@@ -557,7 +557,7 @@ async def register(user: UserCreate):
     otp_storage[user.email] = {
         "otp": otp,
         "created_at": datetime.utcnow(),
-        "expires_at": datetime.utcnow() + timedelta(minutes=10),
+        "expires_at": datetime.utcnow() + timedelta(seconds=60),  # 60 seconds OTP timer
         "user_data": {
             "name": user.name,
             "email": user.email,
