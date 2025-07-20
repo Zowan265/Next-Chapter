@@ -820,17 +820,6 @@ function App() {
   }
 
   // Enhanced Auth Page
-  if (currentView === 'auth') {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-cream-50 to-rose-50 flex items-center justify-center px-4">
-          
-          {/* Floating Elements */}
-          <div className="absolute inset-0">
-            <div className="absolute top-20 left-10 w-6 h-6 bg-purple-200/30 rounded-full animate-float"></div>
-            <div className="absolute top-60 right-20 w-8 h-8 bg-rose-200/30 rounded-full animate-float delay-1000"></div>
-            <div className="absolute bottom-40 left-1/4 w-5 h-5 bg-purple-300/30 rounded-full animate-float delay-500"></div>
-            <div className="absolute bottom-20 right-1/3 w-7 h-7 bg-rose-300/30 rounded-full animate-float delay-700"></div>
-          </div>
           
           <div className="max-w-7xl mx-auto relative z-10">
             <div className="text-center mb-20">
