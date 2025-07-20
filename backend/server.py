@@ -991,8 +991,8 @@ async def get_country_codes():
     return COUNTRY_CODES
 
 @app.get("/api/subscription/tiers")
-async def get_subscription_tiers():
-    """Get subscription tiers with pricing and special offers"""
+async def get_subscription_tiers(location: str = "local"):
+    """Get subscription tiers with pricing for local Malawians or diaspora"""
     
     tiers_with_pricing = {}
     
@@ -1009,12 +1009,18 @@ async def get_subscription_tiers():
             tiers_with_pricing[tier_id] = tier_with_features
             continue
             
-        # Apply pricing with discounts (Wednesday only)
+        # Determine pricing based on user location
         tier_with_pricing = tier_data.copy()
         pricing = {}
         
-        # Use Malawi pricing if available, otherwise default
-        country_prices = tier_data["prices"].get("MW", tier_data["prices"]["default"])
+        # Choose appropriate pricing tier
+        if location == "diaspora":
+            price_tier = "MW_DIASPORA"
+        else:
+            price_tier = "MW_LOCAL"
+        
+        # Use appropriate pricing or fallback to default
+        country_prices = tier_data["prices"].get(price_tier, tier_data["prices"]["default"])
         
         for duration, price_info in country_prices.items():
             price_data = calculate_discounted_price(price_info["amount"])
@@ -1027,6 +1033,7 @@ async def get_subscription_tiers():
         tier_with_pricing["current_time_cat"] = get_current_cat_time().strftime("%Y-%m-%d %H:%M:%S CAT")
         tier_with_pricing["is_wednesday_discount"] = is_wednesday_discount()
         tier_with_pricing["is_saturday_happy_hour"] = is_saturday_happy_hour()
+        tier_with_pricing["pricing_type"] = price_tier
         
         # Add Saturday happy hour info
         if is_saturday_happy_hour():
