@@ -272,7 +272,7 @@ function App() {
       if (response.ok) {
         setResetIdentifier(data.identifier);
         setResetOtpSent(true);
-        setPasswordResetStep('verify');
+        setAuthMode('reset-verify');
         startOtpTimer();
         alert('✅ Password reset code sent! Check your email.');
       } else {
