@@ -213,15 +213,18 @@ frontend:
 
   - task: "Subscription pricing display"
     implemented: true
-    working: "NA"
+    working: true
     file: "App.js"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Frontend display of updated pricing structure with local MWK and diaspora USD options"
+      - working: true
+        agent: "testing"
+        comment: "✅ VERIFIED: Subscription pricing correctly displayed on frontend. Landing page shows proper pricing structure: Premium 15,000 MWK/week, VIP 30,000 MWK/week. Pricing is clearly visible in the 'Choose Your Connection Range' section with proper MWK currency formatting. Subscription page also displays detailed pricing with geographical distinctions (Local/Premium/VIP tiers). All pricing values match backend specifications."
 
 metadata:
   created_by: "main_agent"
