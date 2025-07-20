@@ -1025,58 +1025,45 @@ async def get_country_codes():
 
 @app.get("/api/subscription/tiers")
 async def get_subscription_tiers(location: str = "local"):
-    """Get subscription tiers with pricing for local Malawians or diaspora"""
+    """Get subscription pricing for local Malawians or diaspora"""
     
-    tiers_with_pricing = {}
+    # Choose appropriate pricing tier
+    if location == "diaspora":
+        price_tier = "MW_DIASPORA"
+    else:
+        price_tier = "MW_LOCAL"
     
-    for tier_id, tier_data in SUBSCRIPTION_TIERS.items():
-        if tier_id == "free":
-            tier_with_features = tier_data.copy()
-            # Add special Saturday feature for free users
-            if is_free_interaction_time():
-                tier_with_features["special_status"] = "Saturday Happy Hour Active - Free interactions for everyone!"
-                tier_with_features["temporary_features"] = ["Unlimited likes", "Unlimited messages", "Premium features access"]
-            else:
-                tier_with_features["special_status"] = "Next Saturday 7-8 PM CAT: Free interactions for all users!"
-            
-            tiers_with_pricing[tier_id] = tier_with_features
-            continue
-            
-        # Determine pricing based on user location
-        tier_with_pricing = tier_data.copy()
-        pricing = {}
-        
-        # Choose appropriate pricing tier
-        if location == "diaspora":
-            price_tier = "MW_DIASPORA"
-        else:
-            price_tier = "MW_LOCAL"
-        
-        # Use appropriate pricing or fallback to default
-        country_prices = tier_data["prices"].get(price_tier, tier_data["prices"]["default"])
-        
-        for duration, price_info in country_prices.items():
-            price_data = calculate_discounted_price(price_info["amount"])
-            pricing[duration] = {
-                **price_info,
-                **price_data
-            }
-        
-        tier_with_pricing["pricing"] = pricing
-        tier_with_pricing["current_time_cat"] = get_current_cat_time().strftime("%Y-%m-%d %H:%M:%S CAT")
-        tier_with_pricing["is_wednesday_discount"] = is_wednesday_discount()
-        tier_with_pricing["is_saturday_happy_hour"] = is_saturday_happy_hour()
-        tier_with_pricing["pricing_type"] = price_tier
-        
-        # Add Saturday happy hour info
-        if is_saturday_happy_hour():
-            tier_with_pricing["saturday_status"] = "Saturday Happy Hour Active - All users get free premium access!"
-        else:
-            tier_with_pricing["saturday_status"] = "Next Saturday 7-8 PM CAT: Free premium access for all users!"
-        
-        tiers_with_pricing[tier_id] = tier_with_pricing
+    # Use appropriate pricing or fallback to default
+    pricing_data = SUBSCRIPTION_PRICING.get(price_tier, SUBSCRIPTION_PRICING["default"])
     
-    return tiers_with_pricing
+    # Apply discounts to pricing
+    discounted_pricing = {}
+    for duration, price_info in pricing_data.items():
+        price_data = calculate_discounted_price(price_info["amount"])
+        discounted_pricing[duration] = {
+            **price_info,
+            **price_data
+        }
+    
+    # Return subscription information
+    return {
+        "free": {
+            "name": "Free",
+            "features": ["Basic browsing", "5 likes per day", "Local area matching only", "Basic chat"],
+            "special_status": "Saturday Happy Hour Active - Free interactions for everyone!" if is_free_interaction_time() else "Next Saturday 7-8 PM CAT: Free interactions for all users!",
+            "temporary_features": ["Unlimited likes", "Unlimited messages", "Premium features access"] if is_free_interaction_time() else []
+        },
+        "premium": {
+            "name": "Premium Subscription",
+            "features": SUBSCRIPTION_FEATURES,
+            "pricing": discounted_pricing,
+            "current_time_cat": get_current_cat_time().strftime("%Y-%m-%d %H:%M:%S CAT"),
+            "is_wednesday_discount": is_wednesday_discount(),
+            "is_saturday_happy_hour": is_saturday_happy_hour(),
+            "pricing_type": price_tier,
+            "saturday_status": "Saturday Happy Hour Active - All users get free premium access!" if is_saturday_happy_hour() else "Next Saturday 7-8 PM CAT: Free premium access for all users!"
+        }
+    }
 
 @app.get("/api/user/subscription")
 async def get_user_subscription(current_user = Depends(get_current_user)):
