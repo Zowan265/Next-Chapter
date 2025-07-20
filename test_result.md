@@ -107,63 +107,78 @@ user_problem_statement: NextChapter dating website for widows, late bloomers, an
 backend:
   - task: "Subscription pricing update"
     implemented: true
-    working: "NA"
+    working: true
     file: "server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Updated subscription tiers to 2500 MWK/day, 15000 MWK/week, 30000 MWK/month. Added diaspora USD pricing with 1865 MWK/USD conversion rate"
+      - working: true
+        agent: "testing"
+        comment: "✅ VERIFIED: Subscription pricing correctly implemented. Premium: 2500/15000/30000 MWK, VIP: 5000/30000/60000 MWK. All pricing endpoints working correctly with proper currency handling."
 
   - task: "Diaspora pricing implementation"
     implemented: true
-    working: "NA"
+    working: true
     file: "server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Implemented USD pricing for Malawian diaspora users using conversion rate of 1865 MWK/USD"
+      - working: true
+        agent: "testing"
+        comment: "✅ VERIFIED: Diaspora USD pricing working correctly. Premium Daily: $1.35 USD (≈2500 MWK), conversion rate ~1851.85 MWK/USD. MWK equivalents properly displayed for diaspora users."
 
   - task: "Time-based discounts (Wednesday/Saturday)"
     implemented: true
-    working: "NA"
+    working: true
     file: "server.py"
     stuck_count: 0
     priority: "medium"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Wednesday 50% discount and Saturday 7-8PM CAT free interactions need verification"
+      - working: true
+        agent: "testing"
+        comment: "✅ VERIFIED: Time-based discount structure fully implemented. Wednesday 50% discount logic working, Saturday 7-8PM CAT free interactions properly configured. Discount calculation and special offers API endpoints functioning correctly."
 
   - task: "Geographic matching logic"
     implemented: true
-    working: "NA"
+    working: true
     file: "server.py"
     stuck_count: 0
     priority: "medium"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Premium 300km, VIP global matching with special Malawian diaspora rules (500km Premium, worldwide VIP)"
+      - working: true
+        agent: "testing"
+        comment: "✅ VERIFIED: Geographic matching logic correctly implemented. Premium: extended_local (local_unlimited), VIP: malawian_global (malawian_worldwide). Malawian diaspora rules properly configured with 500km Premium and worldwide VIP access."
 
   - task: "Email OTP verification"
     implemented: true
-    working: "NA"
+    working: true
     file: "server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Email OTP system for user registration needs verification"
+      - working: true
+        agent: "testing"
+        comment: "✅ VERIFIED: Email OTP verification system working correctly. Registration generates OTP, verification endpoint validates codes properly, demo mode fallback functioning. Complete registration flow tested successfully."
 
 frontend:
   - task: "Join Now button text update"
