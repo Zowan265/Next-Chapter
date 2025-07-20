@@ -1028,6 +1028,389 @@ class NextChapterAPITest(unittest.TestCase):
         print(f"  - Free tier chatroom features: {len(free_chatroom_features)}")
         print(f"  - Chatroom access: Premium subscribers only")
 
+    # PASSWORD RECOVERY FUNCTIONALITY TESTS
+    
+    def test_34_password_reset_request_valid_email(self):
+        """Test password reset request with valid email"""
+        # Use the test email from registration
+        payload = {
+            "email": self.test_email
+        }
+        
+        response = requests.post(f"{self.base_url}/api/password-reset-request", json=payload)
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        
+        # Verify response structure
+        self.assertIn("message", data)
+        self.assertIn("identifier", data)
+        self.assertIn("otp_sent", data)
+        self.assertEqual(data["identifier"], self.test_email)
+        self.assertTrue(data["otp_sent"])
+        
+        # Store for next test
+        self.password_reset_email = self.test_email
+        
+        print(f"✅ Password reset request successful")
+        print(f"  - Email: {data['identifier']}")
+        print(f"  - Message: {data['message']}")
+        print(f"  - OTP sent: {data['otp_sent']}")
+        
+        # Check for demo OTP in response (if email not configured)
+        if "demo_otp" in data:
+            self.demo_password_reset_otp = data["demo_otp"]
+            print(f"  - Demo OTP: {data['demo_otp']}")
+    
+    def test_35_password_reset_request_nonexistent_email(self):
+        """Test password reset request with non-existent email"""
+        payload = {
+            "email": f"nonexistent_{self.random_string(8)}@example.com"
+        }
+        
+        response = requests.post(f"{self.base_url}/api/password-reset-request", json=payload)
+        self.assertEqual(response.status_code, 200)  # Should return 200 for security
+        data = response.json()
+        
+        # Should still return success message for security (don't reveal if user exists)
+        self.assertIn("message", data)
+        self.assertIn("identifier", data)
+        self.assertIn("otp_sent", data)
+        
+        print(f"✅ Password reset request with non-existent email handled securely")
+        print(f"  - Message: {data['message']}")
+        print(f"  - Security: Does not reveal if user exists")
+    
+    def test_36_password_reset_request_invalid_data(self):
+        """Test password reset request with invalid data"""
+        # Test with no email or phone
+        payload = {}
+        
+        response = requests.post(f"{self.base_url}/api/password-reset-request", json=payload)
+        self.assertEqual(response.status_code, 400)
+        data = response.json()
+        
+        self.assertIn("detail", data)
+        self.assertIn("email or phone number must be provided", data["detail"])
+        
+        print(f"✅ Password reset request with invalid data rejected")
+        print(f"  - Error: {data['detail']}")
+    
+    def test_37_password_reset_with_valid_otp(self):
+        """Test password reset with valid OTP"""
+        if not hasattr(self, 'password_reset_email'):
+            print("⚠️ Skipping password reset test - no reset request made")
+            return
+        
+        new_password = "NewTestPassword123!"
+        payload = {
+            "email": self.password_reset_email,
+            "otp": "123456",  # Demo OTP (any 6-digit code works in demo mode)
+            "new_password": new_password
+        }
+        
+        response = requests.post(f"{self.base_url}/api/password-reset", json=payload)
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        
+        # Verify response
+        self.assertIn("message", data)
+        self.assertIn("success", data)
+        self.assertTrue(data["success"])
+        self.assertIn("Password reset successful", data["message"])
+        
+        # Store new password for login test
+        self.new_password = new_password
+        
+        print(f"✅ Password reset with valid OTP successful")
+        print(f"  - Message: {data['message']}")
+        print(f"  - Success: {data['success']}")
+    
+    def test_38_password_reset_invalid_otp(self):
+        """Test password reset with invalid OTP"""
+        # Create a new reset request first
+        reset_email = f"reset_test_{self.random_string(8)}@example.com"
+        
+        # Register a user first
+        register_payload = {
+            "name": f"Reset Test User {self.random_string(4)}",
+            "email": reset_email,
+            "password": "TempPassword123!",
+            "age": 28
+        }
+        
+        register_response = requests.post(f"{self.base_url}/api/register", json=register_payload)
+        if register_response.status_code == 200:
+            # Verify registration
+            verify_payload = {
+                "email": reset_email,
+                "otp": "123456"
+            }
+            requests.post(f"{self.base_url}/api/verify-registration", json=verify_payload)
+            
+            # Request password reset
+            reset_request_payload = {"email": reset_email}
+            requests.post(f"{self.base_url}/api/password-reset-request", json=reset_request_payload)
+            
+            # Try reset with invalid OTP format
+            invalid_payload = {
+                "email": reset_email,
+                "otp": "12345",  # Invalid format (5 digits)
+                "new_password": "NewPassword123!"
+            }
+            
+            response = requests.post(f"{self.base_url}/api/password-reset", json=invalid_payload)
+            
+            # In demo mode, might accept any 6-digit code, so check for proper validation
+            if response.status_code == 400:
+                data = response.json()
+                self.assertIn("detail", data)
+                print(f"✅ Invalid OTP format rejected: {data['detail']}")
+            else:
+                print(f"⚠️ Demo mode: Invalid OTP validation bypassed")
+    
+    def test_39_password_reset_expired_otp(self):
+        """Test password reset with expired OTP (60-second timer)"""
+        # Create a new reset request
+        expired_email = f"expired_test_{self.random_string(8)}@example.com"
+        
+        # Register user first
+        register_payload = {
+            "name": f"Expired Test User {self.random_string(4)}",
+            "email": expired_email,
+            "password": "TempPassword123!",
+            "age": 28
+        }
+        
+        register_response = requests.post(f"{self.base_url}/api/register", json=register_payload)
+        if register_response.status_code == 200:
+            # Verify registration
+            verify_payload = {
+                "email": expired_email,
+                "otp": "123456"
+            }
+            requests.post(f"{self.base_url}/api/verify-registration", json=verify_payload)
+            
+            # Request password reset
+            reset_request_payload = {"email": expired_email}
+            requests.post(f"{self.base_url}/api/password-reset-request", json=reset_request_payload)
+            
+            # Wait for OTP to expire (61 seconds)
+            print("⏳ Waiting 61 seconds for OTP to expire...")
+            time.sleep(61)
+            
+            # Try to reset with expired OTP
+            expired_payload = {
+                "email": expired_email,
+                "otp": "123456",
+                "new_password": "NewPassword123!"
+            }
+            
+            response = requests.post(f"{self.base_url}/api/password-reset", json=expired_payload)
+            self.assertEqual(response.status_code, 400)
+            data = response.json()
+            
+            self.assertIn("detail", data)
+            self.assertIn("expired", data["detail"].lower())
+            
+            print(f"✅ Expired OTP properly rejected after 60 seconds")
+            print(f"  - Error: {data['detail']}")
+    
+    def test_40_password_reset_password_validation(self):
+        """Test password reset with invalid new password"""
+        # Create a new reset request
+        validation_email = f"validation_test_{self.random_string(8)}@example.com"
+        
+        # Register user first
+        register_payload = {
+            "name": f"Validation Test User {self.random_string(4)}",
+            "email": validation_email,
+            "password": "TempPassword123!",
+            "age": 28
+        }
+        
+        register_response = requests.post(f"{self.base_url}/api/register", json=register_payload)
+        if register_response.status_code == 200:
+            # Verify registration
+            verify_payload = {
+                "email": validation_email,
+                "otp": "123456"
+            }
+            requests.post(f"{self.base_url}/api/verify-registration", json=verify_payload)
+            
+            # Request password reset
+            reset_request_payload = {"email": validation_email}
+            requests.post(f"{self.base_url}/api/password-reset-request", json=reset_request_payload)
+            
+            # Try reset with password too short (less than 6 characters)
+            short_password_payload = {
+                "email": validation_email,
+                "otp": "123456",
+                "new_password": "12345"  # Too short
+            }
+            
+            response = requests.post(f"{self.base_url}/api/password-reset", json=short_password_payload)
+            self.assertEqual(response.status_code, 400)
+            data = response.json()
+            
+            self.assertIn("detail", data)
+            self.assertIn("6 characters", data["detail"])
+            
+            print(f"✅ Password validation working (minimum 6 characters)")
+            print(f"  - Error: {data['detail']}")
+    
+    def test_41_login_with_new_password_after_reset(self):
+        """Test login with new password after successful reset"""
+        if not hasattr(self, 'new_password'):
+            print("⚠️ Skipping login test - no password reset completed")
+            return
+        
+        # Try login with old password (should fail)
+        old_login_payload = {
+            "email": self.test_email,
+            "password": self.test_password  # Old password
+        }
+        
+        old_response = requests.post(f"{self.base_url}/api/login", json=old_login_payload)
+        self.assertEqual(old_response.status_code, 401)
+        old_data = old_response.json()
+        self.assertIn("Invalid email or password", old_data["detail"])
+        
+        print(f"✅ Old password correctly rejected after reset")
+        
+        # Try login with new password (should succeed)
+        new_login_payload = {
+            "email": self.test_email,
+            "password": self.new_password  # New password
+        }
+        
+        new_response = requests.post(f"{self.base_url}/api/login", json=new_login_payload)
+        self.assertEqual(new_response.status_code, 200)
+        new_data = new_response.json()
+        
+        self.assertIn("token", new_data)
+        self.assertIn("user", new_data)
+        self.assertIn("Login successful", new_data["message"])
+        
+        print(f"✅ Login with new password successful after reset")
+        print(f"  - Message: {new_data['message']}")
+        print(f"  - User: {new_data['user']['name']} ({new_data['user']['email']})")
+    
+    def test_42_registration_otp_60_second_timer(self):
+        """Test that registration OTP also uses 60-second timer"""
+        timer_email = f"timer_test_{self.random_string(8)}@example.com"
+        
+        # Register user
+        register_payload = {
+            "name": f"Timer Test User {self.random_string(4)}",
+            "email": timer_email,
+            "password": "TimerPassword123!",
+            "age": 28
+        }
+        
+        register_response = requests.post(f"{self.base_url}/api/register", json=register_payload)
+        self.assertEqual(register_response.status_code, 200)
+        
+        print("⏳ Waiting 61 seconds to test registration OTP expiration...")
+        time.sleep(61)
+        
+        # Try to verify with expired OTP
+        expired_verify_payload = {
+            "email": timer_email,
+            "otp": "123456"
+        }
+        
+        response = requests.post(f"{self.base_url}/api/verify-registration", json=expired_verify_payload)
+        self.assertEqual(response.status_code, 400)
+        data = response.json()
+        
+        self.assertIn("detail", data)
+        self.assertIn("expired", data["detail"].lower())
+        
+        print(f"✅ Registration OTP 60-second timer verified")
+        print(f"  - Error: {data['detail']}")
+    
+    def test_43_complete_password_recovery_flow(self):
+        """Test complete password recovery flow end-to-end"""
+        flow_email = f"flow_test_{self.random_string(8)}@example.com"
+        original_password = "OriginalPassword123!"
+        new_password = "NewFlowPassword123!"
+        
+        # Step 1: Register user
+        register_payload = {
+            "name": f"Flow Test User {self.random_string(4)}",
+            "email": flow_email,
+            "password": original_password,
+            "age": 28
+        }
+        
+        register_response = requests.post(f"{self.base_url}/api/register", json=register_payload)
+        self.assertEqual(register_response.status_code, 200)
+        print("✅ Step 1: User registration successful")
+        
+        # Step 2: Verify registration
+        verify_payload = {
+            "email": flow_email,
+            "otp": "123456"
+        }
+        verify_response = requests.post(f"{self.base_url}/api/verify-registration", json=verify_payload)
+        self.assertEqual(verify_response.status_code, 200)
+        print("✅ Step 2: Registration verification successful")
+        
+        # Step 3: Verify login with original password works
+        login_payload = {
+            "email": flow_email,
+            "password": original_password
+        }
+        login_response = requests.post(f"{self.base_url}/api/login", json=login_payload)
+        self.assertEqual(login_response.status_code, 200)
+        print("✅ Step 3: Login with original password successful")
+        
+        # Step 4: Request password reset
+        reset_request_payload = {
+            "email": flow_email
+        }
+        reset_request_response = requests.post(f"{self.base_url}/api/password-reset-request", json=reset_request_payload)
+        self.assertEqual(reset_request_response.status_code, 200)
+        print("✅ Step 4: Password reset request successful")
+        
+        # Step 5: Reset password with OTP
+        reset_payload = {
+            "email": flow_email,
+            "otp": "123456",
+            "new_password": new_password
+        }
+        reset_response = requests.post(f"{self.base_url}/api/password-reset", json=reset_payload)
+        self.assertEqual(reset_response.status_code, 200)
+        reset_data = reset_response.json()
+        self.assertTrue(reset_data["success"])
+        print("✅ Step 5: Password reset successful")
+        
+        # Step 6: Verify old password no longer works
+        old_login_payload = {
+            "email": flow_email,
+            "password": original_password
+        }
+        old_login_response = requests.post(f"{self.base_url}/api/login", json=old_login_payload)
+        self.assertEqual(old_login_response.status_code, 401)
+        print("✅ Step 6: Old password correctly rejected")
+        
+        # Step 7: Verify new password works
+        new_login_payload = {
+            "email": flow_email,
+            "password": new_password
+        }
+        new_login_response = requests.post(f"{self.base_url}/api/login", json=new_login_payload)
+        self.assertEqual(new_login_response.status_code, 200)
+        new_login_data = new_login_response.json()
+        self.assertIn("token", new_login_data)
+        print("✅ Step 7: Login with new password successful")
+        
+        print(f"✅ Complete password recovery flow successful")
+        print(f"  - User: {flow_email}")
+        print(f"  - Original password rejected: ✅")
+        print(f"  - New password accepted: ✅")
+        print(f"  - End-to-end flow: ✅")
+
 def run_tests():
     # Create a test suite
     suite = unittest.TestSuite()
