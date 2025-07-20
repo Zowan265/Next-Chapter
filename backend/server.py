@@ -987,22 +987,30 @@ async def get_subscription_tiers(location: str = "local"):
 
 @app.get("/api/user/subscription")
 async def get_user_subscription(current_user = Depends(get_current_user)):
-    """Get current user's subscription details"""
-    can_interact, interaction_reason = can_user_interact_freely(current_user)
+    """Get user's current subscription status and benefits"""
     
-    user_subscription = {
-        "user_id": current_user["id"],
+    subscription_tier = current_user.get("subscription_tier", "free")
+    subscription_status = current_user.get("subscription_status", "inactive")
+    subscription_expires = current_user.get("subscription_expires")
+    
+    # Get features based on subscription
+    features = []
+    if subscription_tier == "premium" and subscription_status == "active":
+        features = SUBSCRIPTION_FEATURES
+    else:
+        features = ["Basic browsing", "5 likes per day", "Local area matching only", "Basic chat"]
+    
+    return {
         "subscription_tier": current_user.get("subscription_tier", "free"),
-        "expires_at": None,
-        "daily_likes_used": current_user.get("daily_likes_used", 0),
-        "created_at": current_user.get("created_at"),
-        "features_unlocked": SUBSCRIPTION_FEATURES if current_user.get("subscription_tier", "free") in ["premium", "vip"] else [],
-        "can_interact_freely": can_interact,
-        "interaction_reason": interaction_reason,
-        "is_saturday_happy_hour": is_saturday_happy_hour()
+        "subscription_status": current_user.get("subscription_status", "inactive"),
+        "subscription_expires": subscription_expires,
+        "features_unlocked": features,
+        "can_interact_freely": can_user_interact_freely(current_user)[0],
+        "interaction_status": can_user_interact_freely(current_user)[1],
+        "daily_likes_used": current_user.get('daily_likes_used', 0) if subscription_tier == "free" else None,
+        "is_saturday_happy_hour": is_saturday_happy_hour(),
+        "next_saturday": "Every Saturday 7-8 PM CAT - Free interactions for all users!"
     }
-    
-    return user_subscription
 
 @app.get("/api/interaction/status")
 async def get_interaction_status(current_user = Depends(get_current_user)):
