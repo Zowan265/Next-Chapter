@@ -765,7 +765,7 @@ async def setup_profile(
         "message": "Profile updated successfully",
         "user": UserResponse(**updated_user),
         "matching_scope": matching_scope,
-        "subscription_benefits": SUBSCRIPTION_TIERS.get(subscription_tier, {}).get("features", [])
+        "subscription_benefits": SUBSCRIPTION_FEATURES if subscription_tier in ["premium", "vip"] else []
     }
 
 @app.get("/api/profiles")
