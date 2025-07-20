@@ -19,6 +19,20 @@ function App() {
   const [paymentOtpSent, setPaymentOtpSent] = useState(false);
   const [selectedTier, setSelectedTier] = useState('');
   
+  // Password recovery state
+  const [passwordResetStep, setPasswordResetStep] = useState('request'); // 'request', 'verify', 'reset'
+  const [resetIdentifier, setResetIdentifier] = useState('');
+  const [resetOtpSent, setResetOtpSent] = useState(false);
+  const [otpTimer, setOtpTimer] = useState(0);
+  const [resetData, setResetData] = useState({
+    email: '',
+    phoneNumber: '',
+    phoneCountry: 'US',
+    otp: '',
+    newPassword: '',
+    confirmPassword: ''
+  });
+  
   // Additional state for enhanced dashboard features
   const [currentProfileIndex, setCurrentProfileIndex] = useState(0);
   const [favorites, setFavorites] = useState([]);
