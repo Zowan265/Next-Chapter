@@ -1271,23 +1271,300 @@ function App() {
     );
   }
 
-  // For simplicity, showing the enhanced dashboard for all other views
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-cream-50 to-rose-50">
-      {/* Enhanced Navigation */}
-      <nav className="bg-white/80 backdrop-blur-md shadow-sm border-b border-purple-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center space-x-8">
-              <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-rose-500 bg-clip-text text-transparent">
-                NextChapter Enhanced
-              </h1>
-              <div className="flex space-x-4">
+  // Enhanced Dashboard with swipeable profiles
+  if (currentView === 'dashboard' || (user && !['landing', 'auth', 'subscription'].includes(currentView))) {
+    const currentProfile = profiles[currentProfileIndex];
+    
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-cream-50 to-rose-50">
+        {/* Enhanced Navigation */}
+        <nav className="bg-white/80 backdrop-blur-md shadow-sm border-b border-purple-100">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex justify-between items-center h-16">
+              <div className="flex items-center space-x-8">
+                <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-rose-500 bg-clip-text text-transparent">
+                  NextChapter
+                </h1>
+                <div className="flex space-x-4">
+                  <button
+                    onClick={() => setCurrentView('dashboard')}
+                    className={`px-4 py-2 rounded-lg font-medium transition-colors ${currentView === 'dashboard' ? 'bg-purple-100 text-purple-800' : 'text-gray-600 hover:text-purple-600'}`}
+                  >
+                    🏠 Discover
+                  </button>
+                  <button
+                    onClick={() => setCurrentView('favorites')}
+                    className={`px-4 py-2 rounded-lg font-medium transition-colors ${currentView === 'favorites' ? 'bg-purple-100 text-purple-800' : 'text-gray-600 hover:text-purple-600'}`}
+                  >
+                    💖 Favorites ({favorites.length})
+                  </button>
+                  <button
+                    onClick={() => setCurrentView('matches')}
+                    className={`px-4 py-2 rounded-lg font-medium transition-colors ${currentView === 'matches' ? 'bg-purple-100 text-purple-800' : 'text-gray-600 hover:text-purple-600'}`}
+                  >
+                    💕 Matches
+                  </button>
+                  {userSubscription?.subscription_tier !== 'free' && (
+                    <button
+                      onClick={() => setCurrentView('chat')}
+                      className={`px-4 py-2 rounded-lg font-medium transition-colors ${currentView === 'chat' ? 'bg-purple-100 text-purple-800' : 'text-gray-600 hover:text-purple-600'}`}
+                    >
+                      💬 Chat Rooms
+                    </button>
+                  )}
+                </div>
+              </div>
+              <div className="flex items-center space-x-4">
                 <button
-                  onClick={() => setCurrentView('dashboard')}
-                  className={`px-4 py-2 rounded-lg font-medium ${currentView === 'dashboard' ? 'bg-purple-100 text-purple-800' : 'text-gray-600 hover:text-purple-600'}`}
+                  onClick={() => setCurrentView('subscription')}
+                  className="text-purple-600 hover:text-purple-800 font-medium"
                 >
-                  Dashboard
+                  Subscription
+                </button>
+                <button
+                  onClick={() => { 
+                    localStorage.removeItem('token'); 
+                    setUser(null); 
+                    setCurrentView('landing'); 
+                  }}
+                  className="text-gray-600 hover:text-gray-800 font-medium"
+                >
+                  Logout
+                </button>
+              </div>
+            </div>
+          </div>
+        </nav>
+
+        {/* Main Dashboard Content */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          
+          {/* Dashboard View - Swipeable Profiles */}
+          {currentView === 'dashboard' && (
+            <div className="grid lg:grid-cols-3 gap-8">
+              
+              {/* Profile Cards Stack */}
+              <div className="lg:col-span-2">
+                <div className="relative">
+                  <h2 className="text-3xl font-bold text-gray-800 mb-6">Discover Your Next Chapter</h2>
+                  
+                  {profiles.length === 0 ? (
+                    <div className="bg-white rounded-2xl shadow-lg p-12 text-center">
+                      <div className="text-6xl mb-4">🔍</div>
+                      <h3 className="text-xl font-semibold text-gray-800 mb-2">Finding your matches...</h3>
+                      <p className="text-gray-600 mb-6">We're looking for compatible Malawians in your area.</p>
+                      <button
+                        onClick={fetchProfiles}
+                        className="bg-gradient-to-r from-purple-600 to-rose-500 text-white px-6 py-3 rounded-lg font-semibold hover:from-purple-700 hover:to-rose-600 transition-all duration-300"
+                      >
+                        Refresh Profiles
+                      </button>
+                    </div>
+                  ) : currentProfile ? (
+                    <div className="relative h-96 lg:h-[600px]">
+                      {/* Background cards for stack effect */}
+                      {profiles.slice(currentProfileIndex + 1, currentProfileIndex + 3).map((profile, index) => (
+                        <div
+                          key={profile.id}
+                          className="absolute inset-0 bg-white rounded-2xl shadow-lg transform rotate-1 scale-95 opacity-40"
+                          style={{
+                            zIndex: 2 - index,
+                            transform: `rotate(${(index + 1) * 2}deg) scale(${0.95 - index * 0.02})`,
+                            opacity: 0.4 - index * 0.1
+                          }}
+                        ></div>
+                      ))}
+                      
+                      {/* Current Profile Card */}
+                      <div 
+                        className={`swipe-card absolute inset-0 bg-white rounded-2xl shadow-xl z-10 transition-transform duration-300 ${
+                          swipeDirection === 'left' ? 'swiping-left' : swipeDirection === 'right' ? 'swiping-right' : ''
+                        }`}
+                        style={{ zIndex: 10 }}
+                      >
+                        {/* Profile Content */}
+                        <div className="h-full flex flex-col">
+                          {/* Profile Image */}
+                          <div className="h-2/3 bg-gradient-to-br from-purple-200 to-rose-200 rounded-t-2xl flex items-center justify-center relative overflow-hidden">
+                            {currentProfile.main_photo ? (
+                              <img 
+                                src={`${API_BASE_URL}/uploads/${currentProfile.main_photo}`}
+                                alt={currentProfile.name}
+                                className="w-full h-full object-cover"
+                              />
+                            ) : (
+                              <div className="text-6xl text-purple-400">👤</div>
+                            )}
+                            
+                            {/* Profile Info Overlay */}
+                            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent text-white p-6">
+                              <h3 className="text-2xl font-bold mb-1">
+                                {currentProfile.name}, {currentProfile.age}
+                              </h3>
+                              {currentProfile.location && (
+                                <p className="text-sm opacity-90 mb-2">
+                                  📍 {currentProfile.location.split(':')[0]}
+                                  {currentProfile.distance_km && ` • ${currentProfile.distance_km}km away`}
+                                </p>
+                              )}
+                              {currentProfile.is_malawian && (
+                                <span className="inline-block bg-rose-500/80 text-white px-3 py-1 rounded-full text-xs font-semibold">
+                                  🇲🇼 Malawian
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                          
+                          {/* Profile Details */}
+                          <div className="h-1/3 p-6 flex flex-col justify-between">
+                            <div>
+                              {currentProfile.bio && (
+                                <p className="text-gray-600 text-sm mb-3 line-clamp-2">
+                                  {currentProfile.bio}
+                                </p>
+                              )}
+                              {currentProfile.interests && currentProfile.interests.length > 0 && (
+                                <div className="flex flex-wrap gap-2 mb-4">
+                                  {currentProfile.interests.slice(0, 3).map((interest, index) => (
+                                    <span key={index} className="bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-xs font-medium">
+                                      {interest}
+                                    </span>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+                            
+                            {/* Swipe Action Buttons */}
+                            <div className="flex justify-center space-x-4 mt-4">
+                              <button
+                                onClick={() => handleSwipe('left', currentProfile.id)}
+                                className="w-16 h-16 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center text-2xl transition-all duration-300 transform hover:scale-110"
+                              >
+                                ❌
+                              </button>
+                              <button
+                                onClick={() => handleSwipe('right', currentProfile.id)}
+                                className="w-16 h-16 bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 text-white rounded-full flex items-center justify-center text-2xl transition-all duration-300 transform hover:scale-110"
+                              >
+                                ❤️
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="bg-white rounded-2xl shadow-lg p-12 text-center">
+                      <div className="text-6xl mb-4">🎉</div>
+                      <h3 className="text-xl font-semibold text-gray-800 mb-2">All caught up!</h3>
+                      <p className="text-gray-600 mb-6">Check back later for new profiles or expand your search.</p>
+                      <button
+                        onClick={() => setCurrentView('subscription')}
+                        className="bg-gradient-to-r from-purple-600 to-rose-500 text-white px-6 py-3 rounded-lg font-semibold hover:from-purple-700 hover:to-rose-600 transition-all duration-300"
+                      >
+                        Upgrade for More Matches
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+              
+              {/* Sidebar */}
+              <div className="space-y-6">
+                
+                {/* User Status Card */}
+                <div className="bg-white rounded-2xl shadow-lg p-6">
+                  <div className="flex items-center mb-4">
+                    <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-rose-500 rounded-full flex items-center justify-center text-white font-bold text-lg mr-4">
+                      {user?.name?.charAt(0)}
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-gray-800">{user?.name}</h3>
+                      <p className="text-sm text-gray-600">{userSubscription?.subscription_tier || 'Free'} Member</p>
+                    </div>
+                  </div>
+                  
+                  {userSubscription && (
+                    <div className="space-y-2 text-sm">
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Daily Likes:</span>
+                        <span className="font-medium">
+                          {userSubscription.subscription_tier === 'free' 
+                            ? `${userSubscription.daily_likes_used || 0}/5`
+                            : 'Unlimited'
+                          }
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Range:</span>
+                        <span className="font-medium">
+                          {userSubscription.subscription_tier === 'free' 
+                            ? '300km' 
+                            : userSubscription.subscription_tier === 'premium' 
+                            ? '500km' 
+                            : 'Worldwide'
+                          }
+                        </span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Top Favorites */}
+                {favorites.length > 0 && (
+                  <div className="bg-white rounded-2xl shadow-lg p-6">
+                    <h3 className="font-semibold text-gray-800 mb-4 flex items-center">
+                      💖 Your Top Matches
+                    </h3>
+                    <div className="space-y-3">
+                      {getMostLikedProfiles().slice(0, 3).map((fav, index) => (
+                        <div key={fav.id} className="flex items-center space-x-3">
+                          <div className="w-10 h-10 bg-gradient-to-br from-purple-200 to-rose-200 rounded-full flex items-center justify-center">
+                            {fav.main_photo ? (
+                              <img 
+                                src={`${API_BASE_URL}/uploads/${fav.main_photo}`}
+                                alt={fav.name}
+                                className="w-full h-full object-cover rounded-full"
+                              />
+                            ) : (
+                              <span className="text-sm">👤</span>
+                            )}
+                          </div>
+                          <div className="flex-1">
+                            <p className="font-medium text-sm">{fav.name}</p>
+                            <p className="text-xs text-gray-500">
+                              {fav.interactionCount} interactions
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                    <button
+                      onClick={() => setCurrentView('favorites')}
+                      className="w-full mt-4 text-purple-600 hover:text-purple-800 font-medium text-sm"
+                    >
+                      View All Favorites →
+                    </button>
+                  </div>
+                )}
+
+                {/* Special Offers */}
+                <div className="bg-gradient-to-br from-purple-500 to-rose-500 text-white rounded-2xl shadow-lg p-6">
+                  <h3 className="font-semibold mb-3">✨ Special Offers</h3>
+                  <div className="space-y-2 text-sm">
+                    <p>🎯 Wednesday: 50% off subscriptions</p>
+                    <p>🎉 Saturday 7-8pm: Free interactions</p>
+                  </div>
+                  <button
+                    onClick={() => setCurrentView('subscription')}
+                    className="w-full mt-4 bg-white/20 hover:bg-white/30 text-white font-medium py-2 px-4 rounded-lg transition-colors"
+                  >
+                    Upgrade Now
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
                 </button>
                 <button
                   onClick={fetchProfiles}
