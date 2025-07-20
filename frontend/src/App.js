@@ -591,7 +591,31 @@ function App() {
   // Landing Page
   if (currentView === 'landing') {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-cream-50 to-rose-50">
+      <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-rose-900 relative overflow-hidden">
+        
+        {/* Animated Background Elements */}
+        <div className="absolute inset-0">
+          {/* Floating Orbs */}
+          <div className="absolute top-20 left-10 w-72 h-72 bg-purple-400/10 rounded-full blur-3xl animate-pulse"></div>
+          <div className="absolute top-40 right-20 w-96 h-96 bg-rose-400/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
+          <div className="absolute bottom-20 left-1/4 w-80 h-80 bg-purple-300/10 rounded-full blur-3xl animate-pulse delay-500"></div>
+          
+          {/* Moving Particles */}
+          <div className="absolute inset-0">
+            {[...Array(20)].map((_, i) => (
+              <div
+                key={i}
+                className={`absolute w-2 h-2 bg-white/20 rounded-full animate-float`}
+                style={{
+                  left: `${Math.random() * 100}%`,
+                  top: `${Math.random() * 100}%`,
+                  animationDelay: `${Math.random() * 5}s`,
+                  animationDuration: `${3 + Math.random() * 4}s`
+                }}
+              ></div>
+            ))}
+          </div>
+        </div>
         {/* Navigation */}
         <nav className="relative z-50 bg-black/20 backdrop-blur-md border-b border-white/10">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
