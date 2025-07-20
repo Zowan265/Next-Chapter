@@ -1054,7 +1054,7 @@ def run_tests():
     # Create a test suite
     suite = unittest.TestSuite()
     
-    # Add tests in order
+    # Add tests in order - including high priority retesting tasks
     test_cases = [
         'test_01_api_root',
         'test_02_register_invalid_age',
@@ -1081,7 +1081,15 @@ def run_tests():
         'test_23_verify_profile_filtering_by_location',
         'test_24_register_with_malawian_phone',
         'test_25_verify_mwk_pricing',
-        'test_26_verify_malawian_community_focus'
+        'test_26_verify_malawian_community_focus',
+        # HIGH PRIORITY RETESTING TASKS
+        'test_27_subscription_pricing_update_verification',
+        'test_28_diaspora_pricing_implementation',
+        'test_29_email_otp_verification_system',
+        'test_30_wednesday_discount_verification',
+        'test_31_saturday_free_interactions_verification',
+        'test_32_geographic_matching_logic_verification',
+        'test_33_comprehensive_pricing_calculation_test'
     ]
     
     for test_case in test_cases:
@@ -1089,8 +1097,38 @@ def run_tests():
     
     # Run the tests
     print("\n🔍 Starting NextChapter API Tests...\n")
+    print("🎯 HIGH PRIORITY RETESTING TASKS:")
+    print("   - Subscription pricing update (2500/15000/30000 MWK)")
+    print("   - Diaspora pricing implementation (USD conversion)")
+    print("   - Email OTP verification system")
+    print("   - Wednesday 50% discount logic")
+    print("   - Saturday 7-8PM CAT free interactions")
+    print("   - Geographic matching logic (Premium 300km, VIP global)")
+    print("\n" + "="*60 + "\n")
+    
     runner = unittest.TextTestRunner(verbosity=2)
-    runner.run(suite)
+    result = runner.run(suite)
+    
+    # Summary of high priority tests
+    print("\n" + "="*60)
+    print("🎯 HIGH PRIORITY TEST RESULTS SUMMARY:")
+    print("="*60)
+    
+    high_priority_tests = [
+        ('test_27_subscription_pricing_update_verification', 'Subscription pricing update'),
+        ('test_28_diaspora_pricing_implementation', 'Diaspora pricing implementation'),
+        ('test_29_email_otp_verification_system', 'Email OTP verification'),
+        ('test_30_wednesday_discount_verification', 'Wednesday 50% discount'),
+        ('test_31_saturday_free_interactions_verification', 'Saturday free interactions'),
+        ('test_32_geographic_matching_logic_verification', 'Geographic matching logic'),
+        ('test_33_comprehensive_pricing_calculation_test', 'Comprehensive pricing calculations')
+    ]
+    
+    for test_method, description in high_priority_tests:
+        status = "✅ PASSED" if result.wasSuccessful() else "❌ FAILED"
+        print(f"{status} - {description}")
+    
+    return result
 
 if __name__ == "__main__":
     run_tests()
