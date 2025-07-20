@@ -655,89 +655,163 @@ function App() {
           </div>
         </nav>
 
-        {/* Beautiful Hero Section - No Images */}
-        <div className="relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-purple-900 via-purple-700 to-rose-600"></div>
-          <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-black/20"></div>
-          
-          {/* Floating Elements */}
-          <div className="absolute inset-0 overflow-hidden">
-            <div className="absolute top-20 left-10 w-8 h-8 bg-white/10 rounded-full animate-bounce"></div>
-            <div className="absolute top-40 right-20 w-6 h-6 bg-rose-300/20 rounded-full animate-pulse"></div>
-            <div className="absolute bottom-32 left-1/4 w-10 h-10 bg-purple-300/15 rounded-full animate-bounce delay-1000"></div>
-            <div className="absolute bottom-20 right-1/3 w-12 h-12 bg-white/5 rounded-full animate-pulse delay-500"></div>
-            <div className="absolute top-1/3 left-1/2 w-4 h-4 bg-rose-200/20 rounded-full animate-bounce delay-700"></div>
-            <div className="absolute top-60 left-20 w-6 h-6 bg-purple-200/15 rounded-full animate-pulse delay-300"></div>
-          </div>
-          
-          {/* Geometric background patterns */}
-          <div className="absolute inset-0 opacity-5">
-            <div className="absolute top-10 left-10 w-32 h-32 border-2 border-white rounded-full animate-spin-slow"></div>
-            <div className="absolute top-40 right-20 w-24 h-24 border-2 border-white rounded-full animate-spin-slow delay-1000"></div>
-            <div className="absolute bottom-20 left-1/4 w-16 h-16 border-2 border-white rounded-full animate-spin-slow delay-500"></div>
-            <div className="absolute bottom-40 right-1/3 w-20 h-20 border-2 border-white rounded-full animate-spin-slow delay-700"></div>
-          </div>
-          
-          <div className="relative z-10 py-24 px-4">
-            <div className="max-w-6xl mx-auto text-center">
-              <div className="mb-8">
-                <h2 className="text-7xl md:text-8xl font-bold text-white mb-6 leading-tight">
-                  Your Next Chapter
-                  <span className="block text-4xl md:text-6xl font-light text-rose-200 mt-4">
-                    of Love Starts Here
-                  </span>
-                </h2>
-              </div>
-              
-              <p className="text-xl md:text-2xl text-purple-100 mb-12 max-w-4xl mx-auto leading-relaxed">
-                A sophisticated dating community designed for mature Malawians (25+) seeking meaningful connections. 
-                Whether you're divorced, widowed, a late bloomer, or simply starting fresh - discover love that respects your journey.
-              </p>
-              
-              <div className="grid md:grid-cols-3 gap-6 mb-12 max-w-5xl mx-auto">
-                <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20 hover:bg-white/20 transition-all duration-300">
-                  <div className="text-4xl mb-4">🔐</div>
-                  <h3 className="text-xl font-semibold text-white mb-2">Secure & Verified</h3>
-                  <p className="text-purple-200 text-sm">Email verification and secure registration protect your privacy</p>
-                </div>
-                
-                <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20 hover:bg-white/20 transition-all duration-300">
-                  <div className="text-4xl mb-4">🇲🇼</div>
-                  <h3 className="text-xl font-semibold text-white mb-2">Malawian Community</h3>
-                  <p className="text-purple-200 text-sm">Connect locally in Malawi or with fellow Malawians worldwide</p>
-                </div>
-                
-                <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20 hover:bg-white/20 transition-all duration-300">
-                  <div className="text-4xl mb-4">💝</div>
-                  <h3 className="text-xl font-semibold text-white mb-2">Special Offers</h3>
-                  <p className="text-purple-200 text-sm">Saturday free interactions & Wednesday 50% discounts</p>
+        {/* Hero Section */}
+        <div className="relative z-10 flex items-center justify-center min-h-screen pt-20">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            
+            {/* Main Heading with Animation */}
+            <div className="mb-12 animate-fade-in-up">
+              <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold text-white mb-8 leading-tight">
+                <span className="block animate-slide-in-left">Your Next</span>
+                <span className="block bg-gradient-to-r from-rose-300 to-purple-300 bg-clip-text text-transparent animate-slide-in-right">
+                  Chapter Awaits
+                </span>
+              </h1>
+              <div className="w-32 h-1 bg-gradient-to-r from-rose-500 to-purple-500 mx-auto rounded-full animate-expand"></div>
+            </div>
+
+            {/* Subtitle */}
+            <p className="text-xl md:text-2xl lg:text-3xl text-purple-100 mb-16 max-w-5xl mx-auto leading-relaxed animate-fade-in-up delay-500">
+              Connect with fellow Malawians worldwide. A sophisticated dating community 
+              for mature adults seeking meaningful, lasting relationships.
+            </p>
+
+            {/* Feature Grid */}
+            <div className="grid md:grid-cols-3 gap-8 mb-16 max-w-6xl mx-auto animate-fade-in-up delay-1000">
+              <div className="group cursor-pointer">
+                <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20 hover:bg-white/20 transition-all duration-500 transform hover:-translate-y-2 hover:shadow-2xl">
+                  <div className="w-16 h-16 bg-gradient-to-br from-rose-400 to-purple-500 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
+                    <div className="text-2xl font-bold text-white">MW</div>
+                  </div>
+                  <h3 className="text-2xl font-bold text-white mb-4">Malawian Community</h3>
+                  <p className="text-purple-200 leading-relaxed">
+                    Connect with Malawians at home and abroad. Cultural compatibility 
+                    and shared values at the heart of every match.
+                  </p>
                 </div>
               </div>
-              
-              <div className="space-y-6">
-                <button
-                  onClick={() => { setAuthMode('register'); setCurrentView('auth'); }}
-                  className="bg-gradient-to-r from-rose-500 to-purple-600 text-white px-12 py-5 rounded-full text-xl font-semibold hover:from-rose-600 hover:to-purple-700 transition-all duration-300 shadow-2xl transform hover:scale-105 hover:shadow-rose-500/25"
-                >
-                  Begin Your Journey - It's Free
-                </button>
-                
-                <div className="flex items-center justify-center space-x-6 text-purple-200 text-sm">
-                  <div className="flex items-center">
-                    <span className="w-2 h-2 bg-green-400 rounded-full mr-2"></span>
-                    <span>Free to join</span>
+
+              <div className="group cursor-pointer">
+                <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20 hover:bg-white/20 transition-all duration-500 transform hover:-translate-y-2 hover:shadow-2xl">
+                  <div className="w-16 h-16 bg-gradient-to-br from-purple-400 to-rose-500 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
+                    <div className="text-2xl">🔒</div>
                   </div>
-                  <div className="flex items-center">
-                    <span className="w-2 h-2 bg-green-400 rounded-full mr-2"></span>
-                    <span>Instant verification</span>
+                  <h3 className="text-2xl font-bold text-white mb-4">Secure Platform</h3>
+                  <p className="text-purple-200 leading-relaxed">
+                    Email verification, phone authentication, and secure payment processing. 
+                    Your privacy and safety are our top priorities.
+                  </p>
+                </div>
+              </div>
+
+              <div className="group cursor-pointer">
+                <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20 hover:bg-white/20 transition-all duration-500 transform hover:-translate-y-2 hover:shadow-2xl">
+                  <div className="w-16 h-16 bg-gradient-to-br from-rose-400 to-purple-500 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
+                    <div className="text-2xl">💝</div>
                   </div>
-                  <div className="flex items-center">
-                    <span className="w-2 h-2 bg-green-400 rounded-full mr-2"></span>
-                    <span>Start matching immediately</span>
-                  </div>
+                  <h3 className="text-2xl font-bold text-white mb-4">Special Offers</h3>
+                  <p className="text-purple-200 leading-relaxed">
+                    Wednesday 50% discounts, Saturday free interactions, 
+                    and affordable MWK pricing for our local community.
+                  </p>
                 </div>
               </div>
             </div>
+
+            {/* CTA Buttons */}
+            <div className="space-y-6 animate-fade-in-up delay-1500">
+              <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
+                <button
+                  onClick={() => { setAuthMode('register'); setCurrentView('auth'); }}
+                  className="bg-gradient-to-r from-rose-500 to-purple-600 text-white px-12 py-5 rounded-full text-xl font-bold hover:from-rose-600 hover:to-purple-700 transition-all duration-300 shadow-2xl transform hover:scale-105 hover:shadow-rose-500/25"
+                >
+                  Start Your Journey
+                </button>
+                <button
+                  onClick={() => setCurrentView('auth')}
+                  className="bg-white/20 backdrop-blur-lg text-white px-12 py-5 rounded-full text-xl font-semibold border border-white/30 hover:bg-white/30 transition-all duration-300 transform hover:scale-105"
+                >
+                  Sign In
+                </button>
+              </div>
+              
+              <div className="flex flex-wrap justify-center items-center gap-8 text-purple-200 text-sm">
+                <div className="flex items-center">
+                  <div className="w-3 h-3 bg-green-400 rounded-full mr-3 animate-ping"></div>
+                  <span>Free to join</span>
+                </div>
+                <div className="flex items-center">
+                  <div className="w-3 h-3 bg-green-400 rounded-full mr-3 animate-ping delay-100"></div>
+                  <span>Email verified</span>
+                </div>
+                <div className="flex items-center">
+                  <div className="w-3 h-3 bg-green-400 rounded-full mr-3 animate-ping delay-200"></div>
+                  <span>Instant matching</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Scroll Indicator */}
+        <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 text-white animate-bounce">
+          <div className="flex flex-col items-center">
+            <span className="text-sm mb-2 text-purple-200">Discover More</span>
+            <div className="w-6 h-10 border-2 border-white/50 rounded-full flex justify-center">
+              <div className="w-1 h-3 bg-white/70 rounded-full mt-2 animate-pulse"></div>
+            </div>
+          </div>
+        </div>
+
+        {/* Bottom Section - Pricing Preview */}
+        <div className="relative z-10 bg-black/20 backdrop-blur-lg border-t border-white/10 py-20">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 className="text-4xl font-bold text-white mb-12">Choose Your Connection Range</h2>
+            
+            <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+              <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20 hover:border-blue-400/50 transition-all duration-300">
+                <h3 className="text-2xl font-bold text-white mb-4">Local</h3>
+                <p className="text-blue-200 text-4xl font-bold mb-4">Free</p>
+                <p className="text-purple-200 mb-6">300km radius in Malawi</p>
+                <div className="text-sm text-purple-300 space-y-2">
+                  <p>5 likes per day</p>
+                  <p>Basic matching</p>
+                  <p>Saturday free hours</p>
+                </div>
+              </div>
+              
+              <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-purple-400/50 transform scale-105 hover:scale-110 transition-all duration-300">
+                <div className="bg-purple-500/80 text-white px-4 py-1 rounded-full text-sm font-semibold mb-4 inline-block">
+                  Most Popular
+                </div>
+                <h3 className="text-2xl font-bold text-white mb-4">Premium</h3>
+                <p className="text-purple-200 text-4xl font-bold mb-4">15,000 MWK/week</p>
+                <p className="text-purple-200 mb-6">500km radius in Malawi</p>
+                <div className="text-sm text-purple-300 space-y-2">
+                  <p>Unlimited local likes</p>
+                  <p>Advanced filters</p>
+                  <p>Priority support</p>
+                </div>
+              </div>
+              
+              <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20 hover:border-rose-400/50 transition-all duration-300">
+                <h3 className="text-2xl font-bold text-white mb-4">VIP Malawian Hearts</h3>
+                <p className="text-rose-200 text-4xl font-bold mb-4">30,000 MWK/week</p>
+                <p className="text-purple-200 mb-6">Connect globally with Malawians</p>
+                <div className="text-sm text-purple-300 space-y-2">
+                  <p>Worldwide Malawian matching</p>
+                  <p>Diaspora connections</p>
+                  <p>Premium features</p>
+                </div>
+              </div>
+            </div>
+            
+            <button
+              onClick={() => { setAuthMode('register'); setCurrentView('auth'); }}
+              className="mt-12 bg-gradient-to-r from-rose-500 to-purple-600 text-white px-10 py-4 rounded-full text-lg font-semibold hover:from-rose-600 hover:to-purple-700 transition-all duration-300 shadow-xl transform hover:scale-105"
+            >
+              Get Started Now
+            </button>
           </div>
         </div>
 
