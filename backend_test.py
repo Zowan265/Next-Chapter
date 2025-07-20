@@ -1094,13 +1094,13 @@ def run_tests():
     print("="*60)
     
     high_priority_tests = [
-        ('test_27_subscription_pricing_update_verification', 'Subscription pricing update'),
-        ('test_28_diaspora_pricing_implementation', 'Diaspora pricing implementation'),
+        ('test_27_simplified_subscription_pricing_verification', 'Simplified subscription pricing structure'),
+        ('test_28_simplified_diaspora_pricing_implementation', 'Simplified diaspora pricing implementation'),
         ('test_29_email_otp_verification_system', 'Email OTP verification'),
         ('test_30_wednesday_discount_verification', 'Wednesday 50% discount'),
         ('test_31_saturday_free_interactions_verification', 'Saturday free interactions'),
-        ('test_32_geographic_matching_logic_verification', 'Geographic matching logic'),
-        ('test_33_comprehensive_pricing_calculation_test', 'Comprehensive pricing calculations')
+        ('test_32_simplified_user_subscription_logic_verification', 'Simplified user subscription logic'),
+        ('test_33_chatroom_access_logic_verification', 'Chatroom access logic (premium only)')
     ]
     
     for test_method, description in high_priority_tests:
