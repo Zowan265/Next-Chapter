@@ -1287,6 +1287,21 @@ function App() {
                 onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                 placeholder="Create a secure password"
               />
+              {authMode === 'login' && (
+                <div className="text-right mt-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setAuthMode('reset-request');
+                      setPasswordResetStep('request');
+                      setError('');
+                    }}
+                    className="text-sm text-purple-600 hover:text-purple-800 font-medium"
+                  >
+                    Forgot password?
+                  </button>
+                </div>
+              )}
             </div>
 
             <button
