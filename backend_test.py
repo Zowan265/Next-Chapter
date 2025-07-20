@@ -1500,7 +1500,17 @@ def run_tests():
         ('test_30_wednesday_discount_verification', 'Wednesday 50% discount'),
         ('test_31_saturday_free_interactions_verification', 'Saturday free interactions'),
         ('test_32_simplified_user_subscription_logic_verification', 'Simplified user subscription logic'),
-        ('test_33_chatroom_access_logic_verification', 'Chatroom access logic (premium only)')
+        ('test_33_chatroom_access_logic_verification', 'Chatroom access logic (premium only)'),
+        ('test_34_password_reset_request_valid_email', 'Password reset request (valid email)'),
+        ('test_35_password_reset_request_nonexistent_email', 'Password reset request (security)'),
+        ('test_36_password_reset_request_invalid_data', 'Password reset request validation'),
+        ('test_37_password_reset_with_valid_otp', 'Password reset with valid OTP'),
+        ('test_38_password_reset_invalid_otp', 'Password reset OTP validation'),
+        ('test_39_password_reset_expired_otp', 'Password reset OTP expiration (60s)'),
+        ('test_40_password_reset_password_validation', 'Password reset validation (min 6 chars)'),
+        ('test_41_login_with_new_password_after_reset', 'Login integration after password reset'),
+        ('test_42_registration_otp_60_second_timer', 'Registration OTP 60-second timer'),
+        ('test_43_complete_password_recovery_flow', 'Complete password recovery flow')
     ]
     
     for test_method, description in high_priority_tests:
