@@ -935,63 +935,49 @@ class NextChapterAPITest(unittest.TestCase):
         print(f"  - Saturday status: {saturday_status}")
         print(f"  - Free tier special status: {free_tier['special_status']}")
 
-    def test_32_geographic_matching_logic_verification(self):
-        """HIGH PRIORITY: Test Premium (300km) and VIP (global) matching with Malawian diaspora rules"""
+    def test_32_simplified_user_subscription_logic_verification(self):
+        """HIGH PRIORITY: Test simplified user subscription logic (free vs premium only)"""
         if not self.token:
-            print("⚠️ Skipping geographic matching test - not logged in")
+            print("⚠️ Skipping user subscription logic test - not logged in")
             return
             
         headers = {"Authorization": f"Bearer {self.token}"}
         
-        # Get current user subscription and profiles
-        profiles_response = requests.get(f"{self.base_url}/api/profiles", headers=headers)
-        self.assertEqual(profiles_response.status_code, 200)
-        profiles_data = profiles_response.json()
+        # Get user subscription status
+        response = requests.get(f"{self.base_url}/api/user/subscription", headers=headers)
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
         
-        # Verify geographic matching properties
-        self.assertIn("location_based_filtering", profiles_data)
-        self.assertIn("malawian_focused", profiles_data)
-        self.assertIn("matching_scope", profiles_data)
-        self.assertIn("subscription_tier", profiles_data)
+        # Verify simplified subscription tiers (only free or premium)
+        subscription_tier = data.get("subscription_tier", "free")
+        self.assertIn(subscription_tier, ["free", "premium"])  # No VIP in simplified structure
         
-        current_tier = profiles_data["subscription_tier"]
+        # Verify subscription status fields
+        self.assertIn("subscription_status", data)
+        self.assertIn("features_unlocked", data)
+        self.assertIn("can_interact_freely", data)
         
-        # Test matching scope descriptions
-        if current_tier == "free":
-            self.assertIn("300km", profiles_data["matching_scope"])
-            self.assertTrue(profiles_data["location_based_filtering"])
-        elif current_tier == "premium":
-            self.assertIn("500km", profiles_data["matching_scope"])  # Updated for Malawian diaspora
-            self.assertTrue(profiles_data["location_based_filtering"])
-        elif current_tier == "vip":
-            self.assertIn("Malawians worldwide", profiles_data["matching_scope"])
-            self.assertIn("no geographical boundaries", profiles_data["matching_scope"])
-            self.assertFalse(profiles_data["location_based_filtering"])
+        # Test features based on subscription tier
+        features = data["features_unlocked"]
+        if subscription_tier == "premium":
+            # Premium users should have full features
+            self.assertIn("Unlimited likes and matches", features)
+            self.assertIn("Access to exclusive chat rooms", features)
+            self.assertTrue(data["can_interact_freely"])
+        else:
+            # Free users should have basic features only
+            self.assertIn("Basic browsing", features)
+            self.assertIn("5 likes per day", features)
+            # Free users can interact freely only during Saturday happy hour
+            if not data.get("is_saturday_happy_hour", False):
+                self.assertFalse(data["can_interact_freely"])
         
-        # Verify Malawian focus
-        self.assertTrue(profiles_data["malawian_focused"])
-        
-        # Test subscription tiers for geographic limits
-        tiers_response = requests.get(f"{self.base_url}/api/subscription/tiers")
-        self.assertEqual(tiers_response.status_code, 200)
-        tiers_data = tiers_response.json()
-        
-        # Verify geographic limits in tier definitions
-        premium_tier = tiers_data["premium"]
-        self.assertEqual(premium_tier["geographical_limit"], "extended_local")
-        self.assertEqual(premium_tier["matching_scope"], "local_unlimited")
-        
-        vip_tier = tiers_data["vip"]
-        self.assertEqual(vip_tier["geographical_limit"], "malawian_global")
-        self.assertEqual(vip_tier["matching_scope"], "malawian_worldwide")
-        
-        print(f"✅ Geographic matching logic verified")
-        print(f"  - Current tier: {current_tier}")
-        print(f"  - Matching scope: {profiles_data['matching_scope']}")
-        print(f"  - Location-based filtering: {profiles_data['location_based_filtering']}")
-        print(f"  - Malawian focused: {profiles_data['malawian_focused']}")
-        print(f"  - Premium geographic limit: {premium_tier['geographical_limit']}")
-        print(f"  - VIP geographic limit: {vip_tier['geographical_limit']}")
+        print(f"✅ Simplified user subscription logic verified")
+        print(f"  - Subscription tier: {subscription_tier}")
+        print(f"  - Subscription status: {data.get('subscription_status', 'unknown')}")
+        print(f"  - Can interact freely: {data['can_interact_freely']}")
+        print(f"  - Features unlocked: {len(features)} features")
+        print(f"  - Simplified structure: Only free/premium tiers supported")
 
     def test_33_comprehensive_pricing_calculation_test(self):
         """HIGH PRIORITY: Comprehensive test of pricing calculations with discounts"""
