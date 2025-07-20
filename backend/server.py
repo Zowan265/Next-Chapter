@@ -173,7 +173,7 @@ COUNTRY_CODES = {
     "HU": {"flag": "🇭🇺", "code": "+36", "name": "Hungary"}
 }
 
-# Subscription pricing with Malawian-specific rates and features
+# Subscription pricing with updated Malawian rates and diaspora USD pricing
 SUBSCRIPTION_TIERS = {
     "free": {
         "name": "Free",
@@ -193,19 +193,25 @@ SUBSCRIPTION_TIERS = {
             "See who liked you locally",
             "Enhanced chat features",
             "Local event notifications",
-            "Extended area matching"
+            "Extended area matching",
+            "Access to chat rooms"
         ],
         "geographical_limit": "extended_local",
         "prices": {
-            "MW": {
+            "MW_LOCAL": {  # For Malawians in Malawi
                 "daily": {"amount": 2500, "currency": "MWK"},
                 "weekly": {"amount": 15000, "currency": "MWK"},
-                "monthly": {"amount": 35000, "currency": "MWK"}
+                "monthly": {"amount": 30000, "currency": "MWK"}
+            },
+            "MW_DIASPORA": {  # For Malawians abroad (USD pricing)
+                "daily": {"amount": 1.35, "currency": "USD", "mwk_equivalent": 2500},
+                "weekly": {"amount": 8.00, "currency": "USD", "mwk_equivalent": 15000},
+                "monthly": {"amount": 16.00, "currency": "USD", "mwk_equivalent": 30000}
             },
             "default": {
-                "daily": {"amount": 5, "currency": "USD"},
-                "weekly": {"amount": 25, "currency": "USD"},
-                "monthly": {"amount": 50, "currency": "USD"}
+                "daily": {"amount": 1.35, "currency": "USD"},
+                "weekly": {"amount": 8.00, "currency": "USD"},
+                "monthly": {"amount": 16.00, "currency": "USD"}
             }
         }
     },
@@ -223,19 +229,26 @@ SUBSCRIPTION_TIERS = {
             "Profile boost in any country",
             "International communication tools",
             "Cross-border relationship guidance",
-            "Connect with homeland community"
+            "Connect with homeland community",
+            "Premium chat rooms access",
+            "Video calling features"
         ],
         "geographical_limit": "malawian_global",
         "prices": {
-            "MW": {
+            "MW_LOCAL": {  # For Malawians in Malawi  
                 "daily": {"amount": 5000, "currency": "MWK"},
                 "weekly": {"amount": 30000, "currency": "MWK"},
-                "monthly": {"amount": 70000, "currency": "MWK"}
+                "monthly": {"amount": 60000, "currency": "MWK"}
+            },
+            "MW_DIASPORA": {  # For Malawians abroad (USD pricing)
+                "daily": {"amount": 2.70, "currency": "USD", "mwk_equivalent": 5000},
+                "weekly": {"amount": 16.00, "currency": "USD", "mwk_equivalent": 30000},
+                "monthly": {"amount": 32.00, "currency": "USD", "mwk_equivalent": 60000}
             },
             "default": {
-                "daily": {"amount": 10, "currency": "USD"},
-                "weekly": {"amount": 50, "currency": "USD"},
-                "monthly": {"amount": 100, "currency": "USD"}
+                "daily": {"amount": 2.70, "currency": "USD"},
+                "weekly": {"amount": 16.00, "currency": "USD"},
+                "monthly": {"amount": 32.00, "currency": "USD"}
             }
         }
     }
