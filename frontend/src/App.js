@@ -820,7 +820,9 @@ function App() {
   }
 
   // Enhanced Auth Page
-        <div className="py-24 px-4 bg-gradient-to-br from-gray-50 via-purple-50 to-rose-50 relative overflow-hidden">
+  if (currentView === 'auth') {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-cream-50 to-rose-50 flex items-center justify-center px-4">
           
           {/* Floating Elements */}
           <div className="absolute inset-0">
