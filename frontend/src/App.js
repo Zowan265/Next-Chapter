@@ -1108,10 +1108,7 @@ function App() {
               </div>
             )}
 
-            <form onSubmit={(e) => {
-              e.preventDefault();
-              setPasswordResetStep('reset');
-            }} className="space-y-6">
+            <form onSubmit={handlePasswordReset} className="space-y-6">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Reset Code</label>
                 <input
