@@ -593,27 +593,38 @@ function App() {
     return (
       <div className="min-h-screen bg-gradient-to-br from-purple-50 via-cream-50 to-rose-50">
         {/* Navigation */}
-        <nav className="bg-white/80 backdrop-blur-md shadow-sm border-b border-purple-100">
+        <nav className="relative z-50 bg-black/20 backdrop-blur-md border-b border-white/10">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex justify-between items-center h-16">
+            <div className="flex justify-between items-center h-20">
               <div className="flex items-center">
-                <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-rose-500 bg-clip-text text-transparent">
+                <h1 className="text-3xl font-bold text-white">
                   NextChapter
                 </h1>
-                <span className="ml-2 text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">Enhanced v2.0</span>
+                <span className="ml-3 text-xs bg-rose-500/80 text-white px-3 py-1 rounded-full font-medium">
+                  Malawian Hearts
+                </span>
               </div>
-              <div className="flex space-x-4">
+              <div className="hidden md:flex space-x-6">
                 <button
                   onClick={() => setCurrentView('auth')}
-                  className="text-purple-600 hover:text-purple-800 font-medium"
+                  className="text-purple-200 hover:text-white font-medium transition-colors duration-300 px-4 py-2 rounded-lg hover:bg-white/10"
                 >
                   Sign In
                 </button>
                 <button
                   onClick={() => { setAuthMode('register'); setCurrentView('auth'); }}
-                  className="bg-gradient-to-r from-purple-600 to-rose-500 text-white px-6 py-2 rounded-full hover:from-purple-700 hover:to-rose-600 transition-all duration-300 shadow-lg"
+                  className="bg-gradient-to-r from-rose-500 to-purple-600 text-white px-8 py-3 rounded-full hover:from-rose-600 hover:to-purple-700 transition-all duration-300 shadow-xl transform hover:scale-105 font-semibold"
                 >
-                  Join Now
+                  Join Free
+                </button>
+              </div>
+              {/* Mobile Menu */}
+              <div className="md:hidden">
+                <button
+                  onClick={() => { setAuthMode('register'); setCurrentView('auth'); }}
+                  className="bg-gradient-to-r from-rose-500 to-purple-600 text-white px-6 py-2 rounded-full text-sm font-semibold"
+                >
+                  Join
                 </button>
               </div>
             </div>
