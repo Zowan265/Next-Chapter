@@ -1477,6 +1477,12 @@ def run_tests():
     print("   - Saturday 7-8PM CAT free interactions")
     print("   - Simplified user subscription logic (free vs premium only)")
     print("   - Chatroom access logic (premium subscribers only)")
+    print("🔐 PASSWORD RECOVERY FUNCTIONALITY TESTS:")
+    print("   - Password reset request endpoint (/api/password-reset-request)")
+    print("   - Password reset endpoint (/api/password-reset)")
+    print("   - 60-second OTP timer verification")
+    print("   - Complete password recovery flow end-to-end")
+    print("   - Integration testing with login functionality")
     print("\n" + "="*60 + "\n")
     
     runner = unittest.TextTestRunner(verbosity=2)
