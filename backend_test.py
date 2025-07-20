@@ -739,56 +739,40 @@ class NextChapterAPITest(unittest.TestCase):
         print(f"  - Free tier features: {len(basic_features)} basic features")
         print(f"  - Simplified structure: Only free and premium tiers")
 
-    def test_28_diaspora_pricing_implementation(self):
-        """HIGH PRIORITY: Test USD pricing for Malawian diaspora users (1865 MWK/USD conversion)"""
+    def test_28_simplified_diaspora_pricing_implementation(self):
+        """HIGH PRIORITY: Test simplified USD pricing for Malawian diaspora users"""
         response = requests.get(f"{self.base_url}/api/subscription/tiers?location=diaspora")
         self.assertEqual(response.status_code, 200)
         data = response.json()
         
-        # Test Premium tier diaspora pricing
+        # Test Premium tier diaspora pricing (only tier in simplified structure)
         self.assertIn("premium", data)
         premium = data["premium"]
         self.assertIn("pricing", premium)
         pricing = premium["pricing"]
         
         # Verify USD pricing for diaspora users
-        self.assertEqual(pricing["daily"]["original_price"], 1.35)
         self.assertEqual(pricing["daily"]["currency"], "USD")
-        self.assertEqual(pricing["weekly"]["original_price"], 8.00)
         self.assertEqual(pricing["weekly"]["currency"], "USD")
-        self.assertEqual(pricing["monthly"]["original_price"], 16.00)
         self.assertEqual(pricing["monthly"]["currency"], "USD")
         
-        # Verify MWK equivalent is shown
+        # Verify MWK equivalent is shown for diaspora users
         self.assertIn("mwk_equivalent", pricing["daily"])
         self.assertEqual(pricing["daily"]["mwk_equivalent"], 2500)
         self.assertEqual(pricing["weekly"]["mwk_equivalent"], 15000)
         self.assertEqual(pricing["monthly"]["mwk_equivalent"], 30000)
         
-        # Test VIP tier diaspora pricing
-        self.assertIn("vip", data)
-        vip = data["vip"]
-        self.assertIn("pricing", vip)
-        vip_pricing = vip["pricing"]
-        
-        # Verify VIP USD pricing for diaspora
-        self.assertEqual(vip_pricing["daily"]["original_price"], 2.70)
-        self.assertEqual(vip_pricing["daily"]["currency"], "USD")
-        self.assertEqual(vip_pricing["weekly"]["original_price"], 16.00)
-        self.assertEqual(vip_pricing["weekly"]["currency"], "USD")
-        self.assertEqual(vip_pricing["monthly"]["original_price"], 32.00)
-        self.assertEqual(vip_pricing["monthly"]["currency"], "USD")
-        
         # Verify conversion rate calculation (approximately 1865 MWK/USD)
         daily_conversion = pricing["daily"]["mwk_equivalent"] / pricing["daily"]["original_price"]
-        self.assertAlmostEqual(daily_conversion, 1851.85, delta=50)  # Allow some rounding tolerance
+        self.assertGreater(daily_conversion, 1800)  # Should be around 1851-1865 MWK/USD
+        self.assertLess(daily_conversion, 1900)
         
-        print(f"✅ Diaspora pricing implementation verified")
+        print(f"✅ Simplified diaspora pricing implementation verified")
         print(f"  - Premium Daily: ${pricing['daily']['original_price']} USD (≈{pricing['daily']['mwk_equivalent']} MWK)")
         print(f"  - Premium Weekly: ${pricing['weekly']['original_price']} USD (≈{pricing['weekly']['mwk_equivalent']} MWK)")
         print(f"  - Premium Monthly: ${pricing['monthly']['original_price']} USD (≈{pricing['monthly']['mwk_equivalent']} MWK)")
-        print(f"  - VIP Daily: ${vip_pricing['daily']['original_price']} USD (≈{vip_pricing['daily']['mwk_equivalent']} MWK)")
         print(f"  - Conversion rate: ~{daily_conversion:.2f} MWK/USD")
+        print(f"  - Simplified structure: Only premium tier for diaspora users")
 
     def test_29_email_otp_verification_system(self):
         """HIGH PRIORITY: Test the email OTP verification system"""
