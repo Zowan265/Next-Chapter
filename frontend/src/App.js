@@ -18,12 +18,9 @@ function App() {
   const [paymentOtpMethod, setPaymentOtpMethod] = useState('email');
   const [paymentOtpSent, setPaymentOtpSent] = useState(false);
   const [selectedTier, setSelectedTier] = useState('');
+  
   // State for dashboard features
   const [profiles, setProfiles] = useState([]);
-  const [currentProfileIndex, setCurrentProfileIndex] = useState(0);
-  const [favorites, setFavorites] = useState([]);
-  const [swipeDirection, setSwipeDirection] = useState(null);
-  // State for dashboard features
   const [currentProfileIndex, setCurrentProfileIndex] = useState(0);
   const [favorites, setFavorites] = useState([]);
   const [swipeDirection, setSwipeDirection] = useState(null);
