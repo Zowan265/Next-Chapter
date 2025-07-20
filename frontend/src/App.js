@@ -821,15 +821,7 @@ function App() {
 
   // Enhanced Auth Page
 
-            <div className="text-center mb-20">
-              <h3 className="text-5xl font-bold text-gray-800 mb-6">Why Choose NextChapter?</h3>
-              <p className="text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
-                Experience a dating platform designed specifically for mature Malawians. We understand your culture, 
-                values, and the importance of meaningful connections in our community.
-              </p>
-            </div>
-            
-            <div className="grid md:grid-cols-3 gap-12">
+
               {/* Enhanced Security */}
               <div className="text-center group">
                 <div className="relative mb-8">
