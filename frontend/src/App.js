@@ -323,6 +323,69 @@ function App() {
     }
   };
 
+  // Enhanced dashboard functions
+  const handleSwipe = async (direction, profileId) => {
+    setSwipeDirection(direction);
+    
+    // Track favorites for liked profiles
+    if (direction === 'right') {
+      const profile = profiles[currentProfileIndex];
+      if (profile) {
+        // Add to favorites and track interaction
+        setFavorites(prev => {
+          const existingFav = prev.find(f => f.id === profileId);
+          if (existingFav) {
+            // Increment interaction count
+            return prev.map(f => 
+              f.id === profileId 
+                ? { ...f, interactionCount: f.interactionCount + 1, lastInteraction: new Date() }
+                : f
+            );
+          } else {
+            // Add new favorite
+            return [...prev, {
+              ...profile,
+              interactionCount: 1,
+              lastInteraction: new Date(),
+              addedToFavorites: new Date()
+            }];
+          }
+        });
+      }
+      
+      // Send like to backend
+      try {
+        await fetch(`${API_BASE_URL}/api/like`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          },
+          body: JSON.stringify({ liked_user_id: profileId })
+        });
+      } catch (error) {
+        console.error('Error liking profile:', error);
+      }
+    }
+    
+    // Move to next profile
+    setTimeout(() => {
+      setCurrentProfileIndex(prev => prev + 1);
+      setSwipeDirection(null);
+      
+      // Fetch more profiles if running low
+      if (currentProfileIndex >= profiles.length - 2) {
+        fetchProfiles();
+      }
+    }, 300);
+  };
+
+  const getMostLikedProfiles = () => {
+    return favorites
+      .sort((a, b) => b.interactionCount - a.interactionCount)
+      .slice(0, 10);
+  };
+
   const fetchProfiles = async () => {
     try {
       const response = await fetch(`${API_BASE_URL}/api/profiles`, {
