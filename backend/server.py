@@ -403,6 +403,18 @@ class EmailVerification(BaseModel):
     email: EmailStr
     otp: str
 
+class PasswordResetRequest(BaseModel):
+    email: Optional[EmailStr] = None
+    phone_number: Optional[str] = None
+    phone_country: Optional[str] = None
+
+class PasswordReset(BaseModel):
+    email: Optional[EmailStr] = None
+    phone_number: Optional[str] = None
+    phone_country: Optional[str] = None
+    otp: str
+    new_password: str
+
 class MessageCreate(BaseModel):
     match_id: str
     content: str
