@@ -334,18 +334,18 @@ def get_matching_scope_description(subscription_tier):
         return "Basic matching capabilities - upgrade for unlimited access"
 
 def can_user_interact_freely(user):
-    """Check if user can interact freely (premium/vip subscription or free interaction time)"""
+    """Check if user can interact freely (premium subscription or free interaction time)"""
     subscription_tier = user.get("subscription_tier", "free")
     
-    # Premium/VIP users can always interact freely
-    if subscription_tier in ["premium", "vip"]:
-        return True, "Premium/VIP member"
+    # Premium subscribers can interact freely
+    if subscription_tier == "premium":
+        return True, "Premium subscriber - unlimited access"
     
-    # Free interaction during Saturday happy hour
-    if is_free_interaction_time():
-        return True, "Saturday Happy Hour - Free interactions for all!"
+    # Check if it's Saturday happy hour (7-8 PM CAT)
+    if is_saturday_happy_hour():
+        return True, "Saturday Happy Hour (7-8 PM CAT) - Free interactions for everyone!"
     
-    return False, "Free tier limitations apply"
+    return False, "Free tier user outside of happy hour"
 
 # FastAPI app
 app = FastAPI(title="NextChapter Dating API", version="1.0.0")
