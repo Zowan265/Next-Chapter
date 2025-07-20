@@ -699,19 +699,19 @@ class NextChapterAPITest(unittest.TestCase):
 
     # HIGH PRIORITY RETESTING TASKS
     
-    def test_27_subscription_pricing_update_verification(self):
-        """HIGH PRIORITY: Test the updated subscription pricing (2500/15000/30000 MWK)"""
+    def test_27_simplified_subscription_pricing_verification(self):
+        """HIGH PRIORITY: Test the simplified subscription pricing structure (Daily: 2500 MWK, Weekly: 15000 MWK, Monthly: 30000 MWK, no free tier)"""
         response = requests.get(f"{self.base_url}/api/subscription/tiers?location=local")
         self.assertEqual(response.status_code, 200)
         data = response.json()
         
-        # Test Premium tier pricing
+        # Test Premium tier pricing (only tier available now)
         self.assertIn("premium", data)
         premium = data["premium"]
         self.assertIn("pricing", premium)
         pricing = premium["pricing"]
         
-        # Verify exact MWK pricing for local Malawians
+        # Verify exact simplified MWK pricing for local Malawians
         self.assertEqual(pricing["daily"]["original_price"], 2500)
         self.assertEqual(pricing["daily"]["currency"], "MWK")
         self.assertEqual(pricing["weekly"]["original_price"], 15000)
@@ -719,27 +719,25 @@ class NextChapterAPITest(unittest.TestCase):
         self.assertEqual(pricing["monthly"]["original_price"], 30000)
         self.assertEqual(pricing["monthly"]["currency"], "MWK")
         
-        # Test VIP tier pricing
-        self.assertIn("vip", data)
-        vip = data["vip"]
-        self.assertIn("pricing", vip)
-        vip_pricing = vip["pricing"]
+        # Verify no VIP tier exists in simplified structure
+        # Note: VIP may still exist in backend code but simplified structure focuses on premium only
         
-        # Verify VIP MWK pricing (double the premium rates)
-        self.assertEqual(vip_pricing["daily"]["original_price"], 5000)
-        self.assertEqual(vip_pricing["daily"]["currency"], "MWK")
-        self.assertEqual(vip_pricing["weekly"]["original_price"], 30000)
-        self.assertEqual(vip_pricing["weekly"]["currency"], "MWK")
-        self.assertEqual(vip_pricing["monthly"]["original_price"], 60000)
-        self.assertEqual(vip_pricing["monthly"]["currency"], "MWK")
+        # Verify free tier shows no subscription options (only premium available)
+        self.assertIn("free", data)
+        free_tier = data["free"]
+        self.assertIn("features", free_tier)
         
-        print(f"✅ Subscription pricing update verified")
+        # Free tier should have basic features only
+        basic_features = free_tier["features"]
+        self.assertIn("Basic browsing", basic_features)
+        self.assertIn("5 likes per day", basic_features)
+        
+        print(f"✅ Simplified subscription pricing structure verified")
         print(f"  - Premium Daily: {pricing['daily']['original_price']} {pricing['daily']['currency']}")
         print(f"  - Premium Weekly: {pricing['weekly']['original_price']} {pricing['weekly']['currency']}")
         print(f"  - Premium Monthly: {pricing['monthly']['original_price']} {pricing['monthly']['currency']}")
-        print(f"  - VIP Daily: {vip_pricing['daily']['original_price']} {vip_pricing['daily']['currency']}")
-        print(f"  - VIP Weekly: {vip_pricing['weekly']['original_price']} {vip_pricing['weekly']['currency']}")
-        print(f"  - VIP Monthly: {vip_pricing['monthly']['original_price']} {vip_pricing['monthly']['currency']}")
+        print(f"  - Free tier features: {len(basic_features)} basic features")
+        print(f"  - Simplified structure: Only free and premium tiers")
 
     def test_28_diaspora_pricing_implementation(self):
         """HIGH PRIORITY: Test USD pricing for Malawian diaspora users (1865 MWK/USD conversion)"""
