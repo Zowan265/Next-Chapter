@@ -834,42 +834,48 @@ function App() {
         {/* Bottom Section - Pricing Preview */}
         <div className="relative z-10 bg-black/20 backdrop-blur-lg border-t border-white/10 py-20">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h2 className="text-4xl font-bold text-white mb-12">Choose Your Connection Range</h2>
+            <h2 className="text-4xl font-bold text-white mb-12">Choose Your Subscription Duration</h2>
             
             <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-              <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20 hover:border-blue-400/50 transition-all duration-300">
-                <h3 className="text-2xl font-bold text-white mb-4">Local</h3>
-                <p className="text-blue-200 text-4xl font-bold mb-4">Free</p>
-                <p className="text-purple-200 mb-6">300km radius in Malawi</p>
+              <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20 hover:border-purple-400/50 transition-all duration-300">
+                <h3 className="text-2xl font-bold text-white mb-4">Daily</h3>
+                <p className="text-purple-200 text-4xl font-bold mb-4">2,500 MWK</p>
+                <p className="text-purple-200 mb-6">per day</p>
                 <div className="text-sm text-purple-300 space-y-2">
-                  <p>5 likes per day</p>
-                  <p>Basic matching</p>
-                  <p>Saturday free hours</p>
+                  <p>Unlimited likes & matches</p>
+                  <p>Connect with Malawians worldwide</p>
+                  <p>Enhanced chat features</p>
+                  <p>Exclusive chat rooms</p>
                 </div>
               </div>
               
-              <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-purple-400/50 transform scale-105 hover:scale-110 transition-all duration-300">
-                <div className="bg-purple-500/80 text-white px-4 py-1 rounded-full text-sm font-semibold mb-4 inline-block">
+              <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-rose-400/50 transform scale-105 hover:scale-110 transition-all duration-300">
+                <div className="bg-rose-500/80 text-white px-4 py-1 rounded-full text-sm font-semibold mb-4 inline-block">
                   Most Popular
                 </div>
-                <h3 className="text-2xl font-bold text-white mb-4">Premium</h3>
-                <p className="text-purple-200 text-4xl font-bold mb-4">15,000 MWK/week</p>
-                <p className="text-purple-200 mb-6">500km radius in Malawi</p>
+                <h3 className="text-2xl font-bold text-white mb-4">Weekly</h3>
+                <p className="text-rose-200 text-4xl font-bold mb-4">15,000 MWK</p>
+                <p className="text-rose-200 mb-6">per week</p>
                 <div className="text-sm text-purple-300 space-y-2">
-                  <p>Unlimited local likes</p>
-                  <p>Advanced filters</p>
-                  <p>Priority support</p>
+                  <p>All daily features</p>
+                  <p>Advanced matching algorithms</p>
+                  <p>Priority customer support</p>
+                  <p>Profile boost</p>
                 </div>
               </div>
               
-              <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20 hover:border-rose-400/50 transition-all duration-300">
-                <h3 className="text-2xl font-bold text-white mb-4">VIP Malawian Hearts</h3>
-                <p className="text-rose-200 text-4xl font-bold mb-4">30,000 MWK/week</p>
-                <p className="text-purple-200 mb-6">Connect globally with Malawians</p>
+              <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20 hover:border-green-400/50 transition-all duration-300">
+                <div className="bg-green-500/80 text-white px-4 py-1 rounded-full text-sm font-semibold mb-4 inline-block">
+                  Best Value
+                </div>
+                <h3 className="text-2xl font-bold text-white mb-4">Monthly</h3>
+                <p className="text-green-200 text-4xl font-bold mb-4">30,000 MWK</p>
+                <p className="text-green-200 mb-6">per month</p>
                 <div className="text-sm text-purple-300 space-y-2">
-                  <p>Worldwide Malawian matching</p>
-                  <p>Diaspora connections</p>
-                  <p>Premium features</p>
+                  <p>All premium features</p>
+                  <p>Cultural compatibility matching</p>
+                  <p>Special offers & discounts</p>
+                  <p>Best value for serious connections</p>
                 </div>
               </div>
             </div>
