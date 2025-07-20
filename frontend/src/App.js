@@ -23,6 +23,10 @@ function App() {
   const [currentProfileIndex, setCurrentProfileIndex] = useState(0);
   const [favorites, setFavorites] = useState([]);
   const [swipeDirection, setSwipeDirection] = useState(null);
+  // State for dashboard features
+  const [currentProfileIndex, setCurrentProfileIndex] = useState(0);
+  const [favorites, setFavorites] = useState([]);
+  const [swipeDirection, setSwipeDirection] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [formData, setFormData] = useState({
