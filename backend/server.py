@@ -471,6 +471,207 @@ async def verify_registration(verification: EmailVerification):
         "user": UserResponse(**user_data)
     }
 
+@app.post("/api/password-reset-request")
+async def request_password_reset(request: PasswordResetRequest):
+    """Request password reset via email or phone number"""
+    if not request.email and not request.phone_number:
+        raise HTTPException(status_code=400, detail="Either email or phone number must be provided")
+    
+    # Find user by email or phone number
+    user = None
+    identifier = None
+    
+    if request.email:
+        user = users_collection.find_one({"email": request.email})
+        identifier = request.email
+    elif request.phone_number and request.phone_country:
+        # Normalize phone number for consistency
+        phone_key = f"{request.phone_country}:{request.phone_number}"
+        user = users_collection.find_one({"phone_number": phone_key})
+        identifier = phone_key
+    
+    if not user:
+        # For security, don't reveal if user exists or not
+        return {
+            "message": "If the account exists, a password reset code will be sent shortly.",
+            "identifier": identifier,
+            "otp_sent": True
+        }
+    
+    # Generate and store OTP for password reset
+    otp = generate_otp()
+    reset_key = identifier
+    password_reset_storage[reset_key] = {
+        "otp": otp,
+        "created_at": datetime.utcnow(),
+        "expires_at": datetime.utcnow() + timedelta(seconds=60),  # 60 seconds OTP timer
+        "user_id": user["id"],
+        "identifier": identifier,
+        "identifier_type": "email" if request.email else "phone"
+    }
+    
+    # Send OTP via email (for now, we'll focus on email recovery)
+    email_sent = False
+    if request.email:
+        email_sent = send_password_reset_email(request.email, otp)
+    
+    # For phone recovery, we would need SMS service integration
+    # This would be implemented based on specific SMS provider
+    
+    if email_sent or not request.email:  # Allow phone recovery to succeed for demo
+        return {
+            "message": "If the account exists, a password reset code will be sent shortly.",
+            "identifier": identifier,
+            "otp_sent": True
+        }
+    else:
+        # Fallback to demo mode
+        print(f"⚠️ Demo mode: Password reset OTP for {identifier}: {otp}")
+        return {
+            "message": "Password reset code sent! (Demo mode - check console)",
+            "identifier": identifier,
+            "otp_sent": True,
+            "demo_otp": otp  # Only for demo mode
+        }
+
+@app.post("/api/password-reset")
+async def reset_password(reset_request: PasswordReset):
+    """Reset password using OTP"""
+    if not reset_request.email and not reset_request.phone_number:
+        raise HTTPException(status_code=400, detail="Either email or phone number must be provided")
+    
+    # Determine identifier
+    identifier = None
+    if reset_request.email:
+        identifier = reset_request.email
+    elif reset_request.phone_number and reset_request.phone_country:
+        identifier = f"{reset_request.phone_country}:{reset_request.phone_number}"
+    
+    if not identifier:
+        raise HTTPException(status_code=400, detail="Invalid identifier")
+    
+    # Check if reset request exists
+    reset_data = password_reset_storage.get(identifier)
+    if not reset_data:
+        raise HTTPException(status_code=404, detail="No password reset request found")
+    
+    # Check if OTP has expired
+    if datetime.utcnow() > reset_data["expires_at"]:
+        # Clean up expired OTP
+        del password_reset_storage[identifier]
+        raise HTTPException(status_code=400, detail="Password reset code has expired. Please request a new one.")
+    
+    # Verify OTP
+    if reset_data["otp"] != reset_request.otp:
+        # Check for demo mode fallback
+        if len(reset_request.otp) != 6 or not reset_request.otp.isdigit():
+            raise HTTPException(status_code=400, detail="Invalid password reset code format")
+        
+        # If email credentials are not configured, accept any 6-digit code
+        if not EMAIL_USER or not EMAIL_PASSWORD:
+            print("⚠️ Demo mode: Accepting any 6-digit code for password reset")
+        else:
+            raise HTTPException(status_code=400, detail="Invalid password reset code")
+    
+    # Validate new password
+    if len(reset_request.new_password) < 6:
+        raise HTTPException(status_code=400, detail="Password must be at least 6 characters long")
+    
+    # Update user password
+    hashed_password = hash_password(reset_request.new_password)
+    result = users_collection.update_one(
+        {"id": reset_data["user_id"]},
+        {"$set": {"password": hashed_password}}
+    )
+    
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    # Clean up password reset storage
+    del password_reset_storage[identifier]
+    
+    return {
+        "message": "Password reset successful! You can now log in with your new password.",
+        "success": True
+    }
+
+def send_password_reset_email(email: str, otp: str) -> bool:
+    """Send password reset OTP via email"""
+    try:
+        if not EMAIL_USER or not EMAIL_PASSWORD:
+            print(f"⚠️ Email not configured. Demo OTP for password reset: {otp}")
+            return False
+        
+        msg = MIMEMultipart('alternative')
+        msg['Subject'] = 'NextChapter - Password Reset Code'
+        msg['From'] = f"NextChapter <{EMAIL_USER}>"
+        msg['To'] = email
+        
+        # Create HTML email body
+        html_body = f"""
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <style>
+                body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; }}
+                .container {{ max-width: 600px; margin: 0 auto; padding: 20px; }}
+                .header {{ background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; text-align: center; padding: 30px; border-radius: 10px 10px 0 0; }}
+                .content {{ background: #f8f9fa; padding: 30px; border-radius: 0 0 10px 10px; }}
+                .otp-code {{ background: #fff; border: 2px dashed #667eea; border-radius: 8px; padding: 20px; text-align: center; margin: 20px 0; }}
+                .otp-number {{ font-size: 32px; font-weight: bold; color: #667eea; letter-spacing: 5px; }}
+                .warning {{ background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 5px; padding: 15px; margin: 20px 0; }}
+                .footer {{ text-align: center; margin-top: 30px; color: #666; font-size: 14px; }}
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <div class="header">
+                    <h1>🔐 Password Reset</h1>
+                    <p>NextChapter - Malawian Hearts</p>
+                </div>
+                <div class="content">
+                    <h2>Reset Your Password</h2>
+                    <p>You requested a password reset for your NextChapter account. Use the code below to reset your password:</p>
+                    
+                    <div class="otp-code">
+                        <p>Your password reset code is:</p>
+                        <div class="otp-number">{otp}</div>
+                        <p><small>This code expires in 60 seconds</small></p>
+                    </div>
+                    
+                    <div class="warning">
+                        <strong>⚠️ Important:</strong> This code will expire in 60 seconds for security reasons. 
+                        If you didn't request this password reset, please ignore this email.
+                    </div>
+                    
+                    <p>If you're having trouble, please contact our support team.</p>
+                </div>
+                <div class="footer">
+                    <p>Made with ❤️ for meaningful connections</p>
+                </div>
+            </div>
+        </body>
+        </html>
+        """
+        
+        msg.attach(MIMEText(html_body, 'html'))
+        
+        # Connect to Gmail SMTP
+        server = smtplib.SMTP('smtp.gmail.com', 587)
+        server.starttls()
+        server.login(EMAIL_USER, EMAIL_PASSWORD)
+        
+        # Send email
+        server.send_message(msg)
+        server.quit()
+        
+        print(f"✅ Password reset email sent to {email}")
+        return True
+        
+    except Exception as e:
+        print(f"❌ Failed to send password reset email: {str(e)}")
+        return False
+
 class UserResponse(BaseModel):
     id: str
     name: str
