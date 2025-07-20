@@ -102,23 +102,23 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: NextChapter dating website for widows, late bloomers, and recently divorced individuals with specific requirements - Malawian focus with MWK pricing (2500/day, 15000/week, 30000/month), diaspora USD pricing, time-based discounts (Wednesday 50% off, Saturday free interactions), geographic matching (Premium 300km, VIP global), email OTP verification, chatroom for subscribers
+user_problem_statement: NextChapter dating website for widows, late bloomers, and recently divorced individuals with simplified subscription structure - Daily (2500 MWK), Weekly (15000 MWK), Monthly (30000 MWK), plus diaspora USD pricing, time-based discounts (Wednesday 50% off, Saturday free interactions), email OTP verification, chatroom for premium subscribers only
 
 backend:
-  - task: "Subscription pricing update"
+  - task: "Simplified subscription pricing structure"
     implemented: true
-    working: true
+    working: "NA"
     file: "server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: false
+    needs_retesting: true
     status_history:
-      - working: "NA"
-        agent: "main"
-        comment: "Updated subscription tiers to 2500 MWK/day, 15000 MWK/week, 30000 MWK/month. Added diaspora USD pricing with 1865 MWK/USD conversion rate"
       - working: true
         agent: "testing"
         comment: "✅ VERIFIED: Subscription pricing correctly implemented. Premium: 2500/15000/30000 MWK, VIP: 5000/30000/60000 MWK. All pricing endpoints working correctly with proper currency handling."
+      - working: "NA"
+        agent: "main"
+        comment: "Updated to simplified subscription structure with daily/weekly/monthly options only (no free tier). Daily: 2500 MWK, Weekly: 15000 MWK, Monthly: 30000 MWK"
 
   - task: "Diaspora pricing implementation"
     implemented: true
@@ -150,21 +150,6 @@ backend:
         agent: "testing"
         comment: "✅ VERIFIED: Time-based discount structure fully implemented. Wednesday 50% discount logic working, Saturday 7-8PM CAT free interactions properly configured. Discount calculation and special offers API endpoints functioning correctly."
 
-  - task: "Geographic matching logic"
-    implemented: true
-    working: true
-    file: "server.py"
-    stuck_count: 0
-    priority: "medium"
-    needs_retesting: false
-    status_history:
-      - working: "NA"
-        agent: "main"
-        comment: "Premium 300km, VIP global matching with special Malawian diaspora rules (500km Premium, worldwide VIP)"
-      - working: true
-        agent: "testing"
-        comment: "✅ VERIFIED: Geographic matching logic correctly implemented. Premium: extended_local (local_unlimited), VIP: malawian_global (malawian_worldwide). Malawian diaspora rules properly configured with 500km Premium and worldwide VIP access."
-
   - task: "Email OTP verification"
     implemented: true
     working: true
@@ -181,7 +166,37 @@ backend:
         comment: "✅ VERIFIED: Email OTP verification system working correctly. Registration generates OTP, verification endpoint validates codes properly, demo mode fallback functioning. Complete registration flow tested successfully."
 
 frontend:
-  - task: "Join Now button text update"
+  - task: "Simplified subscription display (no free tier)"
+    implemented: true
+    working: "NA"
+    file: "App.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ VERIFIED: 'Join Now' button text is correctly displayed throughout the application. Found on landing page navigation, hero section buttons, and call-to-action areas. No instances of old 'Join Free' text found."
+      - working: "NA"
+        agent: "main"
+        comment: "Updated frontend to show Daily (2500 MWK), Weekly (15000 MWK), Monthly (30000 MWK) subscription options with no free tier. Added diaspora pricing display."
+
+  - task: "Premium-only chatroom access"
+    implemented: true
+    working: "NA"
+    file: "App.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ VERIFIED: Chatroom option correctly implemented and working. Feature is properly restricted to subscribers only (userSubscription?.subscription_tier !== 'free'). For free users, chatroom option is hidden as expected. For premium/VIP subscribers, '💬 Chat Rooms' navigation button appears and is functional. Tested with both free and premium accounts - behavior is correct."
+      - working: "NA"
+        agent: "main"
+        comment: "Updated chatroom access to be premium subscription only (subscription_tier === 'premium') instead of non-free tier check"
+
+  - task: "Join Now button text"
     implemented: true
     working: true
     file: "App.js"
@@ -195,36 +210,6 @@ frontend:
       - working: true
         agent: "testing"
         comment: "✅ VERIFIED: 'Join Now' button text is correctly displayed throughout the application. Found on landing page navigation, hero section buttons, and call-to-action areas. No instances of old 'Join Free' text found."
-
-  - task: "Chatroom option on dashboard"
-    implemented: true
-    working: true
-    file: "App.js"
-    stuck_count: 0
-    priority: "high"
-    needs_retesting: false
-    status_history:
-      - working: "NA"
-        agent: "main"
-        comment: "Added chatroom option to dashboard for subscribers"
-      - working: true
-        agent: "testing"
-        comment: "✅ VERIFIED: Chatroom option correctly implemented and working. Feature is properly restricted to subscribers only (userSubscription?.subscription_tier !== 'free'). For free users, chatroom option is hidden as expected. For premium/VIP subscribers, '💬 Chat Rooms' navigation button appears and is functional. Tested with both free and premium accounts - behavior is correct."
-
-  - task: "Subscription pricing display"
-    implemented: true
-    working: true
-    file: "App.js"
-    stuck_count: 0
-    priority: "high"
-    needs_retesting: false
-    status_history:
-      - working: "NA"
-        agent: "main"
-        comment: "Frontend display of updated pricing structure with local MWK and diaspora USD options"
-      - working: true
-        agent: "testing"
-        comment: "✅ VERIFIED: Subscription pricing correctly displayed on frontend. Landing page shows proper pricing structure: Premium 15,000 MWK/week, VIP 30,000 MWK/week. Pricing is clearly visible in the 'Choose Your Connection Range' section with proper MWK currency formatting. Subscription page also displays detailed pricing with geographical distinctions (Local/Premium/VIP tiers). All pricing values match backend specifications."
 
 metadata:
   created_by: "main_agent"
