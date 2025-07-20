@@ -1060,14 +1060,14 @@ def run_tests():
         'test_24_register_with_malawian_phone',
         'test_25_verify_mwk_pricing',
         'test_26_verify_malawian_community_focus',
-        # HIGH PRIORITY RETESTING TASKS
-        'test_27_subscription_pricing_update_verification',
-        'test_28_diaspora_pricing_implementation',
+        # HIGH PRIORITY RETESTING TASKS FOR SIMPLIFIED SUBSCRIPTION STRUCTURE
+        'test_27_simplified_subscription_pricing_verification',
+        'test_28_simplified_diaspora_pricing_implementation',
         'test_29_email_otp_verification_system',
         'test_30_wednesday_discount_verification',
         'test_31_saturday_free_interactions_verification',
-        'test_32_geographic_matching_logic_verification',
-        'test_33_comprehensive_pricing_calculation_test'
+        'test_32_simplified_user_subscription_logic_verification',
+        'test_33_chatroom_access_logic_verification'
     ]
     
     for test_case in test_cases:
