@@ -1023,6 +1023,170 @@ function App() {
 
   // Enhanced Auth Page
   if (currentView === 'auth') {
+    // Password Recovery Request Form
+    if (authMode === 'reset-request') {
+      return (
+        <div className="min-h-screen bg-gradient-to-br from-purple-50 via-cream-50 to-rose-50 flex items-center justify-center px-4">
+          <div className="max-w-md w-full bg-white rounded-2xl shadow-2xl p-8">
+            <div className="text-center mb-8">
+              <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-rose-500 bg-clip-text text-transparent mb-2">
+                Reset Password
+              </h1>
+              <p className="text-gray-600">Enter your email to receive a password reset code</p>
+            </div>
+
+            {error && (
+              <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg mb-4">
+                {error}
+              </div>
+            )}
+
+            <form onSubmit={handlePasswordResetRequest} className="space-y-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                <input
+                  type="email"
+                  required
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  value={resetData.email}
+                  onChange={(e) => setResetData({ ...resetData, email: e.target.value })}
+                  placeholder="your@email.com"
+                />
+              </div>
+
+              <button
+                type="submit"
+                disabled={loading}
+                className={`w-full py-3 rounded-lg font-semibold transition-all duration-300 shadow-lg ${
+                  loading 
+                    ? 'bg-gray-400 cursor-not-allowed' 
+                    : 'bg-gradient-to-r from-purple-600 to-rose-500 text-white hover:from-purple-700 hover:to-rose-600'
+                }`}
+              >
+                {loading ? (
+                  <div className="flex items-center justify-center">
+                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                    Sending Reset Code...
+                  </div>
+                ) : (
+                  'Send Reset Code'
+                )}
+              </button>
+            </form>
+
+            <div className="mt-6 text-center">
+              <button
+                onClick={() => setAuthMode('login')}
+                className="text-purple-600 hover:text-purple-800 font-medium"
+              >
+                ← Back to Sign In
+              </button>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    // Password Reset OTP Verification Form
+    if (authMode === 'reset-verify') {
+      return (
+        <div className="min-h-screen bg-gradient-to-br from-purple-50 via-cream-50 to-rose-50 flex items-center justify-center px-4">
+          <div className="max-w-md w-full bg-white rounded-2xl shadow-2xl p-8">
+            <div className="text-center mb-8">
+              <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-rose-500 bg-clip-text text-transparent mb-2">
+                Enter Reset Code
+              </h1>
+              <p className="text-gray-600">Enter the 6-digit code sent to your email</p>
+              {otpTimer > 0 && (
+                <p className="text-sm text-purple-600 mt-2">Code expires in: {otpTimer}s</p>
+              )}
+            </div>
+
+            {error && (
+              <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg mb-4">
+                {error}
+              </div>
+            )}
+
+            <form onSubmit={(e) => {
+              e.preventDefault();
+              setPasswordResetStep('reset');
+            }} className="space-y-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Reset Code</label>
+                <input
+                  type="text"
+                  required
+                  maxLength="6"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-center text-2xl font-mono tracking-widest"
+                  value={resetData.otp}
+                  onChange={(e) => setResetData({ ...resetData, otp: e.target.value.replace(/\D/g, '') })}
+                  placeholder="123456"
+                />
+              </div>
+
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">New Password</label>
+                  <input
+                    type="password"
+                    required
+                    minLength="6"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    value={resetData.newPassword}
+                    onChange={(e) => setResetData({ ...resetData, newPassword: e.target.value })}
+                    placeholder="Enter new password"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Confirm Password</label>
+                  <input
+                    type="password"
+                    required
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    value={resetData.confirmPassword}
+                    onChange={(e) => setResetData({ ...resetData, confirmPassword: e.target.value })}
+                    placeholder="Confirm new password"
+                  />
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                disabled={loading}
+                className={`w-full py-3 rounded-lg font-semibold transition-all duration-300 shadow-lg ${
+                  loading 
+                    ? 'bg-gray-400 cursor-not-allowed' 
+                    : 'bg-gradient-to-r from-purple-600 to-rose-500 text-white hover:from-purple-700 hover:to-rose-600'
+                }`}
+              >
+                {loading ? (
+                  <div className="flex items-center justify-center">
+                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                    Resetting Password...
+                  </div>
+                ) : (
+                  'Reset Password'
+                )}
+              </button>
+            </form>
+
+            <div className="mt-6 text-center">
+              <button
+                onClick={() => {
+                  setPasswordResetStep('request');
+                  setAuthMode('reset-request');
+                }}
+                className="text-purple-600 hover:text-purple-800 font-medium"
+              >
+                ← Back to Email Entry
+              </button>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
     return (
       <div className="min-h-screen bg-gradient-to-br from-purple-50 via-cream-50 to-rose-50 flex items-center justify-center px-4">
         <div className="max-w-md w-full bg-white rounded-2xl shadow-2xl p-8">
