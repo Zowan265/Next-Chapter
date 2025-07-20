@@ -1565,18 +1565,13 @@ function App() {
               </div>
             </div>
           )}
-                </button>
-                <button
-                  onClick={fetchProfiles}
-                  className={`px-4 py-2 rounded-lg font-medium ${currentView === 'browse' ? 'bg-purple-100 text-purple-800' : 'text-gray-600 hover:text-purple-600'}`}
-                >
-                  Browse
-                </button>
-                <button
-                  onClick={fetchMatches}
-                  className={`px-4 py-2 rounded-lg font-medium ${currentView === 'matches' ? 'bg-purple-100 text-purple-800' : 'text-gray-600 hover:text-purple-600'}`}
-                >
-                  Matches
+        </div>
+      </div>
+    );
+  }
+}
+
+export default App;
                 </button>
                 <button
                   onClick={() => setCurrentView('subscription')}
