@@ -707,7 +707,7 @@ function App() {
                   onClick={() => { setAuthMode('register'); setCurrentView('auth'); }}
                   className="bg-gradient-to-r from-rose-500 to-purple-600 text-white px-8 py-3 rounded-full hover:from-rose-600 hover:to-purple-700 transition-all duration-300 shadow-xl transform hover:scale-105 font-semibold"
                 >
-                  Join Free
+                  Join Now
                 </button>
               </div>
               {/* Mobile Menu */}
