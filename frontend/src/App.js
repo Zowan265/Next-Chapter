@@ -325,7 +325,7 @@ function App() {
       const data = await response.json();
       if (response.ok) {
         alert('🎉 Password reset successful! You can now log in with your new password.');
-        setPasswordResetStep('request');
+        setAuthMode('login');
         setResetData({
           email: '',
           phoneNumber: '',
@@ -335,7 +335,7 @@ function App() {
           confirmPassword: ''
         });
         setResetOtpSent(false);
-        setAuthMode('login');
+        setOtpTimer(0);
         setError('');
       } else {
         setError(data.detail || 'Password reset failed');
