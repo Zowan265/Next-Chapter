@@ -820,8 +820,7 @@ function App() {
   }
 
   // Enhanced Auth Page
-          
-          <div className="max-w-7xl mx-auto relative z-10">
+
             <div className="text-center mb-20">
               <h3 className="text-5xl font-bold text-gray-800 mb-6">Why Choose NextChapter?</h3>
               <p className="text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
