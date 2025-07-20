@@ -1034,7 +1034,7 @@ function App() {
     );
   }
 
-  // Enhanced subscription page with geographical distinctions
+  // Enhanced subscription page with pricing options
   if (currentView === 'subscription') {
     return (
       <div className="min-h-screen bg-gradient-to-br from-purple-50 via-cream-50 to-rose-50">
@@ -1043,7 +1043,7 @@ function App() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center h-16">
               <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-rose-500 bg-clip-text text-transparent">
-                NextChapter Enhanced
+                NextChapter <span className="text-sm bg-red-100 text-red-600 px-2 py-1 rounded-full">Malawian Hearts</span>
               </h1>
               <button
                 onClick={() => setCurrentView('dashboard')}
@@ -1057,81 +1057,93 @@ function App() {
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="text-center mb-12">
-            <h2 className="text-5xl font-bold text-gray-800 mb-4">Choose Your Love Journey</h2>
+            <h2 className="text-5xl font-bold text-gray-800 mb-4">Choose Your Subscription Duration</h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Different subscription tiers offer different geographical matching ranges for Malawians. 
-              Find love locally in Malawi or connect with fellow Malawians worldwide.
+              Subscribe to NextChapter and connect with fellow Malawians worldwide. 
+              All subscriptions include unlimited features - just pick your preferred duration.
             </p>
           </div>
 
+          {/* Special Offers Banner */}
+          <div className="bg-gradient-to-r from-purple-600 to-rose-500 text-white rounded-2xl p-6 mb-12 text-center">
+            <h3 className="text-2xl font-bold mb-2">🎉 Special Offers</h3>
+            <p className="text-lg">✨ Wednesday 50% discounts • 🎊 Saturday free interactions (7-8 PM CAT)</p>
+          </div>
+
           <div className="grid md:grid-cols-3 gap-8 mb-12">
-            {/* Free Tier */}
-            <div className="bg-white rounded-2xl shadow-xl p-8 border-2 border-blue-200 relative">
+            {/* Daily Subscription */}
+            <div className="bg-white rounded-2xl shadow-xl p-8 border-2 border-purple-200 relative">
               <div className="text-center">
-                <div className="w-20 h-20 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <span className="text-3xl">🏠</span>
+                <div className="w-20 h-20 bg-gradient-to-br from-purple-400 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <span className="text-3xl">📅</span>
                 </div>
-                <h3 className="text-2xl font-bold text-gray-800 mb-2">Free - Local Only</h3>
-                <p className="text-4xl font-bold text-blue-600 mb-4">Free</p>
-                <p className="text-gray-600 mb-6">Perfect for finding love in your local area</p>
+                <h3 className="text-2xl font-bold text-gray-800 mb-2">Daily</h3>
+                <p className="text-4xl font-bold text-purple-600 mb-2">2,500 MWK</p>
+                <p className="text-sm text-gray-500 mb-4">per day</p>
+                <p className="text-gray-600 mb-6">Perfect for trying out the platform</p>
                 
                 <div className="space-y-3 mb-8 text-left">
                   <div className="flex items-center">
                     <span className="text-green-500 mr-3">✓</span>
-                    <span className="text-sm">5 likes per day</span>
+                    <span className="text-sm">Unlimited likes and matches</span>
                   </div>
                   <div className="flex items-center">
                     <span className="text-green-500 mr-3">✓</span>
-                    <span className="text-sm">Local area matching (300km radius)</span>
+                    <span className="text-sm">Connect with Malawians worldwide</span>
                   </div>
                   <div className="flex items-center">
                     <span className="text-green-500 mr-3">✓</span>
-                    <span className="text-sm">Basic chat features</span>
+                    <span className="text-sm">Enhanced chat features</span>
                   </div>
                   <div className="flex items-center">
                     <span className="text-green-500 mr-3">✓</span>
-                    <span className="text-sm">Saturday happy hour access</span>
+                    <span className="text-sm">Access to exclusive chat rooms</span>
+                  </div>
+                  <div className="flex items-center">
+                    <span className="text-green-500 mr-3">✓</span>
+                    <span className="text-sm">See who liked you</span>
                   </div>
                 </div>
 
-                <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
-                  <p className="text-sm text-blue-800 font-semibold">Geographical Range</p>
-                  <p className="text-xs text-blue-700">Within 300km of your location in Malawi</p>
-                </div>
+                <button
+                  onClick={() => requestPaymentOtp('daily')}
+                  className="w-full bg-gradient-to-r from-purple-600 to-purple-700 text-white py-3 rounded-lg font-semibold hover:from-purple-700 hover:to-purple-800 transition-all duration-300"
+                >
+                  Subscribe Daily
+                </button>
               </div>
             </div>
 
-            {/* Premium Tier */}
-            <div className="bg-white rounded-2xl shadow-xl p-8 border-2 border-purple-200 relative transform scale-105">
+            {/* Weekly Subscription */}
+            <div className="bg-white rounded-2xl shadow-xl p-8 border-2 border-rose-200 relative transform scale-105">
               <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                <span className="bg-purple-500 text-white px-4 py-1 rounded-full text-sm font-semibold">Most Popular</span>
+                <span className="bg-rose-500 text-white px-4 py-1 rounded-full text-sm font-semibold">Most Popular</span>
               </div>
               <div className="text-center">
-                <div className="w-20 h-20 bg-gradient-to-br from-purple-400 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <span className="text-3xl">🏙️</span>
+                <div className="w-20 h-20 bg-gradient-to-br from-rose-400 to-rose-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <span className="text-3xl">📊</span>
                 </div>
-                <h3 className="text-2xl font-bold text-gray-800 mb-2">Premium - Local Love</h3>
-                <p className="text-4xl font-bold text-purple-600 mb-4">
-                  {subscriptionTiers.premium ? 'MWK 15,000/week' : 'MWK 15,000/week'}
-                </p>
-                <p className="text-gray-600 mb-6">Extended local area with unlimited interactions</p>
+                <h3 className="text-2xl font-bold text-gray-800 mb-2">Weekly</h3>
+                <p className="text-4xl font-bold text-rose-600 mb-2">15,000 MWK</p>
+                <p className="text-sm text-gray-500 mb-4">per week</p>
+                <p className="text-gray-600 mb-6">Great balance of value and commitment</p>
                 
                 <div className="space-y-3 mb-8 text-left">
                   <div className="flex items-center">
                     <span className="text-green-500 mr-3">✓</span>
-                    <span className="text-sm">Unlimited likes in your area</span>
+                    <span className="text-sm">Unlimited likes and matches</span>
                   </div>
                   <div className="flex items-center">
                     <span className="text-green-500 mr-3">✓</span>
-                    <span className="text-sm">Extended local area (500km radius)</span>
+                    <span className="text-sm">Connect with Malawians worldwide</span>
                   </div>
                   <div className="flex items-center">
                     <span className="text-green-500 mr-3">✓</span>
-                    <span className="text-sm">Advanced local filters</span>
+                    <span className="text-sm">Advanced matching algorithms</span>
                   </div>
                   <div className="flex items-center">
                     <span className="text-green-500 mr-3">✓</span>
-                    <span className="text-sm">See who liked you locally</span>
+                    <span className="text-sm">Access to exclusive chat rooms</span>
                   </div>
                   <div className="flex items-center">
                     <span className="text-green-500 mr-3">✓</span>
@@ -1139,44 +1151,37 @@ function App() {
                   </div>
                 </div>
 
-                <div className="bg-purple-50 p-4 rounded-lg border border-purple-200 mb-6">
-                  <p className="text-sm text-purple-800 font-semibold">Geographical Range</p>
-                  <p className="text-xs text-purple-700">Within 500km of your location - perfect for regional connections</p>
-                </div>
-
                 <button
-                  onClick={() => requestPaymentOtp('premium')}
-                  className="w-full bg-gradient-to-r from-purple-600 to-purple-700 text-white py-3 rounded-lg font-semibold hover:from-purple-700 hover:to-purple-800 transition-all duration-300"
+                  onClick={() => requestPaymentOtp('weekly')}
+                  className="w-full bg-gradient-to-r from-rose-600 to-rose-700 text-white py-3 rounded-lg font-semibold hover:from-rose-700 hover:to-rose-800 transition-all duration-300"
                 >
-                  Choose Premium
+                  Subscribe Weekly
                 </button>
               </div>
             </div>
 
-            {/* VIP Tier */}
-            <div className="bg-white rounded-2xl shadow-xl p-8 border-2 border-rose-200 relative">
+            {/* Monthly Subscription */}
+            <div className="bg-white rounded-2xl shadow-xl p-8 border-2 border-green-200 relative">
+              <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                <span className="bg-green-500 text-white px-4 py-1 rounded-full text-sm font-semibold">Best Value</span>
+              </div>
               <div className="text-center">
-                <div className="w-20 h-20 bg-gradient-to-br from-rose-400 to-rose-600 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <span className="text-3xl">🇲🇼</span>
+                <div className="w-20 h-20 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <span className="text-3xl">💎</span>
                 </div>
-                <h3 className="text-2xl font-bold text-gray-800 mb-2">VIP - Malawian Hearts</h3>
-                <p className="text-4xl font-bold text-rose-600 mb-4">
-                  {subscriptionTiers.vip ? 'MWK 30,000/week' : 'MWK 30,000/week'}
-                </p>
-                <p className="text-gray-600 mb-6">Connect with Malawians anywhere in the world</p>
+                <h3 className="text-2xl font-bold text-gray-800 mb-2">Monthly</h3>
+                <p className="text-4xl font-bold text-green-600 mb-2">30,000 MWK</p>
+                <p className="text-sm text-gray-500 mb-4">per month</p>
+                <p className="text-gray-600 mb-6">Best value for serious connections</p>
                 
                 <div className="space-y-3 mb-8 text-left">
                   <div className="flex items-center">
                     <span className="text-green-500 mr-3">✓</span>
+                    <span className="text-sm">Unlimited likes and matches</span>
+                  </div>
+                  <div className="flex items-center">
+                    <span className="text-green-500 mr-3">✓</span>
                     <span className="text-sm">Connect with Malawians worldwide</span>
-                  </div>
-                  <div className="flex items-center">
-                    <span className="text-green-500 mr-3">✓</span>
-                    <span className="text-sm">Special filters for Malawians abroad</span>
-                  </div>
-                  <div className="flex items-center">
-                    <span className="text-green-500 mr-3">✓</span>
-                    <span className="text-sm">Travel mode for international connections</span>
                   </div>
                   <div className="flex items-center">
                     <span className="text-green-500 mr-3">✓</span>
@@ -1184,28 +1189,38 @@ function App() {
                   </div>
                   <div className="flex items-center">
                     <span className="text-green-500 mr-3">✓</span>
-                    <span className="text-sm">International communication tools</span>
+                    <span className="text-sm">Profile boost</span>
                   </div>
                   <div className="flex items-center">
                     <span className="text-green-500 mr-3">✓</span>
-                    <span className="text-sm">Connect with homeland community</span>
+                    <span className="text-sm">Special offers and discounts</span>
                   </div>
                 </div>
 
-                <div className="bg-rose-50 p-4 rounded-lg border border-rose-200 mb-6">
-                  <p className="text-sm text-rose-800 font-semibold">Geographical Range</p>
-                  <p className="text-xs text-rose-700">Connect with Malawians worldwide - no boundaries</p>
-                </div>
-
                 <button
-                  onClick={() => requestPaymentOtp('vip')}
-                  className="w-full bg-gradient-to-r from-rose-600 to-rose-700 text-white py-3 rounded-lg font-semibold hover:from-rose-700 hover:to-rose-800 transition-all duration-300"
+                  onClick={() => requestPaymentOtp('monthly')}
+                  className="w-full bg-gradient-to-r from-green-600 to-green-700 text-white py-3 rounded-lg font-semibold hover:from-green-700 hover:to-green-800 transition-all duration-300"
                 >
-                  Choose VIP
+                  Subscribe Monthly
                 </button>
               </div>
             </div>
           </div>
+
+          {/* Diaspora Pricing Note */}
+          <div className="bg-blue-50 border border-blue-200 rounded-xl p-6 text-center">
+            <h4 className="text-lg font-bold text-blue-800 mb-2">🌍 For Malawians Living Abroad</h4>
+            <p className="text-blue-700">
+              USD pricing available: Daily $1.35 • Weekly $8.05 • Monthly $16.09
+            </p>
+            <p className="text-sm text-blue-600 mt-2">
+              Automatically applied based on your location
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
           {/* Geographical Comparison */}
           <div className="bg-white rounded-2xl shadow-lg p-8 mb-8">
