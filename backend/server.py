@@ -326,13 +326,12 @@ def is_within_local_area(user_location, target_location, subscription_tier, user
         return user_city == target_city
 
 def get_matching_scope_description(subscription_tier):
-    """Get description of matching scope for subscription tier"""
-    scope_descriptions = {
-        "free": "Local area only (within 300km of your location in Malawi)",
-        "premium": "Extended local area (within 500km of your location in Malawi)", 
-        "vip": "Connect with Malawians worldwide - no geographical boundaries"
-    }
-    return scope_descriptions.get(subscription_tier, "Local area only")
+    """Get human-readable description of user's matching scope"""
+    
+    if subscription_tier == "premium":
+        return "Connect with fellow Malawians worldwide - unlimited matching"
+    else:
+        return "Basic matching capabilities - upgrade for unlimited access"
 
 def can_user_interact_freely(user):
     """Check if user can interact freely (premium/vip subscription or free interaction time)"""
