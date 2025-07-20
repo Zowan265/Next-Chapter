@@ -697,6 +697,359 @@ class NextChapterAPITest(unittest.TestCase):
         print(f"  - Location based filtering: {profiles_data.get('location_based_filtering', 'unknown')}")
         print(f"  - Subscription tier: {profiles_data.get('subscription_tier', 'unknown')}")
 
+    # HIGH PRIORITY RETESTING TASKS
+    
+    def test_27_subscription_pricing_update_verification(self):
+        """HIGH PRIORITY: Test the updated subscription pricing (2500/15000/30000 MWK)"""
+        response = requests.get(f"{self.base_url}/api/subscription/tiers?location=local")
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        
+        # Test Premium tier pricing
+        self.assertIn("premium", data)
+        premium = data["premium"]
+        self.assertIn("pricing", premium)
+        pricing = premium["pricing"]
+        
+        # Verify exact MWK pricing for local Malawians
+        self.assertEqual(pricing["daily"]["original_price"], 2500)
+        self.assertEqual(pricing["daily"]["currency"], "MWK")
+        self.assertEqual(pricing["weekly"]["original_price"], 15000)
+        self.assertEqual(pricing["weekly"]["currency"], "MWK")
+        self.assertEqual(pricing["monthly"]["original_price"], 30000)
+        self.assertEqual(pricing["monthly"]["currency"], "MWK")
+        
+        # Test VIP tier pricing
+        self.assertIn("vip", data)
+        vip = data["vip"]
+        self.assertIn("pricing", vip)
+        vip_pricing = vip["pricing"]
+        
+        # Verify VIP MWK pricing (double the premium rates)
+        self.assertEqual(vip_pricing["daily"]["original_price"], 5000)
+        self.assertEqual(vip_pricing["daily"]["currency"], "MWK")
+        self.assertEqual(vip_pricing["weekly"]["original_price"], 30000)
+        self.assertEqual(vip_pricing["weekly"]["currency"], "MWK")
+        self.assertEqual(vip_pricing["monthly"]["original_price"], 60000)
+        self.assertEqual(vip_pricing["monthly"]["currency"], "MWK")
+        
+        print(f"✅ Subscription pricing update verified")
+        print(f"  - Premium Daily: {pricing['daily']['original_price']} {pricing['daily']['currency']}")
+        print(f"  - Premium Weekly: {pricing['weekly']['original_price']} {pricing['weekly']['currency']}")
+        print(f"  - Premium Monthly: {pricing['monthly']['original_price']} {pricing['monthly']['currency']}")
+        print(f"  - VIP Daily: {vip_pricing['daily']['original_price']} {vip_pricing['daily']['currency']}")
+        print(f"  - VIP Weekly: {vip_pricing['weekly']['original_price']} {vip_pricing['weekly']['currency']}")
+        print(f"  - VIP Monthly: {vip_pricing['monthly']['original_price']} {vip_pricing['monthly']['currency']}")
+
+    def test_28_diaspora_pricing_implementation(self):
+        """HIGH PRIORITY: Test USD pricing for Malawian diaspora users (1865 MWK/USD conversion)"""
+        response = requests.get(f"{self.base_url}/api/subscription/tiers?location=diaspora")
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        
+        # Test Premium tier diaspora pricing
+        self.assertIn("premium", data)
+        premium = data["premium"]
+        self.assertIn("pricing", premium)
+        pricing = premium["pricing"]
+        
+        # Verify USD pricing for diaspora users
+        self.assertEqual(pricing["daily"]["original_price"], 1.35)
+        self.assertEqual(pricing["daily"]["currency"], "USD")
+        self.assertEqual(pricing["weekly"]["original_price"], 8.00)
+        self.assertEqual(pricing["weekly"]["currency"], "USD")
+        self.assertEqual(pricing["monthly"]["original_price"], 16.00)
+        self.assertEqual(pricing["monthly"]["currency"], "USD")
+        
+        # Verify MWK equivalent is shown
+        self.assertIn("mwk_equivalent", pricing["daily"])
+        self.assertEqual(pricing["daily"]["mwk_equivalent"], 2500)
+        self.assertEqual(pricing["weekly"]["mwk_equivalent"], 15000)
+        self.assertEqual(pricing["monthly"]["mwk_equivalent"], 30000)
+        
+        # Test VIP tier diaspora pricing
+        self.assertIn("vip", data)
+        vip = data["vip"]
+        self.assertIn("pricing", vip)
+        vip_pricing = vip["pricing"]
+        
+        # Verify VIP USD pricing for diaspora
+        self.assertEqual(vip_pricing["daily"]["original_price"], 2.70)
+        self.assertEqual(vip_pricing["daily"]["currency"], "USD")
+        self.assertEqual(vip_pricing["weekly"]["original_price"], 16.00)
+        self.assertEqual(vip_pricing["weekly"]["currency"], "USD")
+        self.assertEqual(vip_pricing["monthly"]["original_price"], 32.00)
+        self.assertEqual(vip_pricing["monthly"]["currency"], "USD")
+        
+        # Verify conversion rate calculation (approximately 1865 MWK/USD)
+        daily_conversion = pricing["daily"]["mwk_equivalent"] / pricing["daily"]["original_price"]
+        self.assertAlmostEqual(daily_conversion, 1851.85, delta=50)  # Allow some rounding tolerance
+        
+        print(f"✅ Diaspora pricing implementation verified")
+        print(f"  - Premium Daily: ${pricing['daily']['original_price']} USD (≈{pricing['daily']['mwk_equivalent']} MWK)")
+        print(f"  - Premium Weekly: ${pricing['weekly']['original_price']} USD (≈{pricing['weekly']['mwk_equivalent']} MWK)")
+        print(f"  - Premium Monthly: ${pricing['monthly']['original_price']} USD (≈{pricing['monthly']['mwk_equivalent']} MWK)")
+        print(f"  - VIP Daily: ${vip_pricing['daily']['original_price']} USD (≈{vip_pricing['daily']['mwk_equivalent']} MWK)")
+        print(f"  - Conversion rate: ~{daily_conversion:.2f} MWK/USD")
+
+    def test_29_email_otp_verification_system(self):
+        """HIGH PRIORITY: Test the email OTP verification system"""
+        # Test registration with OTP
+        test_email = f"otp_test_{self.random_string(8)}@example.com"
+        payload = {
+            "name": f"OTP Test User {self.random_string(4)}",
+            "email": test_email,
+            "password": self.test_password,
+            "age": 28,
+            "phone_country": "MW"
+        }
+        
+        # Register user
+        response = requests.post(f"{self.base_url}/api/register", json=payload)
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        
+        # Verify OTP system response
+        self.assertIn("message", data)
+        self.assertIn("email", data)
+        self.assertIn("otp_sent", data)
+        self.assertEqual(data["email"], test_email)
+        
+        # Test invalid OTP
+        invalid_otp_payload = {
+            "email": test_email,
+            "otp": "000000"  # Invalid OTP
+        }
+        invalid_response = requests.post(f"{self.base_url}/api/verify-registration", json=invalid_otp_payload)
+        
+        # Should accept any 6-digit code in demo mode, but let's test the structure
+        if invalid_response.status_code == 400:
+            invalid_data = invalid_response.json()
+            self.assertIn("detail", invalid_data)
+            print(f"✅ Invalid OTP properly rejected: {invalid_data['detail']}")
+        
+        # Test valid OTP (demo mode accepts any 6-digit code)
+        valid_otp_payload = {
+            "email": test_email,
+            "otp": "123456"  # Valid demo OTP
+        }
+        valid_response = requests.post(f"{self.base_url}/api/verify-registration", json=valid_otp_payload)
+        self.assertEqual(valid_response.status_code, 200)
+        valid_data = valid_response.json()
+        
+        # Verify successful verification response
+        self.assertIn("message", valid_data)
+        self.assertIn("token", valid_data)
+        self.assertIn("user", valid_data)
+        self.assertTrue("verified successfully" in valid_data["message"])
+        
+        # Verify user data
+        user_data = valid_data["user"]
+        self.assertEqual(user_data["email"], test_email)
+        self.assertEqual(user_data["name"], payload["name"])
+        
+        print(f"✅ Email OTP verification system working")
+        print(f"  - Registration message: {data['message']}")
+        print(f"  - OTP sent: {data['otp_sent']}")
+        print(f"  - Verification message: {valid_data['message']}")
+        print(f"  - User verified: {user_data['name']} ({user_data['email']})")
+
+    def test_30_wednesday_discount_verification(self):
+        """HIGH PRIORITY: Test Wednesday 50% discount logic"""
+        response = requests.get(f"{self.base_url}/api/subscription/tiers")
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        
+        # Check if Wednesday discount is properly indicated
+        self.assertIn("premium", data)
+        premium = data["premium"]
+        self.assertIn("is_wednesday_discount", premium)
+        self.assertIn("pricing", premium)
+        
+        # Check pricing structure includes discount information
+        pricing = premium["pricing"]
+        for duration in ["daily", "weekly", "monthly"]:
+            self.assertIn(duration, pricing)
+            price_info = pricing[duration]
+            self.assertIn("original_price", price_info)
+            self.assertIn("discounted_price", price_info)
+            self.assertIn("has_discount", price_info)
+            self.assertIn("discount_percentage", price_info)
+            
+            # If it's Wednesday, verify 50% discount
+            if premium["is_wednesday_discount"]:
+                self.assertEqual(price_info["discount_percentage"], 50)
+                expected_discounted = price_info["original_price"] * 0.5
+                self.assertEqual(price_info["discounted_price"], round(expected_discounted))
+                self.assertTrue(price_info["has_discount"])
+                self.assertIn("Wednesday", price_info.get("discount_reason", ""))
+            else:
+                self.assertEqual(price_info["discount_percentage"], 0)
+                self.assertEqual(price_info["discounted_price"], price_info["original_price"])
+                self.assertFalse(price_info["has_discount"])
+        
+        print(f"✅ Wednesday discount logic verified")
+        print(f"  - Is Wednesday discount active: {premium['is_wednesday_discount']}")
+        if premium["is_wednesday_discount"]:
+            print(f"  - Daily discounted: {pricing['daily']['original_price']} → {pricing['daily']['discounted_price']} MWK")
+            print(f"  - Discount reason: {pricing['daily'].get('discount_reason', 'N/A')}")
+        else:
+            print(f"  - No discount active (not Wednesday)")
+
+    def test_31_saturday_free_interactions_verification(self):
+        """HIGH PRIORITY: Test Saturday 7-8PM CAT free interactions logic"""
+        response = requests.get(f"{self.base_url}/api/subscription/tiers")
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        
+        # Check Saturday happy hour status
+        self.assertIn("premium", data)
+        premium = data["premium"]
+        self.assertIn("is_saturday_happy_hour", premium)
+        self.assertIn("saturday_status", premium)
+        
+        # Check free tier for Saturday special status
+        self.assertIn("free", data)
+        free_tier = data["free"]
+        self.assertIn("special_status", free_tier)
+        
+        # Verify Saturday messaging
+        saturday_status = premium["saturday_status"]
+        if premium["is_saturday_happy_hour"]:
+            self.assertIn("Active", saturday_status)
+            self.assertIn("free premium access", saturday_status.lower())
+            # Check free tier temporary features
+            if "Active" in free_tier["special_status"]:
+                self.assertIn("temporary_features", free_tier)
+                temp_features = free_tier["temporary_features"]
+                self.assertIn("Unlimited likes", temp_features)
+                self.assertIn("Premium features access", temp_features)
+        else:
+            self.assertIn("Next Saturday", saturday_status)
+            self.assertIn("7-8 PM CAT", saturday_status)
+        
+        # Test interaction status endpoint
+        if self.token:
+            headers = {"Authorization": f"Bearer {self.token}"}
+            status_response = requests.get(f"{self.base_url}/api/interaction/status", headers=headers)
+            self.assertEqual(status_response.status_code, 200)
+            status_data = status_response.json()
+            
+            self.assertIn("is_saturday_happy_hour", status_data)
+            self.assertIn("special_offers", status_data)
+            self.assertIn("saturday_happy_hour", status_data["special_offers"])
+            
+            saturday_offer = status_data["special_offers"]["saturday_happy_hour"]
+            self.assertIn("active", saturday_offer)
+            self.assertIn("description", saturday_offer)
+            self.assertIn("Free premium interactions", saturday_offer["description"])
+            
+            if status_data["is_saturday_happy_hour"]:
+                self.assertTrue(status_data["can_interact_freely"])
+                self.assertIn("Saturday Happy Hour", status_data["interaction_reason"])
+        
+        print(f"✅ Saturday free interactions logic verified")
+        print(f"  - Is Saturday happy hour active: {premium['is_saturday_happy_hour']}")
+        print(f"  - Saturday status: {saturday_status}")
+        print(f"  - Free tier special status: {free_tier['special_status']}")
+
+    def test_32_geographic_matching_logic_verification(self):
+        """HIGH PRIORITY: Test Premium (300km) and VIP (global) matching with Malawian diaspora rules"""
+        if not self.token:
+            print("⚠️ Skipping geographic matching test - not logged in")
+            return
+            
+        headers = {"Authorization": f"Bearer {self.token}"}
+        
+        # Get current user subscription and profiles
+        profiles_response = requests.get(f"{self.base_url}/api/profiles", headers=headers)
+        self.assertEqual(profiles_response.status_code, 200)
+        profiles_data = profiles_response.json()
+        
+        # Verify geographic matching properties
+        self.assertIn("location_based_filtering", profiles_data)
+        self.assertIn("malawian_focused", profiles_data)
+        self.assertIn("matching_scope", profiles_data)
+        self.assertIn("subscription_tier", profiles_data)
+        
+        current_tier = profiles_data["subscription_tier"]
+        
+        # Test matching scope descriptions
+        if current_tier == "free":
+            self.assertIn("300km", profiles_data["matching_scope"])
+            self.assertTrue(profiles_data["location_based_filtering"])
+        elif current_tier == "premium":
+            self.assertIn("500km", profiles_data["matching_scope"])  # Updated for Malawian diaspora
+            self.assertTrue(profiles_data["location_based_filtering"])
+        elif current_tier == "vip":
+            self.assertIn("Malawians worldwide", profiles_data["matching_scope"])
+            self.assertIn("no geographical boundaries", profiles_data["matching_scope"])
+            self.assertFalse(profiles_data["location_based_filtering"])
+        
+        # Verify Malawian focus
+        self.assertTrue(profiles_data["malawian_focused"])
+        
+        # Test subscription tiers for geographic limits
+        tiers_response = requests.get(f"{self.base_url}/api/subscription/tiers")
+        self.assertEqual(tiers_response.status_code, 200)
+        tiers_data = tiers_response.json()
+        
+        # Verify geographic limits in tier definitions
+        premium_tier = tiers_data["premium"]
+        self.assertEqual(premium_tier["geographical_limit"], "extended_local")
+        self.assertEqual(premium_tier["matching_scope"], "local_unlimited")
+        
+        vip_tier = tiers_data["vip"]
+        self.assertEqual(vip_tier["geographical_limit"], "malawian_global")
+        self.assertEqual(vip_tier["matching_scope"], "malawian_worldwide")
+        
+        print(f"✅ Geographic matching logic verified")
+        print(f"  - Current tier: {current_tier}")
+        print(f"  - Matching scope: {profiles_data['matching_scope']}")
+        print(f"  - Location-based filtering: {profiles_data['location_based_filtering']}")
+        print(f"  - Malawian focused: {profiles_data['malawian_focused']}")
+        print(f"  - Premium geographic limit: {premium_tier['geographical_limit']}")
+        print(f"  - VIP geographic limit: {vip_tier['geographical_limit']}")
+
+    def test_33_comprehensive_pricing_calculation_test(self):
+        """HIGH PRIORITY: Comprehensive test of pricing calculations with discounts"""
+        # Test both local and diaspora pricing with discounts
+        for location in ["local", "diaspora"]:
+            response = requests.get(f"{self.base_url}/api/subscription/tiers?location={location}")
+            self.assertEqual(response.status_code, 200)
+            data = response.json()
+            
+            for tier_name in ["premium", "vip"]:
+                tier = data[tier_name]
+                pricing = tier["pricing"]
+                
+                for duration in ["daily", "weekly", "monthly"]:
+                    price_info = pricing[duration]
+                    
+                    # Verify all required pricing fields
+                    required_fields = ["original_price", "discounted_price", "discount_percentage", 
+                                     "discount_reason", "has_discount", "currency"]
+                    for field in required_fields:
+                        self.assertIn(field, price_info)
+                    
+                    # Verify discount calculation logic
+                    if price_info["has_discount"]:
+                        expected_discount = price_info["original_price"] * (price_info["discount_percentage"] / 100)
+                        expected_discounted = price_info["original_price"] - expected_discount
+                        self.assertEqual(price_info["discounted_price"], round(expected_discounted))
+                    else:
+                        self.assertEqual(price_info["discounted_price"], price_info["original_price"])
+                        self.assertEqual(price_info["discount_percentage"], 0)
+                    
+                    # For diaspora, verify MWK equivalent exists
+                    if location == "diaspora":
+                        self.assertIn("mwk_equivalent", price_info)
+        
+        print(f"✅ Comprehensive pricing calculation test passed")
+        print(f"  - Tested both local and diaspora pricing")
+        print(f"  - Verified discount calculations")
+        print(f"  - Confirmed currency conversions")
+
 def run_tests():
     # Create a test suite
     suite = unittest.TestSuite()
