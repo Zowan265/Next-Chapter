@@ -815,7 +815,11 @@ function App() {
           </div>
         </div>
 
-        {/* Beautiful Features Section - No Images */}
+      </div>
+    );
+  }
+
+  // Enhanced Auth Page
         <div className="py-24 px-4 bg-gradient-to-br from-gray-50 via-purple-50 to-rose-50 relative overflow-hidden">
           
           {/* Floating Elements */}
