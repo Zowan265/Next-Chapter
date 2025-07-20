@@ -1171,8 +1171,10 @@ function App() {
             <div className="mt-6 text-center">
               <button
                 onClick={() => {
-                  setPasswordResetStep('request');
                   setAuthMode('reset-request');
+                  setResetOtpSent(false);
+                  setOtpTimer(0);
+                  setError('');
                 }}
                 className="text-purple-600 hover:text-purple-800 font-medium"
               >
