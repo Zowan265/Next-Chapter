@@ -63,6 +63,35 @@
   animation: spin-slow 20s linear infinite;
 }
 
+.animate-fade-in-up {
+  animation: fade-in-up 1s ease-out;
+}
+
+.animate-slide-in-left {
+  animation: slide-in-left 1s ease-out;
+}
+
+.animate-slide-in-right {
+  animation: slide-in-right 1s ease-out;
+}
+
+.animate-expand {
+  animation: expand 2s ease-out;
+}
+
+/* Utility classes for delays */
+.delay-500 {
+  animation-delay: 0.5s;
+}
+
+.delay-1000 {
+  animation-delay: 1s;
+}
+
+.delay-1500 {
+  animation-delay: 1.5s;
+}
+
 /* Custom gradient backgrounds */
 .bg-gradient-malawi {
   background: linear-gradient(135deg, #8B5CF6 0%, #EC4899 100%);
