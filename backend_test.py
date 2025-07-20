@@ -1076,12 +1076,13 @@ def run_tests():
     # Run the tests
     print("\n🔍 Starting NextChapter API Tests...\n")
     print("🎯 HIGH PRIORITY RETESTING TASKS:")
-    print("   - Subscription pricing update (2500/15000/30000 MWK)")
-    print("   - Diaspora pricing implementation (USD conversion)")
+    print("   - Simplified subscription pricing (Daily: 2500 MWK, Weekly: 15000 MWK, Monthly: 30000 MWK)")
+    print("   - Simplified diaspora pricing (USD conversion with MWK equivalents)")
     print("   - Email OTP verification system")
     print("   - Wednesday 50% discount logic")
     print("   - Saturday 7-8PM CAT free interactions")
-    print("   - Geographic matching logic (Premium 300km, VIP global)")
+    print("   - Simplified user subscription logic (free vs premium only)")
+    print("   - Chatroom access logic (premium subscribers only)")
     print("\n" + "="*60 + "\n")
     
     runner = unittest.TextTestRunner(verbosity=2)
