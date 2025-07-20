@@ -19,8 +19,7 @@ function App() {
   const [paymentOtpSent, setPaymentOtpSent] = useState(false);
   const [selectedTier, setSelectedTier] = useState('');
   
-  // State for dashboard features
-  const [profiles, setProfiles] = useState([]);
+  // Additional state for enhanced dashboard features
   const [currentProfileIndex, setCurrentProfileIndex] = useState(0);
   const [favorites, setFavorites] = useState([]);
   const [swipeDirection, setSwipeDirection] = useState(null);
