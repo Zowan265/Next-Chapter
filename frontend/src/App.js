@@ -1255,7 +1255,7 @@ function App() {
                   >
                     💕 Matches
                   </button>
-                  {userSubscription?.subscription_tier !== 'free' && (
+                  {userSubscription?.subscription_tier === 'premium' && (
                     <button
                       onClick={() => setCurrentView('chat')}
                       className={`px-4 py-2 rounded-lg font-medium transition-colors ${currentView === 'chat' ? 'bg-purple-100 text-purple-800' : 'text-gray-600 hover:text-purple-600'}`}
