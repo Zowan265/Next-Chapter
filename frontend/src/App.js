@@ -820,7 +820,6 @@ function App() {
   }
 
   // Enhanced Auth Page
-  // Enhanced Auth Page
   if (currentView === 'auth') {
     return (
       <div className="min-h-screen bg-gradient-to-br from-purple-50 via-cream-50 to-rose-50 flex items-center justify-center px-4">
