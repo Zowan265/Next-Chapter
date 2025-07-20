@@ -1076,7 +1076,7 @@ async def get_user_subscription(current_user = Depends(get_current_user)):
         "expires_at": None,
         "daily_likes_used": current_user.get("daily_likes_used", 0),
         "created_at": current_user.get("created_at"),
-        "features_unlocked": SUBSCRIPTION_TIERS.get(current_user.get("subscription_tier", "free"), {}).get("features", []),
+        "features_unlocked": SUBSCRIPTION_FEATURES if current_user.get("subscription_tier", "free") in ["premium", "vip"] else [],
         "can_interact_freely": can_interact,
         "interaction_reason": interaction_reason,
         "is_saturday_happy_hour": is_saturday_happy_hour()
