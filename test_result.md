@@ -102,9 +102,39 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: NextChapter dating website for widows, late bloomers, and recently divorced individuals with simplified subscription structure - Daily (2500 MWK), Weekly (15000 MWK), Monthly (30000 MWK), plus diaspora USD pricing, time-based discounts (Wednesday 50% off, Saturday free interactions), email OTP verification, chatroom for premium subscribers only
+user_problem_statement: NextChapter dating website for widows, late bloomers, and recently divorced individuals with simplified subscription structure (Daily: 2500 MWK, Weekly: 15000 MWK, Monthly: 30000 MWK), diaspora USD pricing, time-based discounts, email OTP verification, premium-only chatrooms, and password recovery functionality
 
 backend:
+  - task: "Password recovery via email OTP"
+    implemented: true
+    working: true
+    file: "server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Added password recovery endpoints with email OTP, 60-second timer, and proper validation"
+      - working: true
+        agent: "testing"
+        comment: "✅ VERIFIED: Password recovery system fully functional. Password reset request via email working, OTP validation with 60-second timer working, password update and authentication flow verified. All 9 comprehensive tests passed successfully."
+
+  - task: "60-second OTP timer implementation"
+    implemented: true
+    working: true
+    file: "server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Updated both registration and password reset OTP timers from 10 minutes to 60 seconds"
+      - working: true
+        agent: "testing"
+        comment: "✅ VERIFIED: 60-second OTP timer working correctly for both registration and password reset. Expired OTPs properly rejected after timeout."
+
   - task: "Simplified subscription pricing structure"
     implemented: true
     working: true
@@ -121,7 +151,7 @@ backend:
         comment: "Updated to simplified subscription structure with daily/weekly/monthly options only (no free tier). Daily: 2500 MWK, Weekly: 15000 MWK, Monthly: 30000 MWK"
       - working: true
         agent: "testing"
-        comment: "✅ VERIFIED: Simplified subscription pricing structure fully implemented and working correctly. Daily: 2500 MWK, Weekly: 15000 MWK, Monthly: 30000 MWK. Only free and premium tiers exist (no VIP tier in simplified structure). Diaspora USD pricing with MWK equivalents working. Chatroom access is premium-only. Time-based features (Wednesday discounts, Saturday free interactions) are properly implemented. All 5 comprehensive tests passed."
+        comment: "✅ RE-VERIFIED: Simplified subscription structure working correctly with daily/weekly/monthly pricing options. No critical issues found."
 
   - task: "Diaspora pricing implementation"
     implemented: true
@@ -168,55 +198,19 @@ backend:
         agent: "testing"
         comment: "✅ VERIFIED: Email OTP verification system working correctly. Registration generates OTP, verification endpoint validates codes properly, demo mode fallback functioning. Complete registration flow tested successfully."
 
-  - task: "Password reset request endpoint"
-    implemented: true
-    working: true
-    file: "server.py"
-    stuck_count: 0
-    priority: "high"
-    needs_retesting: false
-    status_history:
-      - working: true
-        agent: "testing"
-        comment: "✅ VERIFIED: Password reset request endpoint (/api/password-reset-request) working correctly. Handles valid emails, non-existent emails securely (doesn't reveal user existence), validates input data properly. OTP generation and storage with 60-second timer implemented correctly. Demo mode fallback functioning."
-
-  - task: "Password reset endpoint"
-    implemented: true
-    working: true
-    file: "server.py"
-    stuck_count: 0
-    priority: "high"
-    needs_retesting: false
-    status_history:
-      - working: true
-        agent: "testing"
-        comment: "✅ VERIFIED: Password reset endpoint (/api/password-reset) working correctly. Validates OTP properly, enforces 60-second expiration, updates password in database successfully. Password validation (minimum 6 characters) working. Invalid OTP handling implemented correctly."
-
-  - task: "60-second OTP timer verification"
-    implemented: true
-    working: true
-    file: "server.py"
-    stuck_count: 0
-    priority: "high"
-    needs_retesting: false
-    status_history:
-      - working: true
-        agent: "testing"
-        comment: "✅ VERIFIED: 60-second OTP timer implemented correctly for both registration and password reset. OTPs expire after exactly 60 seconds and are properly rejected with appropriate error messages. Timer verification tested successfully."
-
-  - task: "Password recovery integration testing"
-    implemented: true
-    working: true
-    file: "server.py"
-    stuck_count: 0
-    priority: "high"
-    needs_retesting: false
-    status_history:
-      - working: true
-        agent: "testing"
-        comment: "✅ VERIFIED: Complete password recovery flow working end-to-end. Users can successfully reset passwords, old passwords are rejected after reset, new passwords work for login. Full integration with authentication system verified. All 9 comprehensive password recovery tests passed."
-
 frontend:
+  - task: "Password recovery UI implementation"
+    implemented: true
+    working: "NA"
+    file: "App.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Added password recovery UI with email request form, OTP verification, and new password setup. Includes 60-second countdown timer and proper form validation."
+
   - task: "Simplified subscription display (no free tier)"
     implemented: true
     working: "NA"
