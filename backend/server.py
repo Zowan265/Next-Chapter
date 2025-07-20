@@ -11,6 +11,7 @@ import smtplib
 
 # Add OTP storage (in production, use Redis)
 otp_storage = {}
+password_reset_storage = {}  # Storage for password reset OTPs
 
 def generate_otp():
     """Generate a 6-digit OTP"""
