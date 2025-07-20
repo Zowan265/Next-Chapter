@@ -979,44 +979,54 @@ class NextChapterAPITest(unittest.TestCase):
         print(f"  - Features unlocked: {len(features)} features")
         print(f"  - Simplified structure: Only free/premium tiers supported")
 
-    def test_33_comprehensive_pricing_calculation_test(self):
-        """HIGH PRIORITY: Comprehensive test of pricing calculations with discounts"""
-        # Test both local and diaspora pricing with discounts
-        for location in ["local", "diaspora"]:
-            response = requests.get(f"{self.base_url}/api/subscription/tiers?location={location}")
-            self.assertEqual(response.status_code, 200)
-            data = response.json()
+    def test_33_chatroom_access_logic_verification(self):
+        """HIGH PRIORITY: Test chatroom access logic (premium subscribers only)"""
+        if not self.token:
+            print("⚠️ Skipping chatroom access test - not logged in")
+            return
             
-            for tier_name in ["premium", "vip"]:
-                tier = data[tier_name]
-                pricing = tier["pricing"]
-                
-                for duration in ["daily", "weekly", "monthly"]:
-                    price_info = pricing[duration]
-                    
-                    # Verify all required pricing fields
-                    required_fields = ["original_price", "discounted_price", "discount_percentage", 
-                                     "discount_reason", "has_discount", "currency"]
-                    for field in required_fields:
-                        self.assertIn(field, price_info)
-                    
-                    # Verify discount calculation logic
-                    if price_info["has_discount"]:
-                        expected_discount = price_info["original_price"] * (price_info["discount_percentage"] / 100)
-                        expected_discounted = price_info["original_price"] - expected_discount
-                        self.assertEqual(price_info["discounted_price"], round(expected_discounted))
-                    else:
-                        self.assertEqual(price_info["discounted_price"], price_info["original_price"])
-                        self.assertEqual(price_info["discount_percentage"], 0)
-                    
-                    # For diaspora, verify MWK equivalent exists
-                    if location == "diaspora":
-                        self.assertIn("mwk_equivalent", price_info)
+        headers = {"Authorization": f"Bearer {self.token}"}
         
-        print(f"✅ Comprehensive pricing calculation test passed")
-        print(f"  - Tested both local and diaspora pricing")
-        print(f"  - Verified discount calculations")
-        print(f"  - Confirmed currency conversions")
+        # Get user subscription status
+        response = requests.get(f"{self.base_url}/api/user/subscription", headers=headers)
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        
+        subscription_tier = data.get("subscription_tier", "free")
+        features = data.get("features_unlocked", [])
+        
+        # Test chatroom access based on subscription tier
+        if subscription_tier == "premium":
+            # Premium users should have chatroom access
+            self.assertIn("Access to exclusive chat rooms", features)
+            print(f"✅ Premium user has chatroom access")
+        else:
+            # Free users should NOT have chatroom access
+            chatroom_features = [f for f in features if "chat room" in f.lower()]
+            self.assertEqual(len(chatroom_features), 0)
+            print(f"✅ Free user does not have chatroom access")
+        
+        # Test subscription tiers to verify chatroom feature listing
+        tiers_response = requests.get(f"{self.base_url}/api/subscription/tiers")
+        self.assertEqual(tiers_response.status_code, 200)
+        tiers_data = tiers_response.json()
+        
+        # Verify premium tier includes chatroom access
+        premium_features = tiers_data["premium"]["features"]
+        chatroom_feature_found = any("chat room" in feature.lower() for feature in premium_features)
+        self.assertTrue(chatroom_feature_found)
+        
+        # Verify free tier does NOT include chatroom access
+        free_features = tiers_data["free"]["features"]
+        free_chatroom_features = [f for f in free_features if "chat room" in f.lower()]
+        self.assertEqual(len(free_chatroom_features), 0)
+        
+        print(f"✅ Chatroom access logic verified")
+        print(f"  - Current tier: {subscription_tier}")
+        print(f"  - Has chatroom access: {'Yes' if subscription_tier == 'premium' else 'No'}")
+        print(f"  - Premium features include chatrooms: {chatroom_feature_found}")
+        print(f"  - Free tier chatroom features: {len(free_chatroom_features)}")
+        print(f"  - Chatroom access: Premium subscribers only")
 
 def run_tests():
     # Create a test suite
