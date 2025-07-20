@@ -1450,7 +1450,18 @@ def run_tests():
         'test_30_wednesday_discount_verification',
         'test_31_saturday_free_interactions_verification',
         'test_32_simplified_user_subscription_logic_verification',
-        'test_33_chatroom_access_logic_verification'
+        'test_33_chatroom_access_logic_verification',
+        # PASSWORD RECOVERY FUNCTIONALITY TESTS
+        'test_34_password_reset_request_valid_email',
+        'test_35_password_reset_request_nonexistent_email',
+        'test_36_password_reset_request_invalid_data',
+        'test_37_password_reset_with_valid_otp',
+        'test_38_password_reset_invalid_otp',
+        'test_39_password_reset_expired_otp',
+        'test_40_password_reset_password_validation',
+        'test_41_login_with_new_password_after_reset',
+        'test_42_registration_otp_60_second_timer',
+        'test_43_complete_password_recovery_flow'
     ]
     
     for test_case in test_cases:
