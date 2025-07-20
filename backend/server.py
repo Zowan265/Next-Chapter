@@ -254,6 +254,39 @@ SUBSCRIPTION_TIERS = {
     }
 }
 
+# New simplified subscription pricing structure
+SUBSCRIPTION_PRICING = {
+    "MW_LOCAL": {  # For Malawians in Malawi
+        "daily": {"amount": 2500, "currency": "MWK"},
+        "weekly": {"amount": 15000, "currency": "MWK"},
+        "monthly": {"amount": 30000, "currency": "MWK"}
+    },
+    "MW_DIASPORA": {  # For Malawians abroad (USD pricing)
+        "daily": {"amount": 1.35, "currency": "USD", "mwk_equivalent": 2500},
+        "weekly": {"amount": 8.05, "currency": "USD", "mwk_equivalent": 15000},
+        "monthly": {"amount": 16.09, "currency": "USD", "mwk_equivalent": 30000}
+    },
+    "default": {  # For non-Malawians
+        "daily": {"amount": 1.35, "currency": "USD"},
+        "weekly": {"amount": 8.05, "currency": "USD"},
+        "monthly": {"amount": 16.09, "currency": "USD"}
+    }
+}
+
+# Subscription features (all subscribers get same features)
+SUBSCRIPTION_FEATURES = [
+    "Unlimited likes and matches",
+    "Connect with fellow Malawians worldwide", 
+    "Advanced matching algorithms",
+    "Enhanced chat features",
+    "Access to exclusive chat rooms",
+    "See who liked you",
+    "Priority customer support",
+    "Profile boost",
+    "Cultural compatibility matching",
+    "Special offers and discounts"
+]
+
 def get_current_cat_time():
     """Get current time in CAT (Central Africa Time)"""
     cat_tz = pytz.timezone('Africa/Maputo')  # CAT timezone
