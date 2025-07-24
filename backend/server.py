@@ -437,6 +437,22 @@ class MessageCreate(BaseModel):
     match_id: str
     content: str
 
+class PaychanguPaymentRequest(BaseModel):
+    amount: float
+    currency: str = "MWK"
+    subscription_type: str  # daily, weekly, monthly
+    payment_method: str = "mobile_money"  # mobile_money, card
+    phone_number: Optional[str] = None
+    operator: Optional[str] = None  # TNM, AIRTEL
+    description: Optional[str] = None
+
+class PaychanguPaymentResponse(BaseModel):
+    success: bool
+    transaction_id: Optional[str] = None
+    payment_url: Optional[str] = None
+    message: str
+    data: Optional[dict] = None
+
 @app.post("/api/verify-registration")
 async def verify_registration(verification: EmailVerification):
     # Check if OTP exists for this email
