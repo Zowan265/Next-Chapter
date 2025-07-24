@@ -95,7 +95,7 @@ def send_email_otp(email, otp):
     except Exception as e:
         print(f"❌ Failed to send email: {str(e)}")
         return False
-from fastapi import FastAPI, HTTPException, Depends, UploadFile, File, Form, status, Header
+from fastapi import FastAPI, HTTPException, Depends, UploadFile, File, Form, status, Header, Request
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
