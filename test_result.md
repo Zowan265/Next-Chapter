@@ -225,6 +225,9 @@ frontend:
       - working: "NA"
         agent: "main"
         comment: "Added password recovery UI with email request form, OTP verification, and new password setup. Includes 60-second countdown timer and proper form validation."
+      - working: "NA"
+        agent: "testing"
+        comment: "Frontend timer needs to be updated from 60 seconds to 150 seconds (2 minutes 30 seconds) to match the updated backend OTP timer. The UI countdown should display 2:30 instead of 1:00."
 
   - task: "Simplified subscription display (no free tier)"
     implemented: true
