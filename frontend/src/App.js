@@ -238,7 +238,7 @@ function App() {
 
   // Password Recovery Functions
   const startOtpTimer = () => {
-    setOtpTimer(60);
+    setOtpTimer(150); // 2 minutes 30 seconds to match backend
     const timer = setInterval(() => {
       setOtpTimer((prev) => {
         if (prev <= 1) {
