@@ -644,7 +644,7 @@ def send_password_reset_email(email: str, otp: str) -> bool:
                     </div>
                     
                     <div class="warning">
-                        <strong>⚠️ Important:</strong> This code will expire in 60 seconds for security reasons. 
+                        <strong>⚠️ Important:</strong> This code will expire in 2 minutes 30 seconds for security reasons. 
                         If you didn't request this password reset, please ignore this email.
                     </div>
                     
