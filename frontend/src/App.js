@@ -1545,7 +1545,7 @@ function App() {
                 </div>
 
                 <button
-                  onClick={() => requestPaymentOtp('daily')}
+                  onClick={() => initiatePaychanguPayment('daily')}
                   className="w-full bg-gradient-to-r from-purple-600 to-purple-700 text-white py-3 rounded-lg font-semibold hover:from-purple-700 hover:to-purple-800 transition-all duration-300"
                 >
                   Subscribe Daily
