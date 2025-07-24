@@ -236,6 +236,13 @@ function App() {
     }
   };
 
+  // Helper function to format timer display
+  const formatTimer = (seconds) => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+  };
+
   // Password Recovery Functions
   const startOtpTimer = () => {
     setOtpTimer(150); // 2 minutes 30 seconds to match backend
