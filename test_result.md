@@ -122,6 +122,9 @@ backend:
       - working: true
         agent: "testing"
         comment: "✅ RE-VERIFIED WITH REAL EMAIL CREDENTIALS: Password recovery email system now fully operational with real SMTP. Gmail credentials successfully configured. Password reset emails sent via smtp.gmail.com:587 with professional HTML templates. 60-second OTP timer enforced. Demo mode disabled. Real OTP codes generated and sent securely. System ready for production use."
+      - working: true
+        agent: "testing"
+        comment: "✅ RE-VERIFIED WITH 150-SECOND TIMER: Password recovery OTP timer successfully updated from 60 seconds to 150 seconds (2 minutes 30 seconds). Backend code shows timedelta(seconds=150) for password reset flow. Email template updated to mention '2 minutes 30 seconds' and 'This code will expire in 2 minutes 30 seconds for security reasons'. OTP generation, email delivery via real SMTP, and validation all working correctly with new 150-second timing. System ready for production with updated timer."
 
   - task: "150-second OTP timer implementation (updated from 60 seconds)"
     implemented: true
