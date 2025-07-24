@@ -25,4 +25,4 @@ jq>=1.6.0
 typer>=0.9.0
 bcrypt>=4.1.2
 pytz>=2023.3
-paychangu==1.0.0
+paychangu==0.0.3
