@@ -357,6 +357,126 @@ function App() {
     }
   };
 
+  // Paychangu Payment Functions
+  const [paymentStep, setPaymentStep] = useState('method'); // 'method', 'details', 'processing'
+  const [paymentMethod, setPaymentMethod] = useState('');
+  const [paymentData, setPaymentData] = useState({
+    operator: '',
+    phoneNumber: '',
+    amount: 0,
+    subscriptionType: ''
+  });
+
+  const initiatePaychanguPayment = async (subscriptionType) => {
+    setSelectedTier(subscriptionType);
+    setPaymentData({ 
+      ...paymentData, 
+      subscriptionType,
+      amount: subscriptionType === 'daily' ? 2500 : subscriptionType === 'weekly' ? 15000 : 30000
+    });
+    setPaymentStep('method');
+    setCurrentView('paychangu-payment');
+  };
+
+  const processPaychanguPayment = async () => {
+    setLoading(true);
+    setError('');
+
+    try {
+      const paymentRequest = {
+        amount: paymentData.amount,
+        currency: 'MWK',
+        subscription_type: paymentData.subscriptionType,
+        payment_method: paymentMethod,
+        phone_number: paymentMethod === 'mobile_money' ? paymentData.phoneNumber : null,
+        operator: paymentMethod === 'mobile_money' ? paymentData.operator : null,
+        description: `NextChapter ${paymentData.subscriptionType} subscription`
+      };
+
+      const response = await fetch(`${API_BASE_URL}/api/paychangu/initiate-payment`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify(paymentRequest),
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        if (data.payment_url) {
+          // Redirect to Paychangu payment page
+          alert('🎉 Redirecting to payment page...');
+          window.open(data.payment_url, '_blank');
+          setPaymentStep('processing');
+        } else {
+          alert('✅ Payment initiated! Please complete payment on your mobile device.');
+          setPaymentStep('processing');
+        }
+
+        // Poll for payment status
+        pollPaymentStatus(data.transaction_id);
+      } else {
+        setError(data.message || 'Payment initiation failed');
+        alert(data.message || 'Payment initiation failed');
+      }
+    } catch (error) {
+      console.error('Payment error:', error);
+      setError('Network error occurred. Please try again.');
+      alert('Network error occurred. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const pollPaymentStatus = async (transactionId) => {
+    let attempts = 0;
+    const maxAttempts = 30; // Poll for 5 minutes (30 * 10 seconds)
+    
+    const checkStatus = async () => {
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/paychangu/transaction/${transactionId}`, {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          }
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          const status = data.transaction?.status?.toLowerCase();
+
+          if (status === 'success' || status === 'completed' || status === 'paid') {
+            alert('🎉 Payment successful! Your subscription has been activated.');
+            fetchUserSubscription(); // Refresh subscription data
+            setCurrentView('dashboard');
+            return;
+          } else if (status === 'failed' || status === 'cancelled') {
+            alert('❌ Payment failed or was cancelled. Please try again.');
+            setPaymentStep('method');
+            return;
+          }
+        }
+
+        attempts++;
+        if (attempts < maxAttempts) {
+          setTimeout(checkStatus, 10000); // Check again in 10 seconds
+        } else {
+          alert('⏰ Payment status check timeout. Please check your subscription status in your dashboard.');
+          setCurrentView('dashboard');
+        }
+      } catch (error) {
+        console.error('Status check error:', error);
+        attempts++;
+        if (attempts < maxAttempts) {
+          setTimeout(checkStatus, 10000);
+        }
+      }
+    };
+
+    setTimeout(checkStatus, 5000); // Start checking after 5 seconds
+  };
+
   const requestPaymentOtp = async (tier) => {
     try {
       const response = await fetch(`${API_BASE_URL}/api/payment/request-otp`, {
