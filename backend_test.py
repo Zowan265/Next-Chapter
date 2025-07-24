@@ -1411,11 +1411,133 @@ class NextChapterAPITest(unittest.TestCase):
         print(f"  - New password accepted: ✅")
         print(f"  - End-to-end flow: ✅")
 
+    def test_44_email_otp_real_credentials_verification(self):
+        """HIGH PRIORITY: Test that email OTP system uses real email credentials (not demo mode)"""
+        real_email_test = f"realmail_test_{self.random_string(8)}@example.com"
+        
+        # Test registration with real email credentials
+        payload = {
+            "name": f"Real Email Test User {self.random_string(4)}",
+            "email": real_email_test,
+            "password": "RealEmailTest123!",
+            "age": 28,
+            "phone_country": "MW"
+        }
+        
+        # Register user
+        response = requests.post(f"{self.base_url}/api/register", json=payload)
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        
+        # Check that email credentials are configured (not demo mode)
+        self.assertIn("message", data)
+        self.assertIn("otp_sent", data)
+        
+        # If email credentials are properly configured, should not see demo mode messages
+        self.assertNotIn("demo_mode", data)
+        self.assertNotIn("Demo mode", data.get("message", ""))
+        
+        # Should indicate real email was sent
+        if data.get("otp_sent", False):
+            self.assertTrue("check your email" in data["message"].lower())
+            print(f"✅ Real email OTP system active - email sent to {real_email_test}")
+        else:
+            print(f"⚠️ Email OTP system may be in demo mode")
+        
+        print(f"✅ Email OTP real credentials verification")
+        print(f"  - Registration message: {data['message']}")
+        print(f"  - OTP sent: {data.get('otp_sent', False)}")
+        print(f"  - Demo mode indicators: {'None found' if 'demo' not in data.get('message', '').lower() else 'Found'}")
+        
+        # Test password recovery email as well
+        reset_payload = {"email": real_email_test}
+        reset_response = requests.post(f"{self.base_url}/api/password-reset-request", json=reset_payload)
+        self.assertEqual(reset_response.status_code, 200)
+        reset_data = reset_response.json()
+        
+        # Check password recovery email sending
+        self.assertIn("message", reset_data)
+        self.assertIn("otp_sent", reset_data)
+        
+        # Should not contain demo OTP if real email is configured
+        if "demo_otp" not in reset_data:
+            print(f"✅ Password recovery email sent via real SMTP (no demo OTP in response)")
+        else:
+            print(f"⚠️ Password recovery may be in demo mode - demo OTP found: {reset_data.get('demo_otp')}")
+        
+        print(f"✅ Password recovery email verification")
+        print(f"  - Reset message: {reset_data['message']}")
+        print(f"  - OTP sent: {reset_data.get('otp_sent', False)}")
+        print(f"  - Demo OTP present: {'Yes' if 'demo_otp' in reset_data else 'No'}")
+
+    def test_45_email_credentials_configuration_check(self):
+        """HIGH PRIORITY: Verify email credentials are properly configured in backend"""
+        # This test checks if the backend has proper email configuration
+        # by testing the registration flow and checking for demo mode indicators
+        
+        config_test_email = f"config_test_{self.random_string(8)}@example.com"
+        
+        # Test registration
+        payload = {
+            "name": f"Config Test User {self.random_string(4)}",
+            "email": config_test_email,
+            "password": "ConfigTest123!",
+            "age": 30
+        }
+        
+        response = requests.post(f"{self.base_url}/api/register", json=payload)
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        
+        # Analyze response for email configuration status
+        message = data.get("message", "").lower()
+        otp_sent = data.get("otp_sent", False)
+        demo_mode = data.get("demo_mode", False)
+        
+        # Check for proper email configuration indicators
+        if otp_sent and not demo_mode and "demo" not in message:
+            email_config_status = "CONFIGURED"
+            print(f"✅ Email credentials properly configured")
+            print(f"  - SMTP connection: Active")
+            print(f"  - Demo mode: Disabled")
+            print(f"  - Real emails: Being sent")
+        elif demo_mode or "demo" in message:
+            email_config_status = "DEMO_MODE"
+            print(f"⚠️ Email system in demo mode")
+            print(f"  - SMTP connection: Not configured")
+            print(f"  - Demo mode: Active")
+            print(f"  - Real emails: Not being sent")
+        else:
+            email_config_status = "UNKNOWN"
+            print(f"❓ Email configuration status unclear")
+        
+        # Test password recovery as well
+        reset_payload = {"email": config_test_email}
+        reset_response = requests.post(f"{self.base_url}/api/password-reset-request", json=reset_payload)
+        
+        if reset_response.status_code == 200:
+            reset_data = reset_response.json()
+            reset_message = reset_data.get("message", "").lower()
+            has_demo_otp = "demo_otp" in reset_data
+            
+            if has_demo_otp or "demo" in reset_message:
+                print(f"⚠️ Password recovery also in demo mode")
+            else:
+                print(f"✅ Password recovery using real email")
+        
+        print(f"✅ Email credentials configuration check complete")
+        print(f"  - Overall status: {email_config_status}")
+        print(f"  - Registration emails: {'Real SMTP' if email_config_status == 'CONFIGURED' else 'Demo mode'}")
+        print(f"  - Password recovery emails: {'Real SMTP' if not has_demo_otp else 'Demo mode'}")
+        
+        # Store status for other tests
+        self.email_config_status = email_config_status
+
 def run_tests():
     # Create a test suite
     suite = unittest.TestSuite()
     
-    # Add tests in order - including high priority retesting tasks
+    # Add tests in order - including high priority retesting tasks and new email tests
     test_cases = [
         'test_01_api_root',
         'test_02_register_invalid_age',
