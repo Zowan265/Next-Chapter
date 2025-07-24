@@ -117,6 +117,14 @@ except ImportError:
     print("⚠️ emergentintegrations not installed - payment features disabled")
     StripeCheckout = None
 
+# Paychangu payment integration
+try:
+    import paychangu
+    print("✅ Paychangu SDK imported successfully")
+except ImportError:
+    print("⚠️ Paychangu SDK not installed - mobile money payments disabled")
+    paychangu = None
+
 # Environment variables
 MONGO_URL = os.environ.get('MONGO_URL', 'mongodb://localhost:27017/')
 JWT_SECRET = os.environ.get('JWT_SECRET', 'nextchapter-secret-key-2025')
