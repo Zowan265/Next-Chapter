@@ -1357,6 +1357,336 @@ async def create_checkout_session(
         "payment_method": f"Verified via {verification_method}"
     }
 
+# Paychangu Payment Integration Functions
+
+def initialize_paychangu_client():
+    """Initialize Paychangu client with API credentials"""
+    if not PAYCHANGU_PUBLIC_KEY or not PAYCHANGU_SECRET_KEY:
+        raise HTTPException(status_code=500, detail="Paychangu credentials not configured")
+    
+    # Note: Paychangu SDK might use different initialization method
+    # This is a placeholder - adjust based on actual SDK documentation
+    client = {
+        "public_key": PAYCHANGU_PUBLIC_KEY,
+        "secret_key": PAYCHANGU_SECRET_KEY,
+        "base_url": PAYCHANGU_BASE_URL
+    }
+    return client
+
+@app.post("/api/paychangu/initiate-payment")
+async def initiate_paychangu_payment(
+    payment_request: PaychanguPaymentRequest,
+    current_user = Depends(get_current_user)
+):
+    """Initiate payment with Paychangu for subscription"""
+    try:
+        # Validate subscription type and amount
+        if payment_request.subscription_type not in ["daily", "weekly", "monthly"]:
+            raise HTTPException(status_code=400, detail="Invalid subscription type")
+        
+        # Get expected amount for validation
+        expected_amounts = {
+            "daily": 2500,
+            "weekly": 15000,
+            "monthly": 30000
+        }
+        
+        expected_amount = expected_amounts[payment_request.subscription_type]
+        if abs(payment_request.amount - expected_amount) > 0.01:  # Allow small floating point differences
+            raise HTTPException(status_code=400, detail=f"Invalid amount for {payment_request.subscription_type} subscription")
+        
+        # Initialize Paychangu client
+        client = initialize_paychangu_client()
+        
+        # Prepare payment data
+        payment_data = {
+            "amount": payment_request.amount,
+            "currency": payment_request.currency,
+            "callback_url": f"{PAYCHANGU_BASE_URL}/api/paychangu/webhook",
+            "return_url": "https://nextchapter.app/payment-success",
+            "description": f"NextChapter {payment_request.subscription_type.title()} Subscription - {current_user['name']}",
+            "customer": {
+                "name": current_user["name"],
+                "email": current_user["email"],
+                "phone": payment_request.phone_number
+            },
+            "metadata": {
+                "user_id": current_user["id"],
+                "subscription_type": payment_request.subscription_type,
+                "subscription_duration": payment_request.subscription_type
+            }
+        }
+        
+        # Add mobile money specific data if applicable
+        if payment_request.payment_method == "mobile_money":
+            if not payment_request.phone_number or not payment_request.operator:
+                raise HTTPException(status_code=400, detail="Phone number and operator required for mobile money")
+            
+            payment_data["payment_method"] = "mobile_money"
+            payment_data["operator"] = payment_request.operator.upper()  # TNM or AIRTEL
+            payment_data["phone"] = payment_request.phone_number
+        
+        # Make API call to Paychangu
+        # Note: This is pseudocode - adjust based on actual Paychangu SDK
+        import requests
+        
+        response = requests.post(
+            f"{PAYCHANGU_BASE_URL}/api/v1/transactions",
+            headers={
+                "Authorization": f"Bearer {PAYCHANGU_SECRET_KEY}",
+                "Content-Type": "application/json"
+            },
+            json=payment_data
+        )
+        
+        if response.status_code == 200:
+            result = response.json()
+            
+            # Store transaction in database for tracking
+            transaction_data = {
+                "id": str(uuid.uuid4()),
+                "user_id": current_user["id"],
+                "paychangu_transaction_id": result.get("transaction_id"),
+                "amount": payment_request.amount,
+                "currency": payment_request.currency,
+                "subscription_type": payment_request.subscription_type,
+                "payment_method": payment_request.payment_method,
+                "status": "pending",
+                "created_at": datetime.utcnow(),
+                "paychangu_response": result
+            }
+            
+            # Store in a transactions collection (create if doesn't exist)
+            try:
+                transactions_collection = db.transactions
+                transactions_collection.insert_one(transaction_data)
+            except Exception as e:
+                print(f"⚠️ Failed to store transaction: {e}")
+            
+            return PaychanguPaymentResponse(
+                success=True,
+                transaction_id=result.get("transaction_id"),
+                payment_url=result.get("checkout_url") or result.get("payment_url"),
+                message="Payment initiated successfully",
+                data=result
+            )
+        else:
+            error_data = response.json() if response.content else {}
+            return PaychanguPaymentResponse(
+                success=False,
+                message=f"Payment initiation failed: {error_data.get('message', 'Unknown error')}",
+                data=error_data
+            )
+            
+    except Exception as e:
+        print(f"❌ Paychangu payment error: {str(e)}")
+        return PaychanguPaymentResponse(
+            success=False,
+            message=f"Payment processing error: {str(e)}"
+        )
+
+@app.post("/api/paychangu/webhook")
+async def paychangu_webhook(request: Request):
+    """Handle Paychangu webhook for payment status updates"""
+    try:
+        # Get the raw body
+        body = await request.body()
+        
+        # Parse JSON payload
+        webhook_data = json.loads(body.decode('utf-8'))
+        
+        # Verify webhook signature if Paychangu provides one
+        # This is important for security - implement based on Paychangu docs
+        
+        transaction_id = webhook_data.get("transaction_id")
+        status = webhook_data.get("status")
+        
+        if not transaction_id:
+            raise HTTPException(status_code=400, detail="Missing transaction ID")
+        
+        # Find the transaction in our database
+        transactions_collection = db.transactions
+        transaction = transactions_collection.find_one({"paychangu_transaction_id": transaction_id})
+        
+        if not transaction:
+            print(f"⚠️ Webhook received for unknown transaction: {transaction_id}")
+            return {"status": "ignored"}
+        
+        # Update transaction status
+        transactions_collection.update_one(
+            {"paychangu_transaction_id": transaction_id},
+            {
+                "$set": {
+                    "status": status,
+                    "webhook_received_at": datetime.utcnow(),
+                    "webhook_data": webhook_data
+                }
+            }
+        )
+        
+        # If payment was successful, activate subscription
+        if status.lower() in ["success", "completed", "paid"]:
+            user_id = transaction["user_id"]
+            subscription_type = transaction["subscription_type"]
+            
+            # Calculate subscription end date
+            now = datetime.utcnow()
+            if subscription_type == "daily":
+                expires_at = now + timedelta(days=1)
+            elif subscription_type == "weekly":
+                expires_at = now + timedelta(days=7)
+            elif subscription_type == "monthly":
+                expires_at = now + timedelta(days=30)
+            else:
+                expires_at = now + timedelta(days=1)  # Default to 1 day
+            
+            # Update user subscription
+            users_collection.update_one(
+                {"id": user_id},
+                {
+                    "$set": {
+                        "subscription_tier": "premium",
+                        "subscription_status": "active",
+                        "subscription_expires": expires_at,
+                        "subscription_updated_at": now,
+                        "daily_likes_used": 0  # Reset likes count
+                    }
+                }
+            )
+            
+            print(f"✅ Subscription activated for user {user_id} - {subscription_type}")
+            
+            # Send confirmation email to user
+            user = users_collection.find_one({"id": user_id})
+            if user and user.get("email"):
+                send_subscription_confirmation_email(
+                    user["email"], user["name"], subscription_type, expires_at, transaction["amount"]
+                )
+        
+        return {"status": "processed"}
+        
+    except Exception as e:
+        print(f"❌ Webhook processing error: {str(e)}")
+        raise HTTPException(status_code=500, detail="Webhook processing failed")
+
+@app.get("/api/paychangu/transaction/{transaction_id}")
+async def get_transaction_status(
+    transaction_id: str,
+    current_user = Depends(get_current_user)
+):
+    """Get transaction status for user's payment"""
+    try:
+        transactions_collection = db.transactions
+        transaction = transactions_collection.find_one({
+            "paychangu_transaction_id": transaction_id,
+            "user_id": current_user["id"]  # Ensure user can only see their own transactions
+        })
+        
+        if not transaction:
+            raise HTTPException(status_code=404, detail="Transaction not found")
+        
+        # Clean up the response
+        transaction.pop('_id', None)
+        
+        return {
+            "transaction": transaction,
+            "status": transaction.get("status", "pending"),
+            "message": f"Transaction is {transaction.get('status', 'pending')}"
+        }
+        
+    except Exception as e:
+        print(f"❌ Transaction status error: {str(e)}")
+        raise HTTPException(status_code=500, detail="Failed to get transaction status")
+
+def send_subscription_confirmation_email(email: str, name: str, subscription_type: str, expires_at: datetime, amount: float):
+    """Send subscription confirmation email"""
+    try:
+        if not EMAIL_USER or not EMAIL_PASSWORD:
+            print(f"⚠️ Email not configured. Subscription confirmed for {email}")
+            return False
+        
+        msg = MIMEMultipart('alternative')
+        msg['Subject'] = 'NextChapter - Subscription Confirmed! 🎉'
+        msg['From'] = f"NextChapter <{EMAIL_USER}>"
+        msg['To'] = email
+        
+        # Create HTML email body
+        html_body = f"""
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <style>
+                body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; }}
+                .container {{ max-width: 600px; margin: 0 auto; padding: 20px; }}
+                .header {{ background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; text-align: center; padding: 30px; border-radius: 10px 10px 0 0; }}
+                .content {{ background: #f8f9fa; padding: 30px; border-radius: 0 0 10px 10px; }}
+                .success-box {{ background: #d4edda; border: 2px solid #c3e6cb; border-radius: 8px; padding: 20px; text-align: center; margin: 20px 0; }}
+                .amount {{ font-size: 24px; font-weight: bold; color: #28a745; }}
+                .details {{ background: #fff; border-radius: 5px; padding: 15px; margin: 20px 0; }}
+                .footer {{ text-align: center; margin-top: 30px; color: #666; font-size: 14px; }}
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <div class="header">
+                    <h1>🎉 Payment Successful!</h1>
+                    <p>NextChapter - Malawian Hearts</p>
+                </div>
+                <div class="content">
+                    <h2>Hello {name}!</h2>
+                    <p>Your subscription payment has been processed successfully. Welcome to NextChapter Premium!</p>
+                    
+                    <div class="success-box">
+                        <h3>Subscription Activated</h3>
+                        <div class="amount">MWK {amount:,.0f}</div>
+                        <p><strong>{subscription_type.title()} Subscription</strong></p>
+                    </div>
+                    
+                    <div class="details">
+                        <h4>Subscription Details:</h4>
+                        <p><strong>Plan:</strong> {subscription_type.title()} Premium</p>
+                        <p><strong>Amount Paid:</strong> MWK {amount:,.0f}</p>
+                        <p><strong>Valid Until:</strong> {expires_at.strftime('%B %d, %Y at %I:%M %p')}</p>
+                        <p><strong>Features Unlocked:</strong></p>
+                        <ul>
+                            <li>✅ Unlimited likes and matches</li>
+                            <li>✅ Connect with Malawians worldwide</li>
+                            <li>✅ Enhanced chat features</li>
+                            <li>✅ Access to exclusive chat rooms</li>
+                            <li>✅ See who liked you</li>
+                            <li>✅ Priority customer support</li>
+                        </ul>
+                    </div>
+                    
+                    <p>Start exploring and connecting with fellow Malawians today!</p>
+                    <p>Thank you for choosing NextChapter!</p>
+                </div>
+                <div class="footer">
+                    <p>Made with ❤️ for meaningful connections</p>
+                </div>
+            </div>
+        </body>
+        </html>
+        """
+        
+        msg.attach(MIMEText(html_body, 'html'))
+        
+        # Connect to Gmail SMTP
+        server = smtplib.SMTP('smtp.gmail.com', 587)
+        server.starttls()
+        server.login(EMAIL_USER, EMAIL_PASSWORD)
+        
+        # Send email
+        server.send_message(msg)
+        server.quit()
+        
+        print(f"✅ Subscription confirmation email sent to {email}")
+        return True
+        
+    except Exception as e:
+        print(f"❌ Failed to send subscription confirmation email: {str(e)}")
+        return False
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8001)
