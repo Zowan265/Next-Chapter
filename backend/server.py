@@ -8,6 +8,10 @@ import pytz
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import smtplib
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 # Add OTP storage (in production, use Redis)
 otp_storage = {}
