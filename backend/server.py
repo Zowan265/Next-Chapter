@@ -640,7 +640,7 @@ def send_password_reset_email(email: str, otp: str) -> bool:
                     <div class="otp-code">
                         <p>Your password reset code is:</p>
                         <div class="otp-number">{otp}</div>
-                        <p><small>This code expires in 60 seconds</small></p>
+                        <p><small>This code expires in 2 minutes 30 seconds</small></p>
                     </div>
                     
                     <div class="warning">
