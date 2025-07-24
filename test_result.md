@@ -197,6 +197,9 @@ backend:
       - working: true
         agent: "testing"
         comment: "✅ VERIFIED: Email OTP verification system working correctly. Registration generates OTP, verification endpoint validates codes properly, demo mode fallback functioning. Complete registration flow tested successfully."
+      - working: true
+        agent: "testing"
+        comment: "✅ RE-VERIFIED WITH REAL EMAIL CREDENTIALS: Email OTP system now fully operational with real SMTP. Gmail credentials (bilallevyluwemba@gmail.com) successfully configured. Registration emails sent via smtp.gmail.com:587. Demo mode disabled. Real OTP codes generated and sent. Email templates properly formatted with NextChapter branding. System ready for production use."
 
 frontend:
   - task: "Password recovery UI implementation"
