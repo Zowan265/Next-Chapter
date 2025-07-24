@@ -56,7 +56,7 @@ def send_email_otp(email, otp):
                 </div>
                 
                 <p style="color: #6B7280; font-size: 14px; margin-top: 20px;">
-                    This code will expire in 10 minutes. If you didn't request this code, please ignore this email.
+                    This code will expire in 2 minutes 30 seconds. If you didn't request this code, please ignore this email.
                 </p>
                 
                 <div style="margin-top: 30px; padding: 20px; background: #EEF2FF; border-radius: 8px; border-left: 4px solid #8B5CF6;">
