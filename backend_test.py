@@ -1634,7 +1634,9 @@ def run_tests():
         ('test_40_password_reset_password_validation', 'Password reset validation (min 6 chars)'),
         ('test_41_login_with_new_password_after_reset', 'Login integration after password reset'),
         ('test_42_registration_otp_60_second_timer', 'Registration OTP 60-second timer'),
-        ('test_43_complete_password_recovery_flow', 'Complete password recovery flow')
+        ('test_43_complete_password_recovery_flow', 'Complete password recovery flow'),
+        ('test_44_email_otp_real_credentials_verification', 'Email OTP real credentials verification'),
+        ('test_45_email_credentials_configuration_check', 'Email credentials configuration check')
     ]
     
     for test_method, description in high_priority_tests:
