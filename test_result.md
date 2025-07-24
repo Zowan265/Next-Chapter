@@ -209,6 +209,9 @@ backend:
       - working: true
         agent: "testing"
         comment: "✅ RE-VERIFIED WITH REAL EMAIL CREDENTIALS: Email OTP system now fully operational with real SMTP. Gmail credentials (bilallevyluwemba@gmail.com) successfully configured. Registration emails sent via smtp.gmail.com:587. Demo mode disabled. Real OTP codes generated and sent. Email templates properly formatted with NextChapter branding. System ready for production use."
+      - working: true
+        agent: "testing"
+        comment: "✅ RE-VERIFIED WITH 150-SECOND TIMER: Email OTP verification system updated with 150-second timer (2 minutes 30 seconds). Registration email template now shows 'This code will expire in 2 minutes 30 seconds'. Backend code shows timedelta(seconds=150) for registration OTP expiration. Real SMTP delivery working correctly. OTP generation, email sending, and validation all functioning with new 150-second timing. System ready for production with updated timer."
 
 frontend:
   - task: "Password recovery UI implementation"
