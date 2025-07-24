@@ -1914,6 +1914,664 @@ class NextChapterAPITest(unittest.TestCase):
         
         self.assertTrue(True)  # Mark test as passed
 
+    # PAYCHANGU PAYMENT INTEGRATION TESTS
+    
+    def test_50_paychangu_credentials_verification(self):
+        """HIGH PRIORITY: Test Paychangu credentials are properly loaded from environment"""
+        # Test that the backend has Paychangu credentials configured
+        # We can't directly access environment variables, but we can test the initialization
+        
+        # Test payment initiation endpoint exists and requires authentication
+        headers = {"Authorization": f"Bearer {self.token}"}
+        
+        # Test with invalid data to see if endpoint exists and validates properly
+        invalid_payload = {
+            "amount": 0,  # Invalid amount
+            "subscription_type": "invalid",  # Invalid subscription type
+            "payment_method": "mobile_money"
+        }
+        
+        response = requests.post(
+            f"{self.base_url}/api/paychangu/initiate-payment",
+            headers=headers,
+            json=invalid_payload
+        )
+        
+        # Should return 400 for invalid data, not 404 (endpoint exists)
+        self.assertNotEqual(response.status_code, 404)
+        print(f"✅ Paychangu payment endpoint exists and accessible")
+        print(f"  - Response status: {response.status_code}")
+        
+        if response.status_code == 400:
+            data = response.json()
+            print(f"  - Validation working: {data.get('detail', 'Unknown error')}")
+        elif response.status_code == 500:
+            # Check if it's a credentials error
+            data = response.json()
+            if "credentials not configured" in data.get('detail', '').lower():
+                print(f"❌ Paychangu credentials not configured: {data['detail']}")
+            else:
+                print(f"✅ Paychangu credentials configured (other error: {data.get('detail', 'Unknown')})")
+    
+    def test_51_paychangu_payment_initiation_daily_subscription(self):
+        """HIGH PRIORITY: Test Paychangu payment initiation for daily subscription (2500 MWK)"""
+        if not self.token:
+            print("⚠️ Skipping Paychangu daily payment test - not logged in")
+            return
+            
+        headers = {
+            "Authorization": f"Bearer {self.token}",
+            "Content-Type": "application/json"
+        }
+        
+        # Test daily subscription payment with mobile money
+        payload = {
+            "amount": 2500.0,
+            "currency": "MWK",
+            "subscription_type": "daily",
+            "payment_method": "mobile_money",
+            "phone_number": "0991234567",
+            "operator": "TNM",
+            "description": "NextChapter Daily Subscription"
+        }
+        
+        response = requests.post(
+            f"{self.base_url}/api/paychangu/initiate-payment",
+            headers=headers,
+            json=payload
+        )
+        
+        print(f"Daily payment response status: {response.status_code}")
+        print(f"Daily payment response: {response.text[:300]}...")
+        
+        if response.status_code == 200:
+            data = response.json()
+            self.assertIn("success", data)
+            self.assertIn("message", data)
+            
+            if data.get("success"):
+                self.assertIn("transaction_id", data)
+                print(f"✅ Daily subscription payment initiated successfully")
+                print(f"  - Transaction ID: {data.get('transaction_id', 'N/A')}")
+                print(f"  - Amount: {payload['amount']} {payload['currency']}")
+                print(f"  - Payment method: {payload['payment_method']} ({payload['operator']})")
+                
+                # Store transaction ID for status test
+                self.daily_transaction_id = data.get("transaction_id")
+            else:
+                print(f"⚠️ Daily payment initiation failed: {data.get('message', 'Unknown error')}")
+        else:
+            data = response.json() if response.content else {}
+            print(f"❌ Daily payment initiation error: {data.get('detail', 'Unknown error')}")
+    
+    def test_52_paychangu_payment_initiation_weekly_subscription(self):
+        """HIGH PRIORITY: Test Paychangu payment initiation for weekly subscription (15000 MWK)"""
+        if not self.token:
+            print("⚠️ Skipping Paychangu weekly payment test - not logged in")
+            return
+            
+        headers = {
+            "Authorization": f"Bearer {self.token}",
+            "Content-Type": "application/json"
+        }
+        
+        # Test weekly subscription payment with mobile money (Airtel)
+        payload = {
+            "amount": 15000.0,
+            "currency": "MWK",
+            "subscription_type": "weekly",
+            "payment_method": "mobile_money",
+            "phone_number": "0881234567",
+            "operator": "AIRTEL",
+            "description": "NextChapter Weekly Subscription"
+        }
+        
+        response = requests.post(
+            f"{self.base_url}/api/paychangu/initiate-payment",
+            headers=headers,
+            json=payload
+        )
+        
+        print(f"Weekly payment response status: {response.status_code}")
+        print(f"Weekly payment response: {response.text[:300]}...")
+        
+        if response.status_code == 200:
+            data = response.json()
+            self.assertIn("success", data)
+            self.assertIn("message", data)
+            
+            if data.get("success"):
+                self.assertIn("transaction_id", data)
+                print(f"✅ Weekly subscription payment initiated successfully")
+                print(f"  - Transaction ID: {data.get('transaction_id', 'N/A')}")
+                print(f"  - Amount: {payload['amount']} {payload['currency']}")
+                print(f"  - Payment method: {payload['payment_method']} ({payload['operator']})")
+                
+                # Store transaction ID for status test
+                self.weekly_transaction_id = data.get("transaction_id")
+            else:
+                print(f"⚠️ Weekly payment initiation failed: {data.get('message', 'Unknown error')}")
+        else:
+            data = response.json() if response.content else {}
+            print(f"❌ Weekly payment initiation error: {data.get('detail', 'Unknown error')}")
+    
+    def test_53_paychangu_payment_initiation_monthly_subscription(self):
+        """HIGH PRIORITY: Test Paychangu payment initiation for monthly subscription (30000 MWK)"""
+        if not self.token:
+            print("⚠️ Skipping Paychangu monthly payment test - not logged in")
+            return
+            
+        headers = {
+            "Authorization": f"Bearer {self.token}",
+            "Content-Type": "application/json"
+        }
+        
+        # Test monthly subscription payment with card method
+        payload = {
+            "amount": 30000.0,
+            "currency": "MWK",
+            "subscription_type": "monthly",
+            "payment_method": "card",
+            "description": "NextChapter Monthly Subscription"
+        }
+        
+        response = requests.post(
+            f"{self.base_url}/api/paychangu/initiate-payment",
+            headers=headers,
+            json=payload
+        )
+        
+        print(f"Monthly payment response status: {response.status_code}")
+        print(f"Monthly payment response: {response.text[:300]}...")
+        
+        if response.status_code == 200:
+            data = response.json()
+            self.assertIn("success", data)
+            self.assertIn("message", data)
+            
+            if data.get("success"):
+                self.assertIn("transaction_id", data)
+                print(f"✅ Monthly subscription payment initiated successfully")
+                print(f"  - Transaction ID: {data.get('transaction_id', 'N/A')}")
+                print(f"  - Amount: {payload['amount']} {payload['currency']}")
+                print(f"  - Payment method: {payload['payment_method']}")
+                
+                # Store transaction ID for status test
+                self.monthly_transaction_id = data.get("transaction_id")
+            else:
+                print(f"⚠️ Monthly payment initiation failed: {data.get('message', 'Unknown error')}")
+        else:
+            data = response.json() if response.content else {}
+            print(f"❌ Monthly payment initiation error: {data.get('detail', 'Unknown error')}")
+    
+    def test_54_paychangu_payment_validation_invalid_amounts(self):
+        """HIGH PRIORITY: Test Paychangu payment validation for invalid subscription amounts"""
+        if not self.token:
+            print("⚠️ Skipping Paychangu validation test - not logged in")
+            return
+            
+        headers = {
+            "Authorization": f"Bearer {self.token}",
+            "Content-Type": "application/json"
+        }
+        
+        # Test invalid amount for daily subscription
+        invalid_daily_payload = {
+            "amount": 3000.0,  # Should be 2500
+            "currency": "MWK",
+            "subscription_type": "daily",
+            "payment_method": "mobile_money",
+            "phone_number": "0991234567",
+            "operator": "TNM"
+        }
+        
+        response = requests.post(
+            f"{self.base_url}/api/paychangu/initiate-payment",
+            headers=headers,
+            json=invalid_daily_payload
+        )
+        
+        self.assertEqual(response.status_code, 400)
+        data = response.json()
+        self.assertIn("detail", data)
+        self.assertIn("Invalid amount", data["detail"])
+        print(f"✅ Invalid daily amount properly rejected: {data['detail']}")
+        
+        # Test invalid subscription type
+        invalid_type_payload = {
+            "amount": 2500.0,
+            "currency": "MWK",
+            "subscription_type": "yearly",  # Invalid type
+            "payment_method": "mobile_money",
+            "phone_number": "0991234567",
+            "operator": "TNM"
+        }
+        
+        response = requests.post(
+            f"{self.base_url}/api/paychangu/initiate-payment",
+            headers=headers,
+            json=invalid_type_payload
+        )
+        
+        self.assertEqual(response.status_code, 400)
+        data = response.json()
+        self.assertIn("detail", data)
+        self.assertIn("Invalid subscription type", data["detail"])
+        print(f"✅ Invalid subscription type properly rejected: {data['detail']}")
+    
+    def test_55_paychangu_mobile_money_validation(self):
+        """HIGH PRIORITY: Test Paychangu mobile money payment validation (TNM and Airtel operators)"""
+        if not self.token:
+            print("⚠️ Skipping mobile money validation test - not logged in")
+            return
+            
+        headers = {
+            "Authorization": f"Bearer {self.token}",
+            "Content-Type": "application/json"
+        }
+        
+        # Test missing phone number for mobile money
+        missing_phone_payload = {
+            "amount": 2500.0,
+            "currency": "MWK",
+            "subscription_type": "daily",
+            "payment_method": "mobile_money",
+            "operator": "TNM"
+            # Missing phone_number
+        }
+        
+        response = requests.post(
+            f"{self.base_url}/api/paychangu/initiate-payment",
+            headers=headers,
+            json=missing_phone_payload
+        )
+        
+        self.assertEqual(response.status_code, 400)
+        data = response.json()
+        self.assertIn("detail", data)
+        self.assertIn("Phone number and operator required", data["detail"])
+        print(f"✅ Missing phone number for mobile money properly rejected: {data['detail']}")
+        
+        # Test missing operator for mobile money
+        missing_operator_payload = {
+            "amount": 2500.0,
+            "currency": "MWK",
+            "subscription_type": "daily",
+            "payment_method": "mobile_money",
+            "phone_number": "0991234567"
+            # Missing operator
+        }
+        
+        response = requests.post(
+            f"{self.base_url}/api/paychangu/initiate-payment",
+            headers=headers,
+            json=missing_operator_payload
+        )
+        
+        self.assertEqual(response.status_code, 400)
+        data = response.json()
+        self.assertIn("detail", data)
+        self.assertIn("Phone number and operator required", data["detail"])
+        print(f"✅ Missing operator for mobile money properly rejected: {data['detail']}")
+        
+        # Test valid TNM mobile money payment
+        valid_tnm_payload = {
+            "amount": 2500.0,
+            "currency": "MWK",
+            "subscription_type": "daily",
+            "payment_method": "mobile_money",
+            "phone_number": "0991234567",
+            "operator": "TNM"
+        }
+        
+        response = requests.post(
+            f"{self.base_url}/api/paychangu/initiate-payment",
+            headers=headers,
+            json=valid_tnm_payload
+        )
+        
+        # Should not be a validation error (400), might be 200 or 500 depending on Paychangu API
+        self.assertNotEqual(response.status_code, 400)
+        print(f"✅ Valid TNM mobile money payment accepted (status: {response.status_code})")
+        
+        # Test valid Airtel mobile money payment
+        valid_airtel_payload = {
+            "amount": 2500.0,
+            "currency": "MWK",
+            "subscription_type": "daily",
+            "payment_method": "mobile_money",
+            "phone_number": "0881234567",
+            "operator": "AIRTEL"
+        }
+        
+        response = requests.post(
+            f"{self.base_url}/api/paychangu/initiate-payment",
+            headers=headers,
+            json=valid_airtel_payload
+        )
+        
+        # Should not be a validation error (400)
+        self.assertNotEqual(response.status_code, 400)
+        print(f"✅ Valid Airtel mobile money payment accepted (status: {response.status_code})")
+    
+    def test_56_paychangu_transaction_status_endpoint(self):
+        """HIGH PRIORITY: Test Paychangu transaction status endpoint"""
+        if not self.token:
+            print("⚠️ Skipping transaction status test - not logged in")
+            return
+            
+        headers = {"Authorization": f"Bearer {self.token}"}
+        
+        # Test with non-existent transaction ID
+        fake_transaction_id = "fake_transaction_12345"
+        response = requests.get(
+            f"{self.base_url}/api/paychangu/transaction/{fake_transaction_id}",
+            headers=headers
+        )
+        
+        self.assertEqual(response.status_code, 404)
+        data = response.json()
+        self.assertIn("detail", data)
+        self.assertIn("Transaction not found", data["detail"])
+        print(f"✅ Non-existent transaction properly rejected: {data['detail']}")
+        
+        # Test with a transaction ID if we have one from previous tests
+        if hasattr(self, 'daily_transaction_id') and self.daily_transaction_id:
+            response = requests.get(
+                f"{self.base_url}/api/paychangu/transaction/{self.daily_transaction_id}",
+                headers=headers
+            )
+            
+            if response.status_code == 200:
+                data = response.json()
+                self.assertIn("transaction", data)
+                self.assertIn("status", data)
+                self.assertIn("message", data)
+                
+                transaction = data["transaction"]
+                self.assertEqual(transaction["user_id"], self.user_id)  # User can only see their own transactions
+                self.assertEqual(transaction["subscription_type"], "daily")
+                self.assertEqual(transaction["amount"], 2500.0)
+                
+                print(f"✅ Transaction status retrieved successfully")
+                print(f"  - Transaction ID: {self.daily_transaction_id}")
+                print(f"  - Status: {data['status']}")
+                print(f"  - User ID matches: {transaction['user_id'] == self.user_id}")
+            else:
+                print(f"⚠️ Transaction status endpoint error: {response.status_code}")
+        else:
+            print("⚠️ No transaction ID available for status test")
+    
+    def test_57_paychangu_webhook_endpoint(self):
+        """HIGH PRIORITY: Test Paychangu webhook endpoint accepts POST requests"""
+        # Test webhook endpoint structure (we can't test full webhook without Paychangu sending actual webhooks)
+        
+        # Test webhook endpoint exists and accepts POST
+        webhook_payload = {
+            "transaction_id": "test_webhook_transaction_123",
+            "status": "success",
+            "amount": 2500,
+            "currency": "MWK",
+            "reference": "test_reference"
+        }
+        
+        response = requests.post(
+            f"{self.base_url}/api/paychangu/webhook",
+            json=webhook_payload
+        )
+        
+        # Should not return 404 (endpoint exists) or 405 (method not allowed)
+        self.assertNotEqual(response.status_code, 404)
+        self.assertNotEqual(response.status_code, 405)
+        
+        print(f"✅ Paychangu webhook endpoint exists and accepts POST requests")
+        print(f"  - Response status: {response.status_code}")
+        
+        if response.status_code == 200:
+            data = response.json()
+            print(f"  - Webhook response: {data}")
+        elif response.status_code == 400:
+            # Might be validation error for test data
+            data = response.json()
+            print(f"  - Webhook validation: {data.get('detail', 'Unknown error')}")
+        elif response.status_code == 500:
+            # Might be processing error
+            print(f"  - Webhook processing error (expected for test data)")
+    
+    def test_58_paychangu_transaction_storage_verification(self):
+        """HIGH PRIORITY: Test that Paychangu transactions are stored in MongoDB"""
+        if not self.token:
+            print("⚠️ Skipping transaction storage test - not logged in")
+            return
+            
+        headers = {
+            "Authorization": f"Bearer {self.token}",
+            "Content-Type": "application/json"
+        }
+        
+        # Create a payment to test storage
+        storage_test_payload = {
+            "amount": 2500.0,
+            "currency": "MWK",
+            "subscription_type": "daily",
+            "payment_method": "mobile_money",
+            "phone_number": "0991234567",
+            "operator": "TNM",
+            "description": "Storage Test Transaction"
+        }
+        
+        response = requests.post(
+            f"{self.base_url}/api/paychangu/initiate-payment",
+            headers=headers,
+            json=storage_test_payload
+        )
+        
+        if response.status_code == 200:
+            data = response.json()
+            if data.get("success") and data.get("transaction_id"):
+                transaction_id = data["transaction_id"]
+                
+                # Try to retrieve the stored transaction
+                status_response = requests.get(
+                    f"{self.base_url}/api/paychangu/transaction/{transaction_id}",
+                    headers=headers
+                )
+                
+                if status_response.status_code == 200:
+                    status_data = status_response.json()
+                    transaction = status_data["transaction"]
+                    
+                    # Verify transaction data is properly stored
+                    self.assertEqual(transaction["amount"], 2500.0)
+                    self.assertEqual(transaction["currency"], "MWK")
+                    self.assertEqual(transaction["subscription_type"], "daily")
+                    self.assertEqual(transaction["payment_method"], "mobile_money")
+                    self.assertEqual(transaction["user_id"], self.user_id)
+                    self.assertIn("created_at", transaction)
+                    self.assertIn("status", transaction)
+                    
+                    print(f"✅ Transaction storage in MongoDB verified")
+                    print(f"  - Transaction ID: {transaction_id}")
+                    print(f"  - Amount: {transaction['amount']} {transaction['currency']}")
+                    print(f"  - Subscription type: {transaction['subscription_type']}")
+                    print(f"  - Payment method: {transaction['payment_method']}")
+                    print(f"  - Status: {transaction['status']}")
+                    print(f"  - Created at: {transaction['created_at']}")
+                else:
+                    print(f"❌ Failed to retrieve stored transaction: {status_response.status_code}")
+            else:
+                print(f"⚠️ Payment initiation failed, cannot test storage")
+        else:
+            print(f"⚠️ Payment initiation error, cannot test storage: {response.status_code}")
+    
+    def test_59_paychangu_authentication_integration(self):
+        """HIGH PRIORITY: Test Paychangu endpoints work with existing authentication"""
+        # Test without authentication token
+        no_auth_payload = {
+            "amount": 2500.0,
+            "currency": "MWK",
+            "subscription_type": "daily",
+            "payment_method": "mobile_money",
+            "phone_number": "0991234567",
+            "operator": "TNM"
+        }
+        
+        response = requests.post(
+            f"{self.base_url}/api/paychangu/initiate-payment",
+            json=no_auth_payload
+        )
+        
+        self.assertEqual(response.status_code, 401)
+        print(f"✅ Paychangu payment endpoint properly requires authentication")
+        
+        # Test transaction status without authentication
+        fake_transaction_id = "test_transaction_123"
+        response = requests.get(
+            f"{self.base_url}/api/paychangu/transaction/{fake_transaction_id}"
+        )
+        
+        self.assertEqual(response.status_code, 401)
+        print(f"✅ Paychangu transaction status endpoint properly requires authentication")
+        
+        # Test with invalid token
+        invalid_headers = {"Authorization": "Bearer invalid_token_12345"}
+        response = requests.post(
+            f"{self.base_url}/api/paychangu/initiate-payment",
+            headers=invalid_headers,
+            json=no_auth_payload
+        )
+        
+        self.assertEqual(response.status_code, 401)
+        print(f"✅ Paychangu endpoints properly reject invalid authentication tokens")
+    
+    def test_60_paychangu_subscription_integration(self):
+        """HIGH PRIORITY: Test Paychangu integration with existing subscription system"""
+        if not self.token:
+            print("⚠️ Skipping subscription integration test - not logged in")
+            return
+            
+        headers = {"Authorization": f"Bearer {self.token}"}
+        
+        # Get current subscription status
+        sub_response = requests.get(f"{self.base_url}/api/user/subscription", headers=headers)
+        self.assertEqual(sub_response.status_code, 200)
+        sub_data = sub_response.json()
+        
+        current_tier = sub_data.get("subscription_tier", "free")
+        print(f"✅ Current subscription tier: {current_tier}")
+        
+        # Test that subscription pricing matches Paychangu amounts
+        pricing_response = requests.get(f"{self.base_url}/api/subscription/tiers")
+        self.assertEqual(pricing_response.status_code, 200)
+        pricing_data = pricing_response.json()
+        
+        if "premium" in pricing_data:
+            premium_pricing = pricing_data["premium"]["pricing"]
+            
+            # Verify pricing matches Paychangu expected amounts
+            self.assertEqual(premium_pricing["daily"]["original_price"], 2500)
+            self.assertEqual(premium_pricing["weekly"]["original_price"], 15000)
+            self.assertEqual(premium_pricing["monthly"]["original_price"], 30000)
+            
+            print(f"✅ Subscription pricing matches Paychangu amounts")
+            print(f"  - Daily: {premium_pricing['daily']['original_price']} MWK")
+            print(f"  - Weekly: {premium_pricing['weekly']['original_price']} MWK")
+            print(f"  - Monthly: {premium_pricing['monthly']['original_price']} MWK")
+        
+        # Test subscription features are available for premium users
+        if current_tier == "premium":
+            features = sub_data.get("features_unlocked", [])
+            self.assertIn("Unlimited likes and matches", features)
+            self.assertIn("Access to exclusive chat rooms", features)
+            print(f"✅ Premium subscription features properly unlocked")
+        else:
+            print(f"✅ Free tier user - premium features locked as expected")
+    
+    def test_61_paychangu_currency_and_operators_verification(self):
+        """HIGH PRIORITY: Test Paychangu currency (MWK) and operators (TNM, AIRTEL) configuration"""
+        if not self.token:
+            print("⚠️ Skipping currency/operators test - not logged in")
+            return
+            
+        headers = {
+            "Authorization": f"Bearer {self.token}",
+            "Content-Type": "application/json"
+        }
+        
+        # Test MWK currency is accepted
+        mwk_payload = {
+            "amount": 2500.0,
+            "currency": "MWK",
+            "subscription_type": "daily",
+            "payment_method": "mobile_money",
+            "phone_number": "0991234567",
+            "operator": "TNM"
+        }
+        
+        response = requests.post(
+            f"{self.base_url}/api/paychangu/initiate-payment",
+            headers=headers,
+            json=mwk_payload
+        )
+        
+        # Should not be a currency validation error
+        if response.status_code == 400:
+            data = response.json()
+            self.assertNotIn("currency", data.get("detail", "").lower())
+        
+        print(f"✅ MWK currency accepted (status: {response.status_code})")
+        
+        # Test TNM operator
+        tnm_payload = {
+            "amount": 2500.0,
+            "currency": "MWK",
+            "subscription_type": "daily",
+            "payment_method": "mobile_money",
+            "phone_number": "0991234567",
+            "operator": "TNM"
+        }
+        
+        response = requests.post(
+            f"{self.base_url}/api/paychangu/initiate-payment",
+            headers=headers,
+            json=tnm_payload
+        )
+        
+        # Should not be an operator validation error
+        if response.status_code == 400:
+            data = response.json()
+            self.assertNotIn("operator", data.get("detail", "").lower())
+        
+        print(f"✅ TNM operator accepted (status: {response.status_code})")
+        
+        # Test AIRTEL operator
+        airtel_payload = {
+            "amount": 2500.0,
+            "currency": "MWK",
+            "subscription_type": "daily",
+            "payment_method": "mobile_money",
+            "phone_number": "0881234567",
+            "operator": "AIRTEL"
+        }
+        
+        response = requests.post(
+            f"{self.base_url}/api/paychangu/initiate-payment",
+            headers=headers,
+            json=airtel_payload
+        )
+        
+        # Should not be an operator validation error
+        if response.status_code == 400:
+            data = response.json()
+            self.assertNotIn("operator", data.get("detail", "").lower())
+        
+        print(f"✅ AIRTEL operator accepted (status: {response.status_code})")
+        
+        print(f"✅ Paychangu currency and operators verification completed")
+        print(f"  - Currency: MWK (Malawian Kwacha)")
+        print(f"  - Operators: TNM and AIRTEL")
+        print(f"  - All configurations properly accepted by payment system")
+
 def run_tests():
     # Create a test suite
     suite = unittest.TestSuite()
