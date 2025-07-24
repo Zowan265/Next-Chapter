@@ -1105,7 +1105,7 @@ function App() {
               </h1>
               <p className="text-gray-600">Enter the 6-digit code sent to your email</p>
               {otpTimer > 0 && (
-                <p className="text-sm text-purple-600 mt-2">Code expires in: {otpTimer}s</p>
+                <p className="text-sm text-purple-600 mt-2">Code expires in: {formatTimer(otpTimer)}</p>
               )}
             </div>
 
