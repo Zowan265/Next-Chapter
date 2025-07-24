@@ -2621,10 +2621,27 @@ def run_tests():
         'test_39_password_reset_expired_otp',
         'test_40_password_reset_password_validation',
         'test_41_login_with_new_password_after_reset',
-        'test_42_registration_otp_60_second_timer',
+        'test_42_registration_otp_150_second_timer',
         'test_43_complete_password_recovery_flow',
         'test_44_email_otp_real_credentials_verification',
-        'test_45_email_credentials_configuration_check'
+        'test_45_email_credentials_configuration_check',
+        'test_46_otp_timer_consistency_verification',
+        'test_47_otp_expiration_window_verification',
+        'test_48_otp_timer_backend_verification',
+        'test_49_comprehensive_otp_timer_update_verification',
+        # PAYCHANGU PAYMENT INTEGRATION TESTS
+        'test_50_paychangu_credentials_verification',
+        'test_51_paychangu_payment_initiation_daily_subscription',
+        'test_52_paychangu_payment_initiation_weekly_subscription',
+        'test_53_paychangu_payment_initiation_monthly_subscription',
+        'test_54_paychangu_payment_validation_invalid_amounts',
+        'test_55_paychangu_mobile_money_validation',
+        'test_56_paychangu_transaction_status_endpoint',
+        'test_57_paychangu_webhook_endpoint',
+        'test_58_paychangu_transaction_storage_verification',
+        'test_59_paychangu_authentication_integration',
+        'test_60_paychangu_subscription_integration',
+        'test_61_paychangu_currency_and_operators_verification'
     ]
     
     for test_case in test_cases:
