@@ -123,7 +123,7 @@ backend:
         agent: "testing"
         comment: "✅ RE-VERIFIED WITH REAL EMAIL CREDENTIALS: Password recovery email system now fully operational with real SMTP. Gmail credentials successfully configured. Password reset emails sent via smtp.gmail.com:587 with professional HTML templates. 60-second OTP timer enforced. Demo mode disabled. Real OTP codes generated and sent securely. System ready for production use."
 
-  - task: "60-second OTP timer implementation"
+  - task: "150-second OTP timer implementation (updated from 60 seconds)"
     implemented: true
     working: true
     file: "server.py"
@@ -137,6 +137,9 @@ backend:
       - working: true
         agent: "testing"
         comment: "✅ VERIFIED: 60-second OTP timer working correctly for both registration and password reset. Expired OTPs properly rejected after timeout."
+      - working: true
+        agent: "testing"
+        comment: "✅ RE-VERIFIED WITH 150-SECOND TIMER: OTP timer successfully updated from 60 seconds to 150 seconds (2 minutes 30 seconds). Backend code shows timedelta(seconds=150) for both registration and password reset flows. Email templates updated to mention '2 minutes 30 seconds'. System consistency verified - both OTP flows use identical 150-second timer. No old 60-second references found in code. OTP generation, email delivery, and validation all working correctly with new timing."
 
   - task: "Simplified subscription pricing structure"
     implemented: true
