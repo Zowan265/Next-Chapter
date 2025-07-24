@@ -1661,6 +1661,231 @@ function App() {
     );
   }
 
+  // Paychangu Payment Page
+  if (currentView === 'paychangu-payment') {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-cream-50 to-rose-50">
+        {/* Navigation */}
+        <nav className="bg-white/80 backdrop-blur-md shadow-sm border-b border-purple-100">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex justify-between items-center h-16">
+              <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-rose-500 bg-clip-text text-transparent">
+                NextChapter Payment
+              </h1>
+              <button
+                onClick={() => setCurrentView('subscription')}
+                className="text-gray-600 hover:text-purple-600 font-medium"
+              >
+                ← Back to Plans
+              </button>
+            </div>
+          </div>
+        </nav>
+
+        <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <div className="bg-white rounded-2xl shadow-xl p-8">
+            <div className="text-center mb-8">
+              <h2 className="text-3xl font-bold text-gray-800 mb-4">
+                Complete Your Payment
+              </h2>
+              <div className="bg-purple-50 border border-purple-200 rounded-lg p-4">
+                <p className="text-purple-800 font-semibold">
+                  {paymentData.subscriptionType?.charAt(0).toUpperCase() + paymentData.subscriptionType?.slice(1)} Subscription
+                </p>
+                <p className="text-2xl font-bold text-purple-600">MWK {paymentData.amount?.toLocaleString()}</p>
+              </div>
+            </div>
+
+            {error && (
+              <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg mb-6">
+                {error}
+              </div>
+            )}
+
+            {/* Payment Method Selection */}
+            {paymentStep === 'method' && (
+              <div className="space-y-6">
+                <h3 className="text-xl font-semibold text-gray-800 mb-4">Choose Payment Method</h3>
+                
+                <div className="grid gap-4">
+                  <button
+                    onClick={() => {
+                      setPaymentMethod('mobile_money');
+                      setPaymentStep('details');
+                    }}
+                    className="p-6 border border-gray-300 rounded-lg hover:border-purple-500 hover:bg-purple-50 transition-all duration-300"
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center">
+                        <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mr-4">
+                          <span className="text-green-600 text-2xl">📱</span>
+                        </div>
+                        <div className="text-left">
+                          <h4 className="font-semibold text-gray-800">Mobile Money</h4>
+                          <p className="text-sm text-gray-600">TNM Mpamba • Airtel Money</p>
+                        </div>
+                      </div>
+                      <span className="text-purple-600">→</span>
+                    </div>
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      setPaymentMethod('card');
+                      setPaymentStep('details');
+                    }}
+                    className="p-6 border border-gray-300 rounded-lg hover:border-purple-500 hover:bg-purple-50 transition-all duration-300"
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center">
+                        <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mr-4">
+                          <span className="text-blue-600 text-2xl">💳</span>
+                        </div>
+                        <div className="text-left">
+                          <h4 className="font-semibold text-gray-800">Debit/Credit Card</h4>
+                          <p className="text-sm text-gray-600">Visa • Mastercard</p>
+                        </div>
+                      </div>
+                      <span className="text-purple-600">→</span>
+                    </div>
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* Payment Details Form */}
+            {paymentStep === 'details' && (
+              <div className="space-y-6">
+                <div className="flex items-center mb-4">
+                  <button
+                    onClick={() => setPaymentStep('method')}
+                    className="text-purple-600 hover:text-purple-800 mr-3"
+                  >
+                    ←
+                  </button>
+                  <h3 className="text-xl font-semibold text-gray-800">
+                    {paymentMethod === 'mobile_money' ? 'Mobile Money Details' : 'Card Details'}
+                  </h3>
+                </div>
+
+                {paymentMethod === 'mobile_money' && (
+                  <form onSubmit={(e) => { e.preventDefault(); processPaychanguPayment(); }} className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Mobile Network
+                      </label>
+                      <select
+                        required
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                        value={paymentData.operator}
+                        onChange={(e) => setPaymentData({ ...paymentData, operator: e.target.value })}
+                      >
+                        <option value="">Select Network</option>
+                        <option value="TNM">TNM Mpamba</option>
+                        <option value="AIRTEL">Airtel Money</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Phone Number
+                      </label>
+                      <input
+                        type="tel"
+                        required
+                        placeholder="e.g. +265888123456"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                        value={paymentData.phoneNumber}
+                        onChange={(e) => setPaymentData({ ...paymentData, phoneNumber: e.target.value })}
+                      />
+                      <p className="text-xs text-gray-500 mt-1">
+                        Enter your mobile money registered number
+                      </p>
+                    </div>
+
+                    <button
+                      type="submit"
+                      disabled={loading}
+                      className={`w-full py-3 rounded-lg font-semibold transition-all duration-300 shadow-lg ${
+                        loading 
+                          ? 'bg-gray-400 cursor-not-allowed' 
+                          : 'bg-gradient-to-r from-green-600 to-green-700 text-white hover:from-green-700 hover:to-green-800'
+                      }`}
+                    >
+                      {loading ? (
+                        <div className="flex items-center justify-center">
+                          <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                          Processing Payment...
+                        </div>
+                      ) : (
+                        `Pay MWK ${paymentData.amount?.toLocaleString()}`
+                      )}
+                    </button>
+                  </form>
+                )}
+
+                {paymentMethod === 'card' && (
+                  <form onSubmit={(e) => { e.preventDefault(); processPaychanguPayment(); }} className="space-y-4">
+                    <p className="text-center text-gray-600 mb-4">
+                      You will be redirected to complete your card payment securely
+                    </p>
+                    
+                    <button
+                      type="submit"
+                      disabled={loading}
+                      className={`w-full py-3 rounded-lg font-semibold transition-all duration-300 shadow-lg ${
+                        loading 
+                          ? 'bg-gray-400 cursor-not-allowed' 
+                          : 'bg-gradient-to-r from-blue-600 to-blue-700 text-white hover:from-blue-700 hover:to-blue-800'
+                      }`}
+                    >
+                      {loading ? (
+                        <div className="flex items-center justify-center">
+                          <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                          Processing...
+                        </div>
+                      ) : (
+                        `Pay MWK ${paymentData.amount?.toLocaleString()} with Card`
+                      )}
+                    </button>
+                  </form>
+                )}
+              </div>
+            )}
+
+            {/* Processing Status */}
+            {paymentStep === 'processing' && (
+              <div className="text-center space-y-6">
+                <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600"></div>
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold text-gray-800 mb-2">Processing Payment</h3>
+                  <p className="text-gray-600">
+                    {paymentMethod === 'mobile_money' 
+                      ? 'Please complete the payment on your mobile device'
+                      : 'Please complete the payment in the opened window'
+                    }
+                  </p>
+                  <p className="text-sm text-purple-600 mt-2">
+                    We'll automatically detect when payment is complete
+                  </p>
+                </div>
+                
+                <button
+                  onClick={() => setCurrentView('dashboard')}
+                  className="text-purple-600 hover:text-purple-800 font-medium"
+                >
+                  Continue to Dashboard
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   // Enhanced Dashboard with swipeable profiles
   if (currentView === 'dashboard' || (user && !['landing', 'auth', 'subscription'].includes(currentView))) {
     const currentProfile = profiles[currentProfileIndex];
