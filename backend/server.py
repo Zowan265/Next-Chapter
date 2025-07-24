@@ -138,6 +138,11 @@ EMAIL_PORT = int(os.environ.get('EMAIL_PORT', 587))
 EMAIL_USER = os.environ.get('EMAIL_USER', '')
 EMAIL_PASSWORD = os.environ.get('EMAIL_PASSWORD', '')
 
+# Paychangu configuration
+PAYCHANGU_PUBLIC_KEY = os.environ.get('PAYCHANGU_PUBLIC_KEY', '')
+PAYCHANGU_SECRET_KEY = os.environ.get('PAYCHANGU_SECRET_KEY', '')
+PAYCHANGU_BASE_URL = os.environ.get('PAYCHANGU_BASE_URL', 'https://api.paychangu.com')
+
 UPLOAD_DIR = Path("uploads")
 UPLOAD_DIR.mkdir(exist_ok=True)
 
