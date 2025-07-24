@@ -1637,7 +1637,7 @@ function App() {
                 </div>
 
                 <button
-                  onClick={() => requestPaymentOtp('monthly')}
+                  onClick={() => initiatePaychanguPayment('monthly')}
                   className="w-full bg-gradient-to-r from-green-600 to-green-700 text-white py-3 rounded-lg font-semibold hover:from-green-700 hover:to-green-800 transition-all duration-300"
                 >
                   Subscribe Monthly
