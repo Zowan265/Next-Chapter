@@ -2618,7 +2618,7 @@ def run_tests():
         'test_36_password_reset_request_invalid_data',
         'test_37_password_reset_with_valid_otp',
         'test_38_password_reset_invalid_otp',
-        'test_39_password_reset_expired_otp',
+        'test_39_password_reset_150_second_timer_verification',
         'test_40_password_reset_password_validation',
         'test_41_login_with_new_password_after_reset',
         'test_42_registration_otp_150_second_timer',
