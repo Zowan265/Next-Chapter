@@ -1583,7 +1583,9 @@ def run_tests():
         'test_40_password_reset_password_validation',
         'test_41_login_with_new_password_after_reset',
         'test_42_registration_otp_60_second_timer',
-        'test_43_complete_password_recovery_flow'
+        'test_43_complete_password_recovery_flow',
+        'test_44_email_otp_real_credentials_verification',
+        'test_45_email_credentials_configuration_check'
     ]
     
     for test_case in test_cases:
