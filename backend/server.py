@@ -508,7 +508,7 @@ async def request_password_reset(request: PasswordResetRequest):
     password_reset_storage[reset_key] = {
         "otp": otp,
         "created_at": datetime.utcnow(),
-        "expires_at": datetime.utcnow() + timedelta(seconds=60),  # 60 seconds OTP timer
+        "expires_at": datetime.utcnow() + timedelta(seconds=150),  # 2 minutes 30 seconds OTP timer
         "user_id": user["id"],
         "identifier": identifier,
         "identifier_type": "email" if request.email else "phone"
