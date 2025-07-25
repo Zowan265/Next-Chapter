@@ -1376,6 +1376,7 @@ def initialize_paychangu_client():
 @app.post("/api/paychangu/initiate-payment")
 async def initiate_paychangu_payment(
     payment_request: PaychanguPaymentRequest,
+    request: Request,
     current_user = Depends(get_current_user)
 ):
     """Initiate payment with Paychangu for subscription"""
