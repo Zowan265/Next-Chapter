@@ -1567,23 +1567,31 @@ async def initiate_paychangu_payment(
         )
 
 @app.post("/api/paychangu/webhook")
+@app.get("/api/paychangu/webhook")
 async def paychangu_webhook(request: Request):
-    """Handle Paychangu webhook for payment status updates"""
+    """Handle Paychangu webhook for payment status updates (supports both GET and POST)"""
     try:
-        # Get the raw body
-        body = await request.body()
+        webhook_data = {}
         
-        # Parse JSON payload with proper error handling
-        try:
-            webhook_data = json.loads(body.decode('utf-8'))
-            print(f"✅ Webhook received: {webhook_data}")
-        except json.JSONDecodeError as e:
-            print(f"❌ Invalid webhook JSON: {str(e)}")
-            print(f"❌ Raw webhook body: {body.decode('utf-8', errors='ignore')[:200]}")
-            raise HTTPException(status_code=400, detail="Invalid JSON in webhook payload")
-        except Exception as e:
-            print(f"❌ Error decoding webhook body: {str(e)}")
-            raise HTTPException(status_code=400, detail="Error processing webhook body")
+        if request.method == "GET":
+            # Handle GET request with query parameters (Paychangu format)
+            webhook_data = dict(request.query_params)
+            print(f"✅ GET Webhook received: {webhook_data}")
+        else:
+            # Handle POST request with JSON body
+            body = await request.body()
+            
+            # Parse JSON payload with proper error handling
+            try:
+                webhook_data = json.loads(body.decode('utf-8'))
+                print(f"✅ POST Webhook received: {webhook_data}")
+            except json.JSONDecodeError as e:
+                print(f"❌ Invalid webhook JSON: {str(e)}")
+                print(f"❌ Raw webhook body: {body.decode('utf-8', errors='ignore')[:200]}")
+                raise HTTPException(status_code=400, detail="Invalid JSON in webhook payload")
+            except Exception as e:
+                print(f"❌ Error decoding webhook body: {str(e)}")
+                raise HTTPException(status_code=400, detail="Error processing webhook body")
         
         # Verify webhook signature if Paychangu provides one
         # This is important for security - implement based on Paychangu docs
