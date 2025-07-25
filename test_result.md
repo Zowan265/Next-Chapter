@@ -324,7 +324,9 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Password recovery UI implementation"
+    - "Payment timeout sequence implementation"
+    - "Simplified subscription display (no free tier)"
+    - "Premium-only chatroom access"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
