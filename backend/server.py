@@ -1561,6 +1561,11 @@ async def paychangu_webhook(request: Request):
             user_id = transaction["user_id"]
             subscription_type = transaction["subscription_type"]
             
+            # Check if this transaction was already processed successfully
+            if transaction.get("status", "").lower() in ["success", "completed", "paid"]:
+                print(f"⚠️ Transaction {transaction_id} already processed - skipping duplicate webhook")
+                return {"status": "already_processed"}
+            
             # Calculate subscription end date
             now = datetime.utcnow()
             if subscription_type == "daily":
@@ -1588,12 +1593,38 @@ async def paychangu_webhook(request: Request):
             
             print(f"✅ Subscription activated for user {user_id} - {subscription_type}")
             
-            # Send confirmation email to user
+            # Send confirmation email to user (only once)
             user = users_collection.find_one({"id": user_id})
             if user and user.get("email"):
-                send_subscription_confirmation_email(
-                    user["email"], user["name"], subscription_type, expires_at, transaction["amount"]
-                )
+                # Check if we already sent confirmation email for this transaction
+                if not transaction.get("confirmation_email_sent", False):
+                    try:
+                        email_sent = send_subscription_confirmation_email(
+                            user["email"], user["name"], subscription_type, expires_at, transaction["amount"]
+                        )
+                        
+                        # Mark email as sent in transaction record
+                        transactions_collection.update_one(
+                            {"paychangu_transaction_id": transaction_id},
+                            {
+                                "$set": {
+                                    "confirmation_email_sent": True,
+                                    "confirmation_email_sent_at": datetime.utcnow()
+                                }
+                            }
+                        )
+                        
+                        if email_sent:
+                            print(f"✅ Confirmation email sent to {user['email']}")
+                        else:
+                            print(f"⚠️ Failed to send confirmation email to {user['email']}")
+                            
+                    except Exception as email_error:
+                        print(f"❌ Error sending confirmation email: {str(email_error)}")
+                else:
+                    print(f"⚠️ Confirmation email already sent for transaction {transaction_id}")
+            else:
+                print(f"⚠️ User not found or no email for user {user_id}")
         
         return {"status": "processed"}
         
