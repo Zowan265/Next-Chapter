@@ -439,6 +439,8 @@ function App() {
     
     return timer; // Return timer ID for cleanup if needed
   };
+
+  const initiatePaychanguPayment = async (subscriptionType) => {
     setSelectedTier(subscriptionType);
     setPaymentData({ 
       ...paymentData, 
