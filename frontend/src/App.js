@@ -120,11 +120,57 @@ function App() {
       });
       if (response.ok) {
         const subscription = await response.json();
+        
+        // Check if subscription status changed from previous state
+        if (userSubscription && userSubscription.subscription_tier !== subscription.subscription_tier) {
+          if (subscription.subscription_tier === 'premium' && subscription.subscription_status === 'active') {
+            // Show subscription activation notification
+            showSubscriptionNotification({
+              type: 'success',
+              title: '🎉 Subscription Activated!',
+              message: `Your ${getSubscriptionDisplayName(subscription)} subscription is now active!`,
+              duration: 'daily'
+            });
+          }
+        }
+        
         setUserSubscription(subscription);
       }
     } catch (error) {
       console.error('Error fetching user subscription:', error);
     }
+  };
+
+  // Notification functions
+  const showSubscriptionNotification = (notification) => {
+    setSubscriptionNotification(notification);
+    setShowNotification(true);
+    
+    // Auto-hide notification after 5 seconds
+    setTimeout(() => {
+      setShowNotification(false);
+      setTimeout(() => setSubscriptionNotification(null), 300); // Allow fade out animation
+    }, 5000);
+  };
+
+  const getSubscriptionDisplayName = (subscription) => {
+    // Determine subscription type based on expiration date
+    if (!subscription.subscription_expires) return 'Premium';
+    
+    const now = new Date();
+    const expires = new Date(subscription.subscription_expires);
+    const daysUntilExpiry = Math.ceil((expires - now) / (1000 * 60 * 60 * 24));
+    
+    if (daysUntilExpiry <= 1) return 'Daily';
+    else if (daysUntilExpiry <= 7) return 'Weekly';
+    else return 'Monthly';
+  };
+
+  const getSubscriptionStatusColor = (subscription) => {
+    if (!subscription || subscription.subscription_tier === 'free') return 'gray';
+    if (subscription.subscription_status === 'active') return 'green';
+    if (subscription.subscription_status === 'expired') return 'red';
+    return 'yellow';
   };
 
   const handleAuth = async (e) => {
