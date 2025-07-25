@@ -449,6 +449,10 @@ function App() {
     });
     setPaymentStep('method');
     setCurrentView('paychangu-payment');
+    
+    // Reset payment timeout state
+    setPaymentTimeoutTimer(0);
+    setPaymentTimedOut(false);
   };
 
   const processPaychanguPayment = async () => {
