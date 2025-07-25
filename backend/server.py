@@ -1612,6 +1612,11 @@ async def paychangu_webhook(request: Request):
             print(f"⚠️ Webhook received for unknown transaction: {transaction_id}")
             return {"status": "ignored"}
         
+        # If no status provided in webhook, assume success (Paychangu sends webhook only on success)
+        if not status:
+            print(f"⚠️ No status in webhook for transaction {transaction_id}, assuming success")
+            status = "success"
+        
         # Update transaction status
         transactions_collection.update_one(
             {"paychangu_transaction_id": transaction_id},
@@ -1625,7 +1630,7 @@ async def paychangu_webhook(request: Request):
         )
         
         # If payment was successful, activate subscription
-        if status.lower() in ["success", "completed", "paid"]:
+        if status and status.lower() in ["success", "completed", "paid"]:
             user_id = transaction["user_id"]
             subscription_type = transaction["subscription_type"]
             
