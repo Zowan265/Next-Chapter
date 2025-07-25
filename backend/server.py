@@ -1470,7 +1470,7 @@ async def initiate_paychangu_payment(
                 message=f"Payment gateway request error: {str(req_error)}"
             )
         
-        if response.status_code == 200:
+        if response.status_code in [200, 201]:  # Accept both 200 and 201 status codes
             try:
                 result = response.json()
                 print(f"✅ Paychangu API response received: {result}")
