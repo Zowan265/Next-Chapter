@@ -1620,7 +1620,7 @@ function App() {
                   <span className="text-3xl">📊</span>
                 </div>
                 <h3 className="text-2xl font-bold text-gray-800 mb-2">Weekly</h3>
-                <p className="text-4xl font-bold text-rose-600 mb-2">15,000 MWK</p>
+                <p className="text-4xl font-bold text-rose-600 mb-2">10,000 MWK</p>
                 <p className="text-sm text-gray-500 mb-4">per week</p>
                 <p className="text-gray-600 mb-6">Great balance of value and commitment</p>
                 
