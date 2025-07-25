@@ -1399,19 +1399,21 @@ async def initiate_paychangu_payment(
         # Initialize Paychangu client
         client = initialize_paychangu_client()
         
-        # Prepare payment data
+        # Prepare payment data according to Paychangu API specification
         payment_data = {
             "amount": payment_request.amount,
             "currency": payment_request.currency,
-            "callback_url": f"{PAYCHANGU_BASE_URL}/api/paychangu/webhook",
-            "return_url": "https://nextchapter.app/payment-success",
-            "description": f"NextChapter {payment_request.subscription_type.title()} Subscription - {current_user['name']}",
-            "customer": {
-                "name": current_user["name"],
-                "email": current_user["email"],
-                "phone": payment_request.phone_number
+            "callback_url": f"{request.base_url}api/paychangu/webhook",
+            "return_url": f"{request.base_url}payment-success",
+            "tx_ref": str(uuid.uuid4()),  # Unique transaction reference
+            "first_name": current_user["name"].split()[0] if current_user["name"] else "User",
+            "last_name": " ".join(current_user["name"].split()[1:]) if len(current_user["name"].split()) > 1 else "NextChapter",
+            "email": current_user["email"],
+            "customization": {
+                "title": f"NextChapter {payment_request.subscription_type.title()} Subscription",
+                "description": f"Dating subscription for {current_user['name']}"
             },
-            "metadata": {
+            "meta": {
                 "user_id": current_user["id"],
                 "subscription_type": payment_request.subscription_type,
                 "subscription_duration": payment_request.subscription_type
