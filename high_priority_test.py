@@ -8,7 +8,7 @@ from datetime import datetime
 def random_string(length=8):
     return ''.join(random.choices(string.ascii_lowercase + string.digits, k=length))
 
-base_url = 'https://46106240-d86e-4578-973d-bf618bc75cd9.preview.emergentagent.com'
+base_url = 'https://dbfb7da9-8888-45fb-9cbd-4421c91b4f53.preview.emergentagent.com'
 
 print('🎯 HIGH PRIORITY BACKEND TESTING RESULTS')
 print('='*60)

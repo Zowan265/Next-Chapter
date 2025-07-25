@@ -15,7 +15,7 @@ from datetime import datetime
 class PasswordRecoveryTest(unittest.TestCase):
     def setUp(self):
         # Get the backend URL from environment variable
-        self.base_url = os.environ.get('REACT_APP_BACKEND_URL', 'https://46106240-d86e-4578-973d-bf618bc75cd9.preview.emergentagent.com')
+        self.base_url = os.environ.get('REACT_APP_BACKEND_URL', 'https://dbfb7da9-8888-45fb-9cbd-4421c91b4f53.preview.emergentagent.com')
         self.test_email = f"pwd_test_{self.random_string(8)}@example.com"
         self.test_password = "OriginalPassword123!"
         self.test_name = f"Password Test User {self.random_string(4)}"

@@ -9,7 +9,7 @@ import os
 
 def test_paychangu_endpoint():
     """Test the Paychangu endpoint directly"""
-    base_url = os.environ.get('REACT_APP_BACKEND_URL', 'https://46106240-d86e-4578-973d-bf618bc75cd9.preview.emergentagent.com')
+    base_url = os.environ.get('REACT_APP_BACKEND_URL', 'https://dbfb7da9-8888-45fb-9cbd-4421c91b4f53.preview.emergentagent.com')
     
     print("🧪 PAYCHANGU ENDPOINT TEST")
     print("=" * 50)
@@ -74,7 +74,7 @@ def test_paychangu_endpoint():
 
 def test_webhook_endpoint():
     """Test the webhook endpoint"""
-    base_url = os.environ.get('REACT_APP_BACKEND_URL', 'https://46106240-d86e-4578-973d-bf618bc75cd9.preview.emergentagent.com')
+    base_url = os.environ.get('REACT_APP_BACKEND_URL', 'https://dbfb7da9-8888-45fb-9cbd-4421c91b4f53.preview.emergentagent.com')
     
     print("\n🧪 WEBHOOK ENDPOINT TEST")
     print("=" * 50)

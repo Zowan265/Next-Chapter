@@ -17,7 +17,7 @@ from datetime import datetime
 
 class PaychanguIntegrationTest:
     def __init__(self):
-        self.base_url = os.environ.get('REACT_APP_BACKEND_URL', 'https://46106240-d86e-4578-973d-bf618bc75cd9.preview.emergentagent.com')
+        self.base_url = os.environ.get('REACT_APP_BACKEND_URL', 'https://dbfb7da9-8888-45fb-9cbd-4421c91b4f53.preview.emergentagent.com')
         self.token = None
         self.user_id = None
         self.test_email = f"paychangu_test_{int(time.time())}@example.com"

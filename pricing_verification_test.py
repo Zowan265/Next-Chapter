@@ -10,7 +10,7 @@ import sys
 
 def test_pricing_structure():
     """Test the updated pricing structure"""
-    base_url = 'https://46106240-d86e-4578-973d-bf618bc75cd9.preview.emergentagent.com'
+    base_url = 'https://dbfb7da9-8888-45fb-9cbd-4421c91b4f53.preview.emergentagent.com'
     
     print("=" * 80)
     print("NEXTCHAPTER SUBSCRIPTION PRICING VERIFICATION")
