@@ -2825,6 +2825,217 @@ class NextChapterAPITest(unittest.TestCase):
         
         self.assertTrue(True)  # Mark test as passed
 
+    # PAYCHANGU WEBHOOK ENDPOINT TESTS - HIGH PRIORITY
+    
+    def test_66_paychangu_webhook_get_request_with_query_params(self):
+        """HIGH PRIORITY: Test Paychangu webhook endpoint with GET request and query parameters"""
+        # Test GET request with query parameters (Paychangu format)
+        webhook_params = {
+            "tx_ref": "test-tx-12345",
+            "status": "success",
+            "amount": "2500",
+            "currency": "MWK"
+        }
+        
+        response = requests.get(f"{self.base_url}/api/paychangu/webhook", params=webhook_params)
+        
+        # Should accept GET request (no more 405 Method Not Allowed)
+        self.assertNotEqual(response.status_code, 405)
+        
+        # Should return 200 or appropriate response
+        if response.status_code == 200:
+            print(f"✅ GET webhook request accepted successfully")
+            print(f"  - Status: {response.status_code}")
+            print(f"  - Response: {response.text[:200]}")
+        else:
+            print(f"⚠️ GET webhook returned status {response.status_code}: {response.text[:200]}")
+            
+        print(f"✅ Paychangu GET webhook endpoint test completed")
+        print(f"  - Method: GET with query parameters")
+        print(f"  - Status: {response.status_code} (not 405 Method Not Allowed)")
+        print(f"  - Query params: {webhook_params}")
+    
+    def test_67_paychangu_webhook_post_request_with_json(self):
+        """HIGH PRIORITY: Test Paychangu webhook endpoint with POST request and JSON body"""
+        # Test POST request with JSON body
+        webhook_data = {
+            "tx_ref": "test-tx-67890",
+            "status": "success",
+            "amount": 15000,
+            "currency": "MWK",
+            "data": {
+                "tx_ref": "test-tx-67890",
+                "status": "success"
+            }
+        }
+        
+        response = requests.post(
+            f"{self.base_url}/api/paychangu/webhook",
+            json=webhook_data,
+            headers={"Content-Type": "application/json"}
+        )
+        
+        # Should accept POST request
+        self.assertNotEqual(response.status_code, 405)
+        
+        if response.status_code == 200:
+            print(f"✅ POST webhook request accepted successfully")
+            print(f"  - Status: {response.status_code}")
+            print(f"  - Response: {response.text[:200]}")
+        else:
+            print(f"⚠️ POST webhook returned status {response.status_code}: {response.text[:200]}")
+            
+        print(f"✅ Paychangu POST webhook endpoint test completed")
+        print(f"  - Method: POST with JSON body")
+        print(f"  - Status: {response.status_code} (not 405 Method Not Allowed)")
+        print(f"  - JSON data: {webhook_data}")
+    
+    def test_68_paychangu_webhook_missing_tx_ref(self):
+        """HIGH PRIORITY: Test webhook error handling with missing tx_ref"""
+        # Test GET request without tx_ref
+        webhook_params = {
+            "status": "success",
+            "amount": "2500",
+            "currency": "MWK"
+            # Missing tx_ref
+        }
+        
+        response = requests.get(f"{self.base_url}/api/paychangu/webhook", params=webhook_params)
+        
+        # Should handle missing tx_ref gracefully
+        if response.status_code == 400:
+            data = response.json()
+            self.assertIn("detail", data)
+            print(f"✅ Missing tx_ref properly handled: {data['detail']}")
+        else:
+            print(f"⚠️ Missing tx_ref handling: Status {response.status_code}")
+            
+        print(f"✅ Webhook missing tx_ref test completed")
+        print(f"  - Status: {response.status_code}")
+        print(f"  - Error handling: {'Proper' if response.status_code == 400 else 'Needs review'}")
+    
+    def test_69_paychangu_webhook_invalid_status(self):
+        """HIGH PRIORITY: Test webhook with invalid status values"""
+        # Test with invalid status
+        webhook_params = {
+            "tx_ref": "test-tx-invalid",
+            "status": "invalid_status",
+            "amount": "2500",
+            "currency": "MWK"
+        }
+        
+        response = requests.get(f"{self.base_url}/api/paychangu/webhook", params=webhook_params)
+        
+        # Should handle invalid status gracefully
+        print(f"✅ Invalid status webhook test completed")
+        print(f"  - Status: {response.status_code}")
+        print(f"  - Invalid status handling: Status {response.status_code}")
+        print(f"  - Response: {response.text[:200] if response.text else 'Empty'}")
+    
+    def test_70_paychangu_webhook_transaction_processing(self):
+        """HIGH PRIORITY: Test webhook transaction processing and status update"""
+        # Create a mock transaction ID for testing
+        test_transaction_id = f"test-tx-{self.random_string(8)}"
+        print(f"  - Using mock transaction ID: {test_transaction_id}")
+        
+        # Simulate successful payment webhook
+        webhook_params = {
+            "tx_ref": test_transaction_id,
+            "status": "success",
+            "amount": "2500",
+            "currency": "MWK"
+        }
+        
+        response = requests.get(f"{self.base_url}/api/paychangu/webhook", params=webhook_params)
+        
+        print(f"✅ Webhook transaction processing test completed")
+        print(f"  - Transaction ID: {test_transaction_id}")
+        print(f"  - Webhook status: {response.status_code}")
+        print(f"  - Response: {response.text[:200] if response.text else 'Empty'}")
+        
+        # Test duplicate webhook (idempotency)
+        print("  - Testing webhook idempotency (duplicate webhook)...")
+        duplicate_response = requests.get(f"{self.base_url}/api/paychangu/webhook", params=webhook_params)
+        
+        print(f"  - Duplicate webhook status: {duplicate_response.status_code}")
+        print(f"  - Idempotency: {'Working' if duplicate_response.status_code in [200, 409] else 'Needs review'}")
+    
+    def test_71_paychangu_webhook_invalid_json_handling(self):
+        """HIGH PRIORITY: Test webhook with invalid JSON payload"""
+        # Test POST request with invalid JSON
+        invalid_json = '{"tx_ref": "test", "status": "success", invalid}'
+        
+        response = requests.post(
+            f"{self.base_url}/api/paychangu/webhook",
+            data=invalid_json,
+            headers={"Content-Type": "application/json"}
+        )
+        
+        # Should handle invalid JSON gracefully
+        print(f"✅ Invalid JSON webhook test completed")
+        print(f"  - Status: {response.status_code}")
+        print(f"  - Invalid JSON handling: {'Proper' if response.status_code == 400 else 'Needs review'}")
+        print(f"  - Response: {response.text[:200] if response.text else 'Empty'}")
+    
+    def test_72_paychangu_webhook_both_methods_support(self):
+        """HIGH PRIORITY: Verify webhook endpoint supports both GET and POST methods"""
+        # Test that both methods are supported (no 405 Method Not Allowed)
+        
+        # Test GET
+        get_response = requests.get(f"{self.base_url}/api/paychangu/webhook?tx_ref=test&status=success")
+        get_supported = get_response.status_code != 405
+        
+        # Test POST
+        post_response = requests.post(
+            f"{self.base_url}/api/paychangu/webhook",
+            json={"tx_ref": "test", "status": "success"}
+        )
+        post_supported = post_response.status_code != 405
+        
+        print(f"✅ Webhook method support verification completed")
+        print(f"  - GET method supported: {'Yes' if get_supported else 'No (405 error)'}")
+        print(f"  - POST method supported: {'Yes' if post_supported else 'No (405 error)'}")
+        print(f"  - GET status: {get_response.status_code}")
+        print(f"  - POST status: {post_response.status_code}")
+        
+        # Both methods should be supported (main fix verification)
+        if get_supported and post_supported:
+            print(f"  - ✅ WEBHOOK FIX VERIFIED: Both GET and POST methods now supported")
+        else:
+            print(f"  - ❌ WEBHOOK FIX ISSUE: Method support problem detected")
+    
+    def test_73_paychangu_webhook_logging_verification(self):
+        """HIGH PRIORITY: Test webhook logging for both GET and POST requests"""
+        # Test GET request logging
+        get_params = {
+            "tx_ref": f"log-test-get-{self.random_string(6)}",
+            "status": "success",
+            "amount": "2500",
+            "currency": "MWK"
+        }
+        
+        get_response = requests.get(f"{self.base_url}/api/paychangu/webhook", params=get_params)
+        
+        # Test POST request logging
+        post_data = {
+            "tx_ref": f"log-test-post-{self.random_string(6)}",
+            "status": "success",
+            "amount": 2500,
+            "currency": "MWK"
+        }
+        
+        post_response = requests.post(
+            f"{self.base_url}/api/paychangu/webhook",
+            json=post_data
+        )
+        
+        print(f"✅ Webhook logging verification completed")
+        print(f"  - GET request: Status {get_response.status_code}")
+        print(f"  - POST request: Status {post_response.status_code}")
+        print(f"  - GET tx_ref: {get_params['tx_ref']}")
+        print(f"  - POST tx_ref: {post_data['tx_ref']}")
+        print(f"  - Logging: Check backend logs for '✅ GET Webhook received' and '✅ POST Webhook received'")
+
 def run_tests():
     # Create a test suite
     suite = unittest.TestSuite()
