@@ -2261,6 +2261,81 @@ function App() {
                   )}
                 </div>
 
+                {/* Subscription Status Card */}
+                <div className="bg-white rounded-2xl shadow-lg p-6">
+                  <h3 className="font-semibold text-gray-800 mb-4 flex items-center">
+                    💎 Subscription Status
+                  </h3>
+                  {userSubscription && userSubscription.subscription_tier === 'premium' && userSubscription.subscription_status === 'active' ? (
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between">
+                        <span className="text-green-600 font-medium">✓ Premium Active</span>
+                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                          getSubscriptionStatusColor(userSubscription) === 'green' 
+                            ? 'bg-green-100 text-green-800' 
+                            : 'bg-yellow-100 text-yellow-800'
+                        }`}>
+                          {getSubscriptionDisplayName(userSubscription)}
+                        </span>
+                      </div>
+                      {userSubscription.subscription_expires && (
+                        <div className="text-sm text-gray-600">
+                          <span>Expires: </span>
+                          <span className="font-medium">
+                            {new Date(userSubscription.subscription_expires).toLocaleDateString()}
+                          </span>
+                        </div>
+                      )}
+                      <div className="bg-green-50 border border-green-200 rounded-lg p-3">
+                        <div className="flex items-center space-x-2 text-sm text-green-700">
+                          <span>✓</span>
+                          <span>Unlimited likes & matches</span>
+                        </div>
+                        <div className="flex items-center space-x-2 text-sm text-green-700">
+                          <span>✓</span>
+                          <span>Exclusive chat rooms</span>
+                        </div>
+                        <div className="flex items-center space-x-2 text-sm text-green-700">
+                          <span>✓</span>
+                          <span>See who liked you</span>
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between">
+                        <span className="text-gray-600 font-medium">Free Account</span>
+                        <span className="bg-gray-100 text-gray-800 px-2 py-1 rounded-full text-xs font-medium">
+                          Basic
+                        </span>
+                      </div>
+                      <div className="bg-purple-50 border border-purple-200 rounded-lg p-3">
+                        <div className="text-sm text-purple-700 mb-2">
+                          <strong>Upgrade to Premium:</strong>
+                        </div>
+                        <div className="flex items-center space-x-2 text-sm text-purple-600">
+                          <span>•</span>
+                          <span>Unlimited connections</span>
+                        </div>
+                        <div className="flex items-center space-x-2 text-sm text-purple-600">
+                          <span>•</span>
+                          <span>Exclusive chat access</span>
+                        </div>
+                        <div className="flex items-center space-x-2 text-sm text-purple-600">
+                          <span>•</span>
+                          <span>Advanced matching</span>
+                        </div>
+                        <button
+                          onClick={() => setCurrentView('subscription')}
+                          className="w-full mt-3 bg-gradient-to-r from-purple-600 to-rose-500 text-white py-2 rounded-lg text-sm font-medium hover:from-purple-700 hover:to-rose-600 transition-all"
+                        >
+                          Upgrade Now
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
                 {/* Top Favorites */}
                 {favorites.length > 0 && (
                   <div className="bg-white rounded-2xl shadow-lg p-6">
