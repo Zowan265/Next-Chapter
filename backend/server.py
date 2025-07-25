@@ -1437,8 +1437,9 @@ async def initiate_paychangu_payment(
         
         try:
             response = requests.post(
-                f"{PAYCHANGU_BASE_URL}/api/v1/transactions",
+                f"{PAYCHANGU_BASE_URL}/payment",
                 headers={
+                    "Accept": "application/json",
                     "Authorization": f"Bearer {PAYCHANGU_SECRET_KEY}",
                     "Content-Type": "application/json"
                 },
