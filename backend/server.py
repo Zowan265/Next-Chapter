@@ -1635,7 +1635,8 @@ async def paychangu_webhook(request: Request):
             subscription_type = transaction["subscription_type"]
             
             # Check if this transaction was already processed successfully
-            if transaction.get("status", "").lower() in ["success", "completed", "paid"]:
+            current_status = transaction.get("status", "")
+            if current_status and current_status.lower() in ["success", "completed", "paid"]:
                 print(f"⚠️ Transaction {transaction_id} already processed - skipping duplicate webhook")
                 return {"status": "already_processed"}
             
