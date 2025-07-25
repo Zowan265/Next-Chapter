@@ -179,6 +179,9 @@ backend:
       - working: true
         agent: "testing"
         comment: "✅ VERIFIED: Diaspora USD pricing working correctly. Premium Daily: $1.35 USD (≈2500 MWK), conversion rate ~1851.85 MWK/USD. MWK equivalents properly displayed for diaspora users."
+      - working: true
+        agent: "testing"
+        comment: "✅ UPDATED DIASPORA PRICING VERIFIED: Comprehensive testing confirms the updated diaspora USD pricing is correctly implemented. UPDATED USD PRICING: Daily: $1.35 USD (≈2,500 MWK) - unchanged, Weekly: $5.36 USD (≈10,000 MWK) - changed from $8.05, Monthly: $8.05 USD (≈15,000 MWK) - changed from $16.09. CONVERSION RATES: Daily: 1851.85 MWK/USD, Weekly: 1865.67 MWK/USD, Monthly: 1863.35 MWK/USD, Average: 1860.29 MWK/USD (consistent with expected ~1865 MWK/USD). CONSISTENCY: MWK equivalents match exactly between local and diaspora pricing. All diaspora pricing endpoints working correctly with proper currency formatting and calculations."
 
   - task: "Time-based discounts (Wednesday/Saturday)"
     implemented: true
