@@ -198,18 +198,18 @@ COUNTRY_CODES = {
 SUBSCRIPTION_PRICING = {
     "MW_LOCAL": {  # For Malawians in Malawi
         "daily": {"amount": 2500, "currency": "MWK"},
-        "weekly": {"amount": 15000, "currency": "MWK"},
-        "monthly": {"amount": 30000, "currency": "MWK"}
+        "weekly": {"amount": 10000, "currency": "MWK"},
+        "monthly": {"amount": 15000, "currency": "MWK"}
     },
     "MW_DIASPORA": {  # For Malawians abroad (USD pricing)
         "daily": {"amount": 1.35, "currency": "USD", "mwk_equivalent": 2500},
-        "weekly": {"amount": 8.05, "currency": "USD", "mwk_equivalent": 15000},
-        "monthly": {"amount": 16.09, "currency": "USD", "mwk_equivalent": 30000}
+        "weekly": {"amount": 5.36, "currency": "USD", "mwk_equivalent": 10000},
+        "monthly": {"amount": 8.05, "currency": "USD", "mwk_equivalent": 15000}
     },
     "default": {  # For non-Malawians
         "daily": {"amount": 1.35, "currency": "USD"},
-        "weekly": {"amount": 8.05, "currency": "USD"},
-        "monthly": {"amount": 16.09, "currency": "USD"}
+        "weekly": {"amount": 5.36, "currency": "USD"},
+        "monthly": {"amount": 8.05, "currency": "USD"}
     }
 }
 
