@@ -1474,6 +1474,15 @@ async def initiate_paychangu_payment(
             try:
                 result = response.json()
                 print(f"✅ Paychangu API response received: {result}")
+                
+                # Check if the response indicates success
+                if result.get("status") != "success":
+                    return PaychanguPaymentResponse(
+                        success=False,
+                        message=result.get("message", "Payment initiation failed"),
+                        data=result
+                    )
+                
             except json.JSONDecodeError:
                 print(f"❌ Paychangu API returned non-JSON success response")
                 return PaychanguPaymentResponse(
@@ -1481,11 +1490,16 @@ async def initiate_paychangu_payment(
                     message="Invalid success response from Paychangu API"
                 )
             
+            # Extract data from Paychangu response format
+            data_section = result.get("data", {})
+            checkout_data = data_section.get("data", {}) if isinstance(data_section, dict) else {}
+            
             # Store transaction in database for tracking
             transaction_data = {
                 "id": str(uuid.uuid4()),
                 "user_id": current_user["id"],
-                "paychangu_transaction_id": result.get("transaction_id"),
+                "paychangu_transaction_id": checkout_data.get("tx_ref") or data_section.get("tx_ref"),
+                "paychangu_checkout_url": data_section.get("checkout_url"),
                 "amount": payment_request.amount,
                 "currency": payment_request.currency,
                 "subscription_type": payment_request.subscription_type,
@@ -1505,9 +1519,9 @@ async def initiate_paychangu_payment(
             
             return PaychanguPaymentResponse(
                 success=True,
-                transaction_id=result.get("transaction_id"),
-                payment_url=result.get("checkout_url") or result.get("payment_url"),
-                message="Payment initiated successfully",
+                transaction_id=checkout_data.get("tx_ref") or data_section.get("tx_ref"),
+                payment_url=data_section.get("checkout_url"),
+                message=result.get("message", "Payment initiated successfully"),
                 data=result
             )
         else:
