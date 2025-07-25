@@ -19,6 +19,10 @@ function App() {
   const [paymentOtpSent, setPaymentOtpSent] = useState(false);
   const [selectedTier, setSelectedTier] = useState('');
   
+  // Notification and subscription status state
+  const [subscriptionNotification, setSubscriptionNotification] = useState(null);
+  const [showNotification, setShowNotification] = useState(false);
+  
   // Password recovery state
   const [passwordResetStep, setPasswordResetStep] = useState('request'); // 'request', 'verify', 'reset'
   const [resetIdentifier, setResetIdentifier] = useState('');
