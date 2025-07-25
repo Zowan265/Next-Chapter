@@ -2049,8 +2049,19 @@ function App() {
                       }
                     </p>
                     <p className="text-sm text-purple-600 mt-2">
-                      We'll automatically detect when payment is complete
+                      We'll automatically detect and verify when payment is complete
                     </p>
+                    
+                    {/* Payment Verification Status */}
+                    <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                      <div className="flex items-center text-sm text-blue-800">
+                        <div className="animate-pulse w-2 h-2 bg-blue-600 rounded-full mr-2"></div>
+                        <span>Payment verification system active</span>
+                      </div>
+                      <p className="text-xs text-blue-600 mt-1">
+                        Double-checking payment status and subscription activation
+                      </p>
+                    </div>
                     
                     {/* Countdown Timer */}
                     {paymentTimeoutTimer > 0 && (
@@ -2065,6 +2076,9 @@ function App() {
                             style={{ width: `${(paymentTimeoutTimer / 210) * 100}%` }}
                           ></div>
                         </div>
+                        <p className="text-xs text-purple-600 mt-2">
+                          Payment verification continues even if timeout occurs
+                        </p>
                       </div>
                     )}
                   </div>
