@@ -53,15 +53,21 @@ class PaychanguIntegrationTest:
                 "email": self.test_email,
                 "otp": otp
             }
-        
-        verify_response = requests.post(f"{self.base_url}/api/verify-registration", json=verify_payload)
-        if verify_response.status_code != 200:
-            print(f"❌ Verification failed: {verify_response.text}")
-            return False
             
-        verify_data = verify_response.json()
-        self.token = verify_data["token"]
-        self.user_id = verify_data["user"]["id"]
+            verify_response = requests.post(f"{self.base_url}/api/verify-registration", json=verify_payload)
+            if verify_response.status_code == 200:
+                verify_data = verify_response.json()
+                self.token = verify_data["token"]
+                self.user_id = verify_data["user"]["id"]
+                verified = True
+                print(f"✅ User verified with OTP: {otp}")
+                break
+            else:
+                print(f"⚠️ OTP {otp} failed: {verify_response.text[:100]}")
+        
+        if not verified:
+            print(f"❌ All demo OTPs failed. Last response: {verify_response.text}")
+            return False
         
         print(f"✅ User verified and authenticated")
         print(f"  - User ID: {self.user_id}")
