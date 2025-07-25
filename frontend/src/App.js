@@ -506,10 +506,18 @@ function App() {
 
   const pollPaymentStatus = async (transactionId) => {
     let attempts = 0;
-    const maxAttempts = 30; // Poll for 5 minutes (30 * 10 seconds)
+    const maxAttempts = 21; // Poll for 3 minutes 30 seconds (21 * 10 seconds)
     
     const checkStatus = async () => {
       try {
+        // Check if payment timed out
+        if (paymentTimedOut) {
+          alert('⏰ Payment timeout: Your payment took longer than expected. Please check your subscription status or try again.');
+          setPaymentStep('method');
+          setPaymentTimeoutTimer(0);
+          return;
+        }
+
         const response = await fetch(`${API_BASE_URL}/api/paychangu/transaction/${transactionId}`, {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -531,25 +539,29 @@ function App() {
             
             fetchUserSubscription(); // Refresh subscription data to trigger status update
             setCurrentView('dashboard');
+            setPaymentTimeoutTimer(0); // Clear timer
             return;
           } else if (status === 'failed' || status === 'cancelled') {
             alert('❌ Payment failed or was cancelled. Please try again.');
             setPaymentStep('method');
+            setPaymentTimeoutTimer(0); // Clear timer
             return;
           }
         }
 
         attempts++;
-        if (attempts < maxAttempts) {
+        if (attempts < maxAttempts && !paymentTimedOut) {
           setTimeout(checkStatus, 10000); // Check again in 10 seconds
-        } else {
+        } else if (!paymentTimedOut) {
+          // Only show timeout if not already timed out
           alert('⏰ Payment status check timeout. Please check your subscription status in your dashboard.');
           setCurrentView('dashboard');
+          setPaymentTimeoutTimer(0); // Clear timer
         }
       } catch (error) {
         console.error('Status check error:', error);
         attempts++;
-        if (attempts < maxAttempts) {
+        if (attempts < maxAttempts && !paymentTimedOut) {
           setTimeout(checkStatus, 10000);
         }
       }
