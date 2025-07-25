@@ -1952,25 +1952,84 @@ function App() {
                 <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto">
                   <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600"></div>
                 </div>
-                <div>
-                  <h3 className="text-xl font-semibold text-gray-800 mb-2">Processing Payment</h3>
-                  <p className="text-gray-600">
-                    {paymentMethod === 'mobile_money' 
-                      ? 'Please complete the payment on your mobile device'
-                      : 'Please complete the payment in the opened window'
-                    }
-                  </p>
-                  <p className="text-sm text-purple-600 mt-2">
-                    We'll automatically detect when payment is complete
-                  </p>
-                </div>
                 
-                <button
-                  onClick={() => setCurrentView('dashboard')}
-                  className="text-purple-600 hover:text-purple-800 font-medium"
-                >
-                  Continue to Dashboard
-                </button>
+                {/* Payment Timeout Display */}
+                {paymentTimedOut ? (
+                  <div className="bg-red-50 border border-red-200 rounded-lg p-6">
+                    <div className="text-6xl mb-4">⏰</div>
+                    <h3 className="text-xl font-semibold text-red-800 mb-2">Payment Timeout</h3>
+                    <p className="text-red-600 mb-4">
+                      Your payment took longer than expected (3 minutes 30 seconds). This could be due to:
+                    </p>
+                    <div className="text-left text-red-600 text-sm mb-4">
+                      <ul className="list-disc list-inside space-y-1">
+                        <li>Network connectivity issues</li>
+                        <li>Payment method declined or unavailable</li>
+                        <li>Mobile money service temporary issues</li>
+                        <li>Insufficient funds</li>
+                      </ul>
+                    </div>
+                    <p className="text-red-600 mb-4">
+                      Please check your subscription status in your dashboard or try again with a different payment method.
+                    </p>
+                    <div className="flex space-x-3">
+                      <button
+                        onClick={() => setCurrentView('dashboard')}
+                        className="flex-1 bg-gray-200 text-gray-700 py-3 px-4 rounded-lg font-medium hover:bg-gray-300 transition-colors"
+                      >
+                        Go to Dashboard
+                      </button>
+                      <button
+                        onClick={() => {
+                          setPaymentStep('method');
+                          setPaymentTimedOut(false);
+                          setPaymentTimeoutTimer(0);
+                        }}
+                        className="flex-1 bg-red-600 text-white py-3 px-4 rounded-lg font-medium hover:bg-red-700 transition-colors"
+                      >
+                        Try Again
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div>
+                    <h3 className="text-xl font-semibold text-gray-800 mb-2">Processing Payment</h3>
+                    <p className="text-gray-600">
+                      {paymentMethod === 'mobile_money' 
+                        ? 'Please complete the payment on your mobile device'
+                        : 'Please complete the payment in the opened window'
+                      }
+                    </p>
+                    <p className="text-sm text-purple-600 mt-2">
+                      We'll automatically detect when payment is complete
+                    </p>
+                    
+                    {/* Countdown Timer */}
+                    {paymentTimeoutTimer > 0 && (
+                      <div className="mt-4 p-4 bg-purple-50 border border-purple-200 rounded-lg">
+                        <p className="text-sm text-purple-700 mb-2">Payment will timeout in:</p>
+                        <div className="text-2xl font-mono font-bold text-purple-800">
+                          {formatTimer(paymentTimeoutTimer)}
+                        </div>
+                        <div className="w-full bg-purple-200 rounded-full h-2 mt-3">
+                          <div 
+                            className="bg-purple-600 h-2 rounded-full transition-all duration-1000"
+                            style={{ width: `${(paymentTimeoutTimer / 210) * 100}%` }}
+                          ></div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+                
+                {!paymentTimedOut && (
+                  <button
+                    onClick={() => setCurrentView('dashboard')}
+                    className="text-purple-600 hover:text-purple-800 font-medium"
+                  >
+                    Continue to Dashboard
+                  </button>
+                )}
               </div>
             )}
           </div>
