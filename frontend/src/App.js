@@ -2008,6 +2008,85 @@ function App() {
           </div>
         </nav>
 
+        {/* Notification Component */}
+        {showNotification && subscriptionNotification && (
+          <div className={`fixed top-20 right-4 z-50 max-w-sm w-full transition-all duration-300 transform ${
+            showNotification ? 'translate-x-0 opacity-100' : 'translate-x-full opacity-0'
+          }`}>
+            <div className={`p-4 rounded-lg shadow-lg border-l-4 ${
+              subscriptionNotification.type === 'success' 
+                ? 'bg-green-50 border-green-500 text-green-800' 
+                : 'bg-red-50 border-red-500 text-red-800'
+            }`}>
+              <div className="flex items-start">
+                <div className="flex-1">
+                  <h4 className="font-semibold mb-1">{subscriptionNotification.title}</h4>
+                  <p className="text-sm">{subscriptionNotification.message}</p>
+                </div>
+                <button
+                  onClick={() => setShowNotification(false)}
+                  className="ml-2 text-gray-400 hover:text-gray-600"
+                >
+                  ✕
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Subscription Status Banner */}
+        {userSubscription && userSubscription.subscription_tier === 'premium' && userSubscription.subscription_status === 'active' && (
+          <div className="bg-gradient-to-r from-green-500 to-green-600 text-white py-3">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-3">
+                  <span className="text-xl">💎</span>
+                  <div>
+                    <span className="font-semibold">
+                      {getSubscriptionDisplayName(userSubscription)} Premium Active
+                    </span>
+                    {userSubscription.subscription_expires && (
+                      <span className="ml-2 text-green-100 text-sm">
+                        • Expires {new Date(userSubscription.subscription_expires).toLocaleDateString()}
+                      </span>
+                    )}
+                  </div>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <span className="text-sm bg-green-400 bg-opacity-30 px-2 py-1 rounded-full">
+                    ✓ All Features Unlocked
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Free User Upgrade Banner */}
+        {(!userSubscription || userSubscription.subscription_tier === 'free' || userSubscription.subscription_status !== 'active') && (
+          <div className="bg-gradient-to-r from-purple-600 to-rose-500 text-white py-3">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-3">
+                  <span className="text-xl">⭐</span>
+                  <div>
+                    <span className="font-semibold">Free Account</span>
+                    <span className="ml-2 text-purple-100 text-sm">
+                      • Upgrade to unlock premium features
+                    </span>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setCurrentView('subscription')}
+                  className="bg-white bg-opacity-20 hover:bg-opacity-30 px-4 py-2 rounded-lg text-sm font-medium transition-all"
+                >
+                  Upgrade Now
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Main Dashboard Content */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           
