@@ -1588,10 +1588,12 @@ async def paychangu_webhook(request: Request):
         # Verify webhook signature if Paychangu provides one
         # This is important for security - implement based on Paychangu docs
         
-        transaction_id = webhook_data.get("transaction_id")
-        status = webhook_data.get("status")
+        # Paychangu webhook may use different field names, try multiple options
+        transaction_id = webhook_data.get("tx_ref") or webhook_data.get("transaction_id") or webhook_data.get("data", {}).get("tx_ref")
+        status = webhook_data.get("status") or webhook_data.get("data", {}).get("status")
         
         if not transaction_id:
+            print(f"❌ Missing transaction ID in webhook: {webhook_data}")
             raise HTTPException(status_code=400, detail="Missing transaction ID")
         
         # Find the transaction in our database
