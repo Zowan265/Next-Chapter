@@ -1511,7 +1511,11 @@ async def initiate_paychangu_payment(
             )
             
     except Exception as e:
+        import traceback
+        error_details = traceback.format_exc()
         print(f"❌ Paychangu payment error: {str(e)}")
+        print(f"❌ Full error traceback: {error_details}")
+        
         return PaychanguPaymentResponse(
             success=False,
             message=f"Payment processing error: {str(e)}"
