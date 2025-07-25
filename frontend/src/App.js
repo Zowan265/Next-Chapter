@@ -2007,15 +2007,21 @@ function App() {
                     <div className="text-6xl mb-4">⏰</div>
                     <h3 className="text-xl font-semibold text-red-800 mb-2">Payment Timeout</h3>
                     <p className="text-red-600 mb-4">
-                      Your payment took longer than expected (3 minutes 30 seconds). This could be due to:
+                      Your payment took longer than expected (3 minutes 30 seconds). However, our payment verification system continues to monitor your transaction even after timeout.
                     </p>
                     <div className="text-left text-red-600 text-sm mb-4">
+                      <p className="font-medium mb-2">This timeout could be due to:</p>
                       <ul className="list-disc list-inside space-y-1">
                         <li>Network connectivity issues</li>
                         <li>Payment method declined or unavailable</li>
                         <li>Mobile money service temporary issues</li>
-                        <li>Insufficient funds</li>
+                        <li>Insufficient funds or payment limits</li>
                       </ul>
+                    </div>
+                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
+                      <p className="text-blue-800 text-sm">
+                        <strong>💡 Good to know:</strong> If your payment was successful, you'll automatically receive a subscription confirmation email and be redirected to your dashboard.
+                      </p>
                     </div>
                     <p className="text-red-600 mb-4">
                       Please check your subscription status in your dashboard or try again with a different payment method.
