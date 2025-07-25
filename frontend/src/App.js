@@ -581,18 +581,14 @@ function App() {
           const status = data.transaction?.status?.toLowerCase();
 
           if (status === 'success' || status === 'completed' || status === 'paid') {
-            // Payment successful - show notification and refresh subscription
-            showSubscriptionNotification({
-              type: 'success',
-              title: '🎉 Payment Successful!',
-              message: 'Your subscription has been activated. Welcome to NextChapter Premium!',
-              duration: 'long'
-            });
+            // Payment successful - use enhanced verification system
+            const verificationSuccess = await verifyPaymentAndRedirect(data);
             
-            fetchUserSubscription(); // Refresh subscription data to trigger status update
-            setCurrentView('dashboard');
-            setPaymentTimeoutTimer(0); // Clear timer
-            return;
+            if (verificationSuccess) {
+              return; // Successfully verified and redirected
+            }
+            // If verification failed, continue polling (payment might still be processing)
+            
           } else if (status === 'failed' || status === 'cancelled') {
             alert('❌ Payment failed or was cancelled. Please try again.');
             setPaymentStep('method');
