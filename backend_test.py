@@ -3110,7 +3110,15 @@ def run_tests():
         'test_62_paychangu_json_parsing_error_fix',
         'test_63_paychangu_webhook_json_parsing_fix',
         'test_64_paychangu_webhook_idempotency_fix',
-        'test_65_paychangu_comprehensive_error_handling_verification'
+        'test_65_paychangu_comprehensive_error_handling_verification',
+        'test_66_paychangu_webhook_get_request_with_query_params',
+        'test_67_paychangu_webhook_post_request_with_json',
+        'test_68_paychangu_webhook_missing_tx_ref',
+        'test_69_paychangu_webhook_invalid_status',
+        'test_70_paychangu_webhook_transaction_processing',
+        'test_71_paychangu_webhook_invalid_json_handling',
+        'test_72_paychangu_webhook_both_methods_support',
+        'test_73_paychangu_webhook_logging_verification'
     ]
     
     for test_case in test_cases:
