@@ -497,8 +497,15 @@ function App() {
           const status = data.transaction?.status?.toLowerCase();
 
           if (status === 'success' || status === 'completed' || status === 'paid') {
-            alert('🎉 Payment successful! Your subscription has been activated.');
-            fetchUserSubscription(); // Refresh subscription data
+            // Payment successful - show notification and refresh subscription
+            showSubscriptionNotification({
+              type: 'success',
+              title: '🎉 Payment Successful!',
+              message: 'Your subscription has been activated. Welcome to NextChapter Premium!',
+              duration: 'long'
+            });
+            
+            fetchUserSubscription(); // Refresh subscription data to trigger status update
             setCurrentView('dashboard');
             return;
           } else if (status === 'failed' || status === 'cancelled') {
