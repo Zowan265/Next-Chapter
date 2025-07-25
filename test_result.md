@@ -213,6 +213,21 @@ backend:
         agent: "testing"
         comment: "✅ RE-VERIFIED WITH 150-SECOND TIMER: Email OTP verification system updated with 150-second timer (2 minutes 30 seconds). Registration email template now shows 'This code will expire in 2 minutes 30 seconds'. Backend code shows timedelta(seconds=150) for registration OTP expiration. Real SMTP delivery working correctly. OTP generation, email sending, and validation all functioning with new 150-second timing. System ready for production with updated timer."
 
+  - task: "Paychangu webhook endpoint fix (GET and POST support)"
+    implemented: true
+    working: true
+    file: "server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Updated /api/paychangu/webhook endpoint to accept both GET and POST methods. Added GET request handling with query parameter parsing. Maintained POST request handling with JSON body parsing. Enhanced logging to distinguish between GET and POST webhook calls."
+      - working: true
+        agent: "testing"
+        comment: "✅ WEBHOOK FIX VERIFIED: Comprehensive testing confirms the critical Paychangu webhook issue has been resolved. (1) ✅ GET Method Support - Webhook endpoint now accepts GET requests with query parameters (tx_ref, status, amount, currency) - no more 405 Method Not Allowed errors ✅ (2) ✅ POST Method Support - Existing POST request handling with JSON body still works correctly ✅ (3) ✅ Query Parameter Processing - GET requests with Paychangu format (?tx_ref=12345&status=success&amount=2500&currency=MWK) are processed successfully ✅ (4) ✅ JSON Body Processing - POST requests with JSON payload continue to work as before ✅ (5) ✅ Error Handling - Missing tx_ref and invalid JSON handled gracefully without server crashes ✅ (6) ✅ Logging Enhancement - Backend logs show '✅ GET Webhook received' and '✅ POST Webhook received' for proper debugging ✅. The webhook endpoint now supports both methods as required by Paychangu's webhook delivery system. Auto payment detection is now functional and ready for production use."
+
   - task: "Paychangu payment integration error handling fixes"
     implemented: true
     working: true
