@@ -1471,10 +1471,33 @@ async def initiate_paychangu_payment(
                 data=result
             )
         else:
-            error_data = response.json() if response.content else {}
+            # Handle error response with proper JSON parsing
+            error_data = {}
+            error_message = "Unknown error"
+            
+            try:
+                if response.content:
+                    # Try to parse JSON response
+                    error_data = response.json()
+                    error_message = error_data.get('message', error_data.get('error', 'Payment initiation failed'))
+                else:
+                    error_message = f"Empty response from Paychangu API (Status: {response.status_code})"
+            except json.JSONDecodeError:
+                # Handle non-JSON responses
+                error_message = f"Invalid response from Paychangu API (Status: {response.status_code})"
+                if response.content:
+                    # Log the actual response for debugging
+                    response_text = response.content.decode('utf-8', errors='ignore')[:200]
+                    print(f"❌ Paychangu API returned non-JSON response: {response_text}")
+                    error_message += f" - Response: {response_text[:100]}"
+            except Exception as e:
+                error_message = f"Error processing Paychangu response: {str(e)}"
+            
+            print(f"❌ Paychangu payment initiation failed: {error_message}")
+            
             return PaychanguPaymentResponse(
                 success=False,
-                message=f"Payment initiation failed: {error_data.get('message', 'Unknown error')}",
+                message=error_message,
                 data=error_data
             )
             
