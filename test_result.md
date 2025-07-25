@@ -329,6 +329,18 @@ test_plan:
   test_all: false
   test_priority: "high_first"
 
+  - task: "Payment timeout sequence implementation"
+    implemented: false
+    working: "NA"
+    file: "App.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Starting implementation of 3 minutes 30 seconds payment timeout sequence with countdown timer display and error handling for failed payments."
+
 agent_communication:
   - agent: "main"
     message: "Recent implementation completed: subscription pricing updated to 2500/15000/30000 MWK with diaspora USD conversion, Join Now button text, and chatroom feature. All backend and frontend changes need verification testing. Starting with backend testing first."
@@ -354,3 +366,5 @@ agent_communication:
     message: "💰 UPDATED SUBSCRIPTION PRICING VERIFICATION COMPLETE: Comprehensive testing of the updated subscription pricing structure has been completed successfully. PRICING CHANGES VERIFIED: (1) ✅ LOCAL MWK PRICING - Daily: 2,500 MWK (unchanged), Weekly: 10,000 MWK (changed from 15,000 MWK), Monthly: 15,000 MWK (changed from 30,000 MWK) ✅ (2) ✅ DIASPORA USD PRICING - Daily: $1.35 USD, Weekly: $5.36 USD (changed from $8.05), Monthly: $8.05 USD (changed from $16.09) ✅ (3) ✅ PAYMENT VALIDATION - Backend code correctly validates new amounts and will reject old amounts (expected_amounts = {'daily': 2500, 'weekly': 10000, 'monthly': 15000}) ✅ (4) ✅ WEBHOOK PROCESSING - Both GET and POST webhooks process new amounts correctly ✅ (5) ✅ CONVERSION RATE - Consistent ~1865 MWK/USD across all tiers (Daily: 1851.85, Weekly: 1865.67, Monthly: 1863.35 MWK/USD) ✅ (6) ✅ PRICING CONSISTENCY - MWK equivalents match exactly between local and diaspora pricing ✅. All subscription pricing endpoints, currency formatting, and payment validation logic are working correctly with the updated pricing structure. The system is ready for production with the new pricing."
   - agent: "testing"
     message: "🎯 COMPREHENSIVE END-TO-END PAYMENT FLOW TESTING COMPLETE: Conducted thorough testing of the entire payment process as requested in the review. CRITICAL PAYMENT FLOW VERIFIED: (1) ✅ Payment Initiation Process - /api/paychangu/initiate-payment endpoint working with all subscription types (daily: 2500, weekly: 10000, monthly: 15000 MWK), proper payment data formatting for Paychangu API, mobile money (TNM, Airtel) and card payment methods supported, transaction storage with correct amounts and user data ✅ (2) ✅ Payment Processing & Webhook Integration - /api/paychangu/webhook endpoint supports both GET and POST methods (critical fix verified), transaction status updates from 'pending' to 'success', subscription activation upon successful payment, subscription expiration date calculation (1 day, 7 days, 30 days) ✅ (3) ✅ User Subscription Status Updates - /api/user/subscription endpoint returns correct subscription data, subscription_tier changes from 'free' to 'premium', subscription_status set to 'active', proper subscription_expires date based on subscription type ✅ (4) ✅ Transaction Status Tracking - /api/paychangu/transaction/{id} endpoint for status checking, transaction lookup by tx_ref (Paychangu transaction ID), user-specific transaction access (users can only see their own) ✅ (5) ✅ Email Confirmation System - Subscription confirmation emails sent on successful payment, email content shows correct subscription type and expiration, idempotency (no duplicate emails), real SMTP configured with bilallevyluwemba@gmail.com ✅. SPECIFIC TEST SCENARIOS VERIFIED: Daily subscription (2500 MWK) → 1 day expiration, Weekly subscription (10000 MWK) → 7 days expiration, Monthly subscription (15000 MWK) → 30 days expiration. EXPECTED END-TO-END FLOW CONFIRMED: User initiates payment → Transaction stored as 'pending' → Payment completed → Webhook received → Status updated to 'success' → Subscription activated → User gets 'premium' tier with 'active' status → Frontend polling detects success → User redirected to dashboard → Dashboard shows specific subscription plan and expiration date → Confirmation email sent with subscription details. DEBUG FOCUS AREAS VERIFIED: Webhook processing reliability (GET vs POST) ✅, Transaction ID matching (tx_ref consistency) ✅, Subscription duration calculation accuracy ✅, Email sending without duplicates ✅, Frontend polling timeout and success detection ✅. The entire payment system is thoroughly tested and ready for smooth automatic redirection and proper subscription display."
+  - agent: "main"
+    message: "Starting implementation of payment timeout sequence with 3 minutes 30 seconds countdown timer and error handling for failed/timeout payments. Will add visible timer in processing UI and modify pollPaymentStatus function accordingly."
