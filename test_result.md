@@ -213,6 +213,21 @@ backend:
         agent: "testing"
         comment: "✅ RE-VERIFIED WITH 150-SECOND TIMER: Email OTP verification system updated with 150-second timer (2 minutes 30 seconds). Registration email template now shows 'This code will expire in 2 minutes 30 seconds'. Backend code shows timedelta(seconds=150) for registration OTP expiration. Real SMTP delivery working correctly. OTP generation, email sending, and validation all functioning with new 150-second timing. System ready for production with updated timer."
 
+  - task: "Paychangu payment integration error handling fixes"
+    implemented: true
+    working: true
+    file: "server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Fixed Paychangu payment integration error handling: (1) JSON parsing error 'Expecting value: line 1 column 1 (char 0)' - Fixed with better response handling (2) Repeated emails - Fixed with idempotency checks in webhook processing"
+      - working: true
+        agent: "testing"
+        comment: "✅ VERIFIED: Paychangu payment integration error handling fixes working correctly. (1) JSON Parsing Error Fix - No more 'Expecting value: line 1 column 1' errors in API responses, improved error handling with meaningful messages ✅ (2) Webhook JSON Parsing - Invalid JSON handled gracefully without server crashes, proper error logging implemented ✅ (3) Webhook Idempotency - Duplicate webhook processing prevented, confirmation emails sent only once per transaction ✅ (4) Comprehensive Logging - Detailed API request/response logging, error debugging information available ✅ (5) Payment Validation - Proper validation for subscription amounts (Daily: 2500 MWK, Weekly: 15000 MWK, Monthly: 30000 MWK) and mobile money operators (TNM, AIRTEL) ✅. All 12 Paychangu integration tests passed successfully. The payment system is now stable and ready for production use."
+
 frontend:
   - task: "Password recovery UI implementation"
     implemented: true
