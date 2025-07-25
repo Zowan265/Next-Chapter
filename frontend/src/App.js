@@ -416,6 +416,10 @@ function App() {
     amount: 0,
     subscriptionType: ''
   });
+  
+  // Payment timeout state
+  const [paymentTimeoutTimer, setPaymentTimeoutTimer] = useState(0);
+  const [paymentTimedOut, setPaymentTimedOut] = useState(false);
 
   const initiatePaychanguPayment = async (subscriptionType) => {
     setSelectedTier(subscriptionType);
