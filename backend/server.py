@@ -1528,8 +1528,17 @@ async def paychangu_webhook(request: Request):
         # Get the raw body
         body = await request.body()
         
-        # Parse JSON payload
-        webhook_data = json.loads(body.decode('utf-8'))
+        # Parse JSON payload with proper error handling
+        try:
+            webhook_data = json.loads(body.decode('utf-8'))
+            print(f"✅ Webhook received: {webhook_data}")
+        except json.JSONDecodeError as e:
+            print(f"❌ Invalid webhook JSON: {str(e)}")
+            print(f"❌ Raw webhook body: {body.decode('utf-8', errors='ignore')[:200]}")
+            raise HTTPException(status_code=400, detail="Invalid JSON in webhook payload")
+        except Exception as e:
+            print(f"❌ Error decoding webhook body: {str(e)}")
+            raise HTTPException(status_code=400, detail="Error processing webhook body")
         
         # Verify webhook signature if Paychangu provides one
         # This is important for security - implement based on Paychangu docs
