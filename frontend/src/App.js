@@ -422,7 +422,7 @@ function App() {
     setPaymentData({ 
       ...paymentData, 
       subscriptionType,
-      amount: subscriptionType === 'daily' ? 2500 : subscriptionType === 'weekly' ? 15000 : 30000
+      amount: subscriptionType === 'daily' ? 2500 : subscriptionType === 'weekly' ? 10000 : 15000
     });
     setPaymentStep('method');
     setCurrentView('paychangu-payment');
