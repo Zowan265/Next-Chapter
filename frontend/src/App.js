@@ -1181,7 +1181,7 @@ function App() {
                   Best Value
                 </div>
                 <h3 className="text-2xl font-bold text-white mb-4">Monthly</h3>
-                <p className="text-green-200 text-4xl font-bold mb-4">30,000 MWK</p>
+                <p className="text-green-200 text-4xl font-bold mb-4">15,000 MWK</p>
                 <p className="text-green-200 mb-6">per month</p>
                 <div className="text-sm text-purple-300 space-y-2">
                   <p>All premium features</p>
