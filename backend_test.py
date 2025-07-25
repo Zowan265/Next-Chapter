@@ -2891,7 +2891,12 @@ def run_tests():
         'test_58_paychangu_transaction_storage_verification',
         'test_59_paychangu_authentication_integration',
         'test_60_paychangu_subscription_integration',
-        'test_61_paychangu_currency_and_operators_verification'
+        'test_61_paychangu_currency_and_operators_verification',
+        # PAYCHANGU ERROR HANDLING TESTS (FOCUS OF THIS REVIEW)
+        'test_62_paychangu_json_parsing_error_fix',
+        'test_63_paychangu_webhook_json_parsing_fix',
+        'test_64_paychangu_webhook_idempotency_fix',
+        'test_65_paychangu_comprehensive_error_handling_verification'
     ]
     
     for test_case in test_cases:
