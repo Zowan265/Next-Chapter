@@ -1430,7 +1430,7 @@ async def initiate_paychangu_payment(
             payment_data["phone"] = payment_request.phone_number
         
         # Make API call to Paychangu
-        print(f"🔄 Making Paychangu API request to: {PAYCHANGU_BASE_URL}/api/v1/transactions")
+        print(f"🔄 Making Paychangu API request to: {PAYCHANGU_BASE_URL}/payment")
         print(f"🔄 Payment data: {payment_data}")
         
         import requests
