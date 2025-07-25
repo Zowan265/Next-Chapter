@@ -421,7 +421,24 @@ function App() {
   const [paymentTimeoutTimer, setPaymentTimeoutTimer] = useState(0);
   const [paymentTimedOut, setPaymentTimedOut] = useState(false);
 
-  const initiatePaychanguPayment = async (subscriptionType) => {
+  // Payment timeout timer function
+  const startPaymentTimeoutTimer = () => {
+    setPaymentTimeoutTimer(210); // 3 minutes 30 seconds
+    setPaymentTimedOut(false);
+    
+    const timer = setInterval(() => {
+      setPaymentTimeoutTimer((prev) => {
+        if (prev <= 1) {
+          clearInterval(timer);
+          setPaymentTimedOut(true);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+    
+    return timer; // Return timer ID for cleanup if needed
+  };
     setSelectedTier(subscriptionType);
     setPaymentData({ 
       ...paymentData, 
