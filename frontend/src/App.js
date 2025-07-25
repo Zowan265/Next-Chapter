@@ -488,7 +488,8 @@ function App() {
           setPaymentStep('processing');
         }
 
-        // Poll for payment status
+        // Poll for payment status with timeout timer
+        startPaymentTimeoutTimer();
         pollPaymentStatus(data.transaction_id);
       } else {
         setError(data.message || 'Payment initiation failed');
