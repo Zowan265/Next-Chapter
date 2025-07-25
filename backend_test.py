@@ -3811,7 +3811,24 @@ def run_tests():
         'test_70_paychangu_webhook_transaction_processing',
         'test_71_paychangu_webhook_invalid_json_handling',
         'test_72_paychangu_webhook_both_methods_support',
-        'test_73_paychangu_webhook_logging_verification'
+        'test_73_paychangu_webhook_logging_verification',
+        # SUBSCRIPTION NOTIFICATION AND STATUS DISPLAY SYSTEM TESTS
+        'test_74_subscription_status_api_data_structure',
+        'test_75_subscription_type_detection_logic',
+        'test_76_subscription_features_display_data',
+        'test_77_payment_webhook_subscription_update',
+        'test_78_subscription_status_colors_logic',
+        'test_79_subscription_notification_triggers',
+        'test_80_email_confirmation_system_integration',
+        'test_81_subscription_expiration_date_storage',
+        'test_82_payment_success_notification_data',
+        # WEBHOOK PROCESSING TESTS - HIGH PRIORITY (MAIN FOCUS OF REVIEW)
+        'test_83_webhook_get_request_with_tx_ref_only',
+        'test_84_webhook_null_status_handling',
+        'test_85_webhook_status_assumption_logic',
+        'test_86_webhook_duplicate_processing_prevention',
+        'test_87_webhook_subscription_activation_flow',
+        'test_88_webhook_error_handling_comprehensive'
     ]
     
     for test_case in test_cases:
