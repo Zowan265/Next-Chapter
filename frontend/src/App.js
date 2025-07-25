@@ -1707,7 +1707,7 @@ function App() {
           <div className="bg-blue-50 border border-blue-200 rounded-xl p-6 text-center">
             <h4 className="text-lg font-bold text-blue-800 mb-2">🌍 For Malawians Living Abroad</h4>
             <p className="text-blue-700">
-              USD pricing available: Daily $1.35 • Weekly $8.05 • Monthly $16.09
+              USD pricing available: Daily $1.35 • Weekly $5.36 • Monthly $8.05
             </p>
             <p className="text-sm text-blue-600 mt-2">
               Automatically applied based on your location
