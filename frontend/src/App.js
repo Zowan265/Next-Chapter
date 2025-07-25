@@ -719,7 +719,362 @@ function App() {
     }
   };
 
-  // Enhanced dashboard functions
+  // Chat room state management
+  const [selectedChatRoom, setSelectedChatRoom] = useState(null);
+  const [chatRooms, setChatRooms] = useState([
+    {
+      id: 'general',
+      name: 'General Discussion',
+      description: 'Open chat for all premium members',
+      members: 24,
+      lastMessage: 'Welcome to NextChapter!',
+      lastActivity: new Date(Date.now() - 1000 * 60 * 5), // 5 minutes ago
+      color: 'purple'
+    },
+    {
+      id: 'mature',
+      name: 'Mature Connections',
+      description: 'For users 35+ seeking serious relationships',
+      members: 18,
+      lastMessage: 'Looking forward to meaningful conversations...',
+      lastActivity: new Date(Date.now() - 1000 * 60 * 12), // 12 minutes ago
+      color: 'rose'
+    },
+    {
+      id: 'malawian',
+      name: 'Malawian Hearts',
+      description: 'Connect with fellow Malawians worldwide',
+      members: 31,
+      lastMessage: 'Moni nonse! How is everyone doing?',
+      lastActivity: new Date(Date.now() - 1000 * 60 * 3), // 3 minutes ago
+      color: 'blue'
+    },
+    {
+      id: 'diaspora',
+      name: 'Diaspora Connect',
+      description: 'For Malawians living abroad',
+      members: 15,
+      lastMessage: 'Missing home but loving the connections here!',
+      lastActivity: new Date(Date.now() - 1000 * 60 * 8), // 8 minutes ago
+      color: 'green'
+    }
+  ]);
+  const [chatMessages, setChatMessages] = useState({});
+  const [newMessage, setNewMessage] = useState('');
+
+  // Sample chat messages for different rooms
+  useEffect(() => {
+    const sampleMessages = {
+      general: [
+        {
+          id: 1,
+          sender: 'Sarah M.',
+          message: 'Welcome everyone to NextChapter! 🎉',
+          timestamp: new Date(Date.now() - 1000 * 60 * 30),
+          isOwn: false
+        },
+        {
+          id: 2,
+          sender: 'Michael K.',
+          message: 'Thank you! Excited to be here and meet new people.',
+          timestamp: new Date(Date.now() - 1000 * 60 * 25),
+          isOwn: false
+        },
+        {
+          id: 3,
+          sender: 'You',
+          message: 'Hello everyone! Looking forward to great conversations.',
+          timestamp: new Date(Date.now() - 1000 * 60 * 20),
+          isOwn: true
+        },
+        {
+          id: 4,
+          sender: 'Grace T.',
+          message: 'This platform is wonderful for mature connections!',
+          timestamp: new Date(Date.now() - 1000 * 60 * 15),
+          isOwn: false
+        }
+      ],
+      mature: [
+        {
+          id: 1,
+          sender: 'James R.',
+          message: 'At our age, we know what we\'re looking for in relationships.',
+          timestamp: new Date(Date.now() - 1000 * 60 * 45),
+          isOwn: false
+        },
+        {
+          id: 2,
+          sender: 'Linda W.',
+          message: 'Absolutely! Quality over quantity always.',
+          timestamp: new Date(Date.now() - 1000 * 60 * 40),
+          isOwn: false
+        }
+      ],
+      malawian: [
+        {
+          id: 1,
+          sender: 'Chisomo L.',
+          message: 'Moni nonse! Great to see fellow Malawians here! 🇲🇼',
+          timestamp: new Date(Date.now() - 1000 * 60 * 35),
+          isOwn: false
+        },
+        {
+          id: 2,
+          sender: 'Kondwani M.',
+          message: 'Zikomo kwambiri! This brings us together despite the distance.',
+          timestamp: new Date(Date.now() - 1000 * 60 * 30),
+          isOwn: false
+        }
+      ],
+      diaspora: [
+        {
+          id: 1,
+          sender: 'Temwa S.',
+          message: 'Living in London but my heart is still in Malawi! ❤️',
+          timestamp: new Date(Date.now() - 1000 * 60 * 50),
+          isOwn: false
+        },
+        {
+          id: 2,
+          sender: 'Mphatso K.',
+          message: 'Toronto here! It\'s amazing to connect with home.',
+          timestamp: new Date(Date.now() - 1000 * 60 * 45),
+          isOwn: false
+        }
+      ]
+    };
+    setChatMessages(sampleMessages);
+  }, []);
+
+  const sendChatMessage = () => {
+    if (!newMessage.trim() || !selectedChatRoom) return;
+    
+    const message = {
+      id: Date.now(),
+      sender: 'You',
+      message: newMessage,
+      timestamp: new Date(),
+      isOwn: true
+    };
+
+    setChatMessages(prev => ({
+      ...prev,
+      [selectedChatRoom.id]: [...(prev[selectedChatRoom.id] || []), message]
+    }));
+
+    setNewMessage('');
+    
+    // Update room's last activity
+    setChatRooms(prev => prev.map(room => 
+      room.id === selectedChatRoom.id 
+        ? { ...room, lastMessage: newMessage, lastActivity: new Date() }
+        : room
+    ));
+  };
+
+  const formatChatTime = (timestamp) => {
+    const now = new Date();
+    const diffInMinutes = Math.floor((now - timestamp) / (1000 * 60));
+    
+    if (diffInMinutes < 1) return 'Just now';
+    if (diffInMinutes < 60) return `${diffInMinutes}m ago`;
+    if (diffInMinutes < 1440) return `${Math.floor(diffInMinutes / 60)}h ago`;
+    return timestamp.toLocaleDateString();
+  };
+
+  const getRoomColorClasses = (color) => {
+    const colors = {
+      purple: 'bg-purple-500 text-white',
+      rose: 'bg-rose-500 text-white',
+      blue: 'bg-blue-500 text-white',
+      green: 'bg-green-500 text-white'
+    };
+    return colors[color] || colors.purple;
+  };
+
+  // Chat Rooms View
+  if (currentView === 'chat') {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-cream-50 to-rose-50">
+        {/* Navigation */}
+        <nav className="bg-white/80 backdrop-blur-md shadow-sm border-b border-purple-100">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex justify-between items-center h-16">
+              <div className="flex items-center space-x-8">
+                <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-rose-500 bg-clip-text text-transparent">
+                  NextChapter
+                </h1>
+                <div className="flex space-x-4">
+                  <button
+                    onClick={() => setCurrentView('dashboard')}
+                    className="text-gray-600 hover:text-purple-600 font-medium transition-colors px-4 py-2 rounded-lg"
+                  >
+                    🏠 Discover
+                  </button>
+                  <button
+                    onClick={() => setCurrentView('favorites')}
+                    className="text-gray-600 hover:text-purple-600 font-medium transition-colors px-4 py-2 rounded-lg"
+                  >
+                    💖 Favorites
+                  </button>
+                  <button
+                    onClick={() => setCurrentView('matches')}
+                    className="text-gray-600 hover:text-purple-600 font-medium transition-colors px-4 py-2 rounded-lg"
+                  >
+                    💕 Matches
+                  </button>
+                  <button className="px-4 py-2 rounded-lg font-medium bg-purple-100 text-purple-800">
+                    💬 Chat Rooms
+                  </button>
+                </div>
+              </div>
+              <div className="flex items-center space-x-4">
+                <button
+                  onClick={() => setCurrentView('subscription')}
+                  className="text-purple-600 hover:text-purple-800 font-medium"
+                >
+                  Subscription
+                </button>
+                <button
+                  onClick={handleLogout}
+                  className="text-gray-600 hover:text-gray-800 font-medium"
+                >
+                  Logout
+                </button>
+              </div>
+            </div>
+          </div>
+        </nav>
+
+        <div className="flex h-screen pt-16">
+          {/* Chat Rooms Sidebar */}
+          <div className="w-1/3 bg-white shadow-lg border-r border-gray-200">
+            <div className="p-6 border-b border-gray-200">
+              <h2 className="text-2xl font-bold text-gray-800 mb-2">Premium Chat Rooms</h2>
+              <p className="text-gray-600 text-sm">Connect with fellow NextChapter members</p>
+            </div>
+            
+            <div className="overflow-y-auto h-full">
+              {chatRooms.map((room) => (
+                <div
+                  key={room.id}
+                  onClick={() => setSelectedChatRoom(room)}
+                  className={`p-4 border-b border-gray-100 cursor-pointer transition-all duration-200 hover:bg-purple-50 ${
+                    selectedChatRoom?.id === room.id ? 'bg-purple-100 border-l-4 border-purple-500' : ''
+                  }`}
+                >
+                  <div className="flex items-start space-x-3">
+                    <div className={`w-12 h-12 rounded-full flex items-center justify-center text-white font-bold ${getRoomColorClasses(room.color)}`}>
+                      {room.name.charAt(0)}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between mb-1">
+                        <h3 className="font-semibold text-gray-800 truncate">{room.name}</h3>
+                        <span className="text-xs text-gray-500">{formatChatTime(room.lastActivity)}</span>
+                      </div>
+                      <p className="text-sm text-gray-600 mb-2">{room.description}</p>
+                      <p className="text-sm text-gray-500 truncate">{room.lastMessage}</p>
+                      <div className="flex items-center justify-between mt-2">
+                        <span className="text-xs text-gray-500">{room.members} members</span>
+                        {selectedChatRoom?.id === room.id && (
+                          <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Chat Area */}
+          <div className="flex-1 flex flex-col">
+            {selectedChatRoom ? (
+              <>
+                {/* Chat Header */}
+                <div className="bg-white shadow-sm border-b border-gray-200 p-4">
+                  <div className="flex items-center space-x-3">
+                    <div className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-bold ${getRoomColorClasses(selectedChatRoom.color)}`}>
+                      {selectedChatRoom.name.charAt(0)}
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-gray-800">{selectedChatRoom.name}</h3>
+                      <p className="text-sm text-gray-600">{selectedChatRoom.members} members online</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Messages Area */}
+                <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50">
+                  {chatMessages[selectedChatRoom.id]?.map((message) => (
+                    <div
+                      key={message.id}
+                      className={`flex ${message.isOwn ? 'justify-end' : 'justify-start'}`}
+                    >
+                      <div className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${
+                        message.isOwn
+                          ? 'bg-purple-600 text-white'
+                          : 'bg-white shadow-sm border border-gray-200 text-gray-800'
+                      }`}>
+                        {!message.isOwn && (
+                          <p className="text-xs font-medium mb-1 text-purple-600">{message.sender}</p>
+                        )}
+                        <p className="text-sm">{message.message}</p>
+                        <p className={`text-xs mt-1 ${
+                          message.isOwn ? 'text-purple-200' : 'text-gray-500'
+                        }`}>
+                          {formatChatTime(message.timestamp)}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Message Input */}
+                <div className="bg-white border-t border-gray-200 p-4">
+                  <div className="flex space-x-3">
+                    <input
+                      type="text"
+                      value={newMessage}
+                      onChange={(e) => setNewMessage(e.target.value)}
+                      onKeyPress={(e) => e.key === 'Enter' && sendChatMessage()}
+                      placeholder={`Send a message to ${selectedChatRoom.name}...`}
+                      className="flex-1 px-4 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    />
+                    <button
+                      onClick={sendChatMessage}
+                      disabled={!newMessage.trim()}
+                      className="px-6 py-2 bg-purple-600 text-white rounded-full hover:bg-purple-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
+                    >
+                      Send
+                    </button>
+                  </div>
+                </div>
+              </>
+            ) : (
+              /* No Chat Room Selected */
+              <div className="flex-1 flex items-center justify-center bg-gray-50">
+                <div className="text-center">
+                  <div className="text-6xl mb-4">💬</div>
+                  <h3 className="text-2xl font-semibold text-gray-800 mb-2">Welcome to Chat Rooms!</h3>
+                  <p className="text-gray-600 max-w-md">
+                    Select a chat room from the sidebar to start connecting with fellow NextChapter premium members.
+                  </p>
+                  <div className="mt-6 p-4 bg-purple-50 border border-purple-200 rounded-lg">
+                    <p className="text-purple-800 text-sm">
+                      <strong>👑 Premium Feature:</strong> Chat rooms are exclusively available to premium subscribers.
+                      Connect, share experiences, and build meaningful relationships in our curated community spaces.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  }
   const handleSwipe = async (direction, profileId) => {
     setSwipeDirection(direction);
     
