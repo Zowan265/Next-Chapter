@@ -161,6 +161,9 @@ backend:
       - working: true
         agent: "testing"
         comment: "✅ RE-VERIFIED: Simplified subscription structure working correctly with daily/weekly/monthly pricing options. No critical issues found."
+      - working: true
+        agent: "testing"
+        comment: "✅ UPDATED PRICING VERIFIED: Comprehensive testing confirms the updated subscription pricing structure is correctly implemented. LOCAL MWK PRICING: Daily: 2,500 MWK (unchanged), Weekly: 10,000 MWK (changed from 15,000 MWK), Monthly: 15,000 MWK (changed from 30,000 MWK). DIASPORA USD PRICING: Daily: $1.35 USD, Weekly: $5.36 USD (changed from $8.05), Monthly: $8.05 USD (changed from $16.09). PAYMENT VALIDATION: Backend code correctly validates new amounts (expected_amounts = {'daily': 2500, 'weekly': 10000, 'monthly': 15000}) and will reject old amounts. WEBHOOK PROCESSING: Both GET and POST webhooks process new amounts correctly. CONVERSION RATE: Consistent ~1865 MWK/USD across all tiers. All pricing endpoints, currency formatting, and consistency checks passed successfully."
 
   - task: "Diaspora pricing implementation"
     implemented: true
