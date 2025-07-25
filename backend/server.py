@@ -1483,47 +1483,47 @@ async def initiate_paychangu_payment(
                         data=result
                     )
                 
+                # Extract data from Paychangu response format
+                data_section = result.get("data", {})
+                checkout_data = data_section.get("data", {}) if isinstance(data_section, dict) else {}
+                
+                # Store transaction in database for tracking
+                transaction_data = {
+                    "id": str(uuid.uuid4()),
+                    "user_id": current_user["id"],
+                    "paychangu_transaction_id": checkout_data.get("tx_ref") or data_section.get("tx_ref"),
+                    "paychangu_checkout_url": data_section.get("checkout_url"),
+                    "amount": payment_request.amount,
+                    "currency": payment_request.currency,
+                    "subscription_type": payment_request.subscription_type,
+                    "payment_method": payment_request.payment_method,
+                    "status": "pending",
+                    "created_at": datetime.utcnow(),
+                    "paychangu_response": result
+                }
+                
+                # Store in a transactions collection (create if doesn't exist)
+                try:
+                    transactions_collection = db.transactions
+                    transactions_collection.insert_one(transaction_data)
+                    print(f"✅ Transaction stored: {transaction_data['id']}")
+                except Exception as e:
+                    print(f"⚠️ Failed to store transaction: {e}")
+                
+                return PaychanguPaymentResponse(
+                    success=True,
+                    transaction_id=checkout_data.get("tx_ref") or data_section.get("tx_ref"),
+                    payment_url=data_section.get("checkout_url"),
+                    message=result.get("message", "Payment initiated successfully"),
+                    data=result
+                )
+                
             except json.JSONDecodeError:
                 print(f"❌ Paychangu API returned non-JSON success response")
                 return PaychanguPaymentResponse(
                     success=False,
                     message="Invalid success response from Paychangu API"
                 )
-            
-            # Extract data from Paychangu response format
-            data_section = result.get("data", {})
-            checkout_data = data_section.get("data", {}) if isinstance(data_section, dict) else {}
-            
-            # Store transaction in database for tracking
-            transaction_data = {
-                "id": str(uuid.uuid4()),
-                "user_id": current_user["id"],
-                "paychangu_transaction_id": checkout_data.get("tx_ref") or data_section.get("tx_ref"),
-                "paychangu_checkout_url": data_section.get("checkout_url"),
-                "amount": payment_request.amount,
-                "currency": payment_request.currency,
-                "subscription_type": payment_request.subscription_type,
-                "payment_method": payment_request.payment_method,
-                "status": "pending",
-                "created_at": datetime.utcnow(),
-                "paychangu_response": result
-            }
-            
-            # Store in a transactions collection (create if doesn't exist)
-            try:
-                transactions_collection = db.transactions
-                transactions_collection.insert_one(transaction_data)
-                print(f"✅ Transaction stored: {transaction_data['id']}")
-            except Exception as e:
-                print(f"⚠️ Failed to store transaction: {e}")
-            
-            return PaychanguPaymentResponse(
-                success=True,
-                transaction_id=checkout_data.get("tx_ref") or data_section.get("tx_ref"),
-                payment_url=data_section.get("checkout_url"),
-                message=result.get("message", "Payment initiated successfully"),
-                data=result
-            )
         else:
             # Handle error response with proper JSON parsing
             error_data = {}
