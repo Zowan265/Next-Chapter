@@ -1427,17 +1427,44 @@ async def initiate_paychangu_payment(
             payment_data["phone"] = payment_request.phone_number
         
         # Make API call to Paychangu
-        # Note: This is pseudocode - adjust based on actual Paychangu SDK
+        print(f"🔄 Making Paychangu API request to: {PAYCHANGU_BASE_URL}/api/v1/transactions")
+        print(f"🔄 Payment data: {payment_data}")
+        
         import requests
         
-        response = requests.post(
-            f"{PAYCHANGU_BASE_URL}/api/v1/transactions",
-            headers={
-                "Authorization": f"Bearer {PAYCHANGU_SECRET_KEY}",
-                "Content-Type": "application/json"
-            },
-            json=payment_data
-        )
+        try:
+            response = requests.post(
+                f"{PAYCHANGU_BASE_URL}/api/v1/transactions",
+                headers={
+                    "Authorization": f"Bearer {PAYCHANGU_SECRET_KEY}",
+                    "Content-Type": "application/json"
+                },
+                json=payment_data,
+                timeout=30  # Add timeout
+            )
+            
+            print(f"📡 Paychangu API response status: {response.status_code}")
+            print(f"📡 Paychangu API response headers: {dict(response.headers)}")
+            print(f"📡 Paychangu API response body: {response.content.decode('utf-8', errors='ignore')[:500]}")
+            
+        except requests.exceptions.Timeout:
+            print(f"❌ Paychangu API request timeout")
+            return PaychanguPaymentResponse(
+                success=False,
+                message="Payment gateway timeout - please try again"
+            )
+        except requests.exceptions.ConnectionError:
+            print(f"❌ Paychangu API connection error")
+            return PaychanguPaymentResponse(
+                success=False,
+                message="Payment gateway connection error - please try again"
+            )
+        except Exception as req_error:
+            print(f"❌ Paychangu API request error: {str(req_error)}")
+            return PaychanguPaymentResponse(
+                success=False,
+                message=f"Payment gateway request error: {str(req_error)}"
+            )
         
         if response.status_code == 200:
             try:
