@@ -1440,7 +1440,15 @@ async def initiate_paychangu_payment(
         )
         
         if response.status_code == 200:
-            result = response.json()
+            try:
+                result = response.json()
+                print(f"✅ Paychangu API response received: {result}")
+            except json.JSONDecodeError:
+                print(f"❌ Paychangu API returned non-JSON success response")
+                return PaychanguPaymentResponse(
+                    success=False,
+                    message="Invalid success response from Paychangu API"
+                )
             
             # Store transaction in database for tracking
             transaction_data = {
@@ -1460,6 +1468,7 @@ async def initiate_paychangu_payment(
             try:
                 transactions_collection = db.transactions
                 transactions_collection.insert_one(transaction_data)
+                print(f"✅ Transaction stored: {transaction_data['id']}")
             except Exception as e:
                 print(f"⚠️ Failed to store transaction: {e}")
             
