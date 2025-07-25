@@ -1166,7 +1166,7 @@ function App() {
                   Most Popular
                 </div>
                 <h3 className="text-2xl font-bold text-white mb-4">Weekly</h3>
-                <p className="text-rose-200 text-4xl font-bold mb-4">15,000 MWK</p>
+                <p className="text-rose-200 text-4xl font-bold mb-4">10,000 MWK</p>
                 <p className="text-rose-200 mb-6">per week</p>
                 <div className="text-sm text-purple-300 space-y-2">
                   <p>All daily features</p>
