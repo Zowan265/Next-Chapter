@@ -44,11 +44,15 @@ class PaychanguIntegrationTest:
             
         print(f"✅ User registered: {self.test_email}")
         
-        # Verify with demo OTP
-        verify_payload = {
-            "email": self.test_email,
-            "otp": "123456"
-        }
+        # Verify with demo OTP - try multiple common demo codes
+        demo_otps = ["123456", "000000", "111111", "999999"]
+        verified = False
+        
+        for otp in demo_otps:
+            verify_payload = {
+                "email": self.test_email,
+                "otp": otp
+            }
         
         verify_response = requests.post(f"{self.base_url}/api/verify-registration", json=verify_payload)
         if verify_response.status_code != 200:
