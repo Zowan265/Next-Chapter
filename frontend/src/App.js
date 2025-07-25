@@ -508,6 +508,54 @@ function App() {
     }
   };
 
+  // Enhanced payment verification system
+  const verifyPaymentAndRedirect = async (transactionData) => {
+    try {
+      // Double-check subscription status after successful payment
+      const subscriptionResponse = await fetch(`${API_BASE_URL}/api/user/subscription`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+
+      if (subscriptionResponse.ok) {
+        const subscriptionData = await subscriptionResponse.json();
+        
+        // Verify that subscription is actually active
+        if (subscriptionData.subscription_tier === 'premium' && subscriptionData.subscription_status === 'active') {
+          // Payment verification successful - show success notification
+          showSubscriptionNotification({
+            type: 'success',
+            title: '🎉 Payment Verified & Subscription Active!',
+            message: `Welcome to NextChapter Premium! Your ${getSubscriptionDisplayName(subscriptionData)} subscription is now active.`,
+            duration: 'long'
+          });
+          
+          // Update local subscription state
+          setUserSubscription(subscriptionData);
+          
+          // Clear payment timeout state
+          setPaymentTimeoutTimer(0);
+          setPaymentTimedOut(false);
+          
+          // Redirect to dashboard
+          setCurrentView('dashboard');
+          
+          return true;
+        } else {
+          // Payment may be processing - continue polling
+          return false;
+        }
+      } else {
+        console.error('Failed to verify subscription status');
+        return false;
+      }
+    } catch (error) {
+      console.error('Payment verification error:', error);
+      return false;
+    }
+  };
+
   const pollPaymentStatus = async (transactionId) => {
     let attempts = 0;
     const maxAttempts = 21; // Poll for 3 minutes 30 seconds (21 * 10 seconds)
