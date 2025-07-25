@@ -1388,8 +1388,8 @@ async def initiate_paychangu_payment(
         # Get expected amount for validation
         expected_amounts = {
             "daily": 2500,
-            "weekly": 15000,
-            "monthly": 30000
+            "weekly": 10000,
+            "monthly": 15000
         }
         
         expected_amount = expected_amounts[payment_request.subscription_type]
