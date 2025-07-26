@@ -713,6 +713,47 @@ function App() {
     }
   };
 
+  // Direct messaging state for matched users
+  const [selectedMatchForChat, setSelectedMatchForChat] = useState(null);
+
+  // Function to start chat with a matched user
+  const startChatWithMatch = async (matchUser) => {
+    const canMessage = await handleMessageAttempt(matchUser.id, matchUser.name);
+    
+    if (canMessage) {
+      // Set the selected match for direct messaging
+      setSelectedMatchForChat(matchUser);
+      
+      // Navigate to chat room
+      setCurrentView('chat');
+      
+      // Select general chat room by default for direct messaging
+      const generalRoom = chatRooms.find(room => room.id === 'general');
+      if (generalRoom) {
+        setSelectedChatRoom(generalRoom);
+      }
+      
+      // Add a system message indicating direct chat
+      const directChatMessage = {
+        id: Date.now(),
+        sender: 'System',
+        message: `💬 Direct chat with ${matchUser.name} started. This is a private conversation within the General Discussion room.`,
+        timestamp: new Date(),
+        isOwn: false,
+        isSystemMessage: true
+      };
+      
+      setChatMessages(prev => ({
+        ...prev,
+        [generalRoom?.id || 'general']: [...(prev[generalRoom?.id || 'general'] || []), directChatMessage]
+      }));
+      
+      return true;
+    }
+    
+    return false;
+  };
+
   // Online status and messaging functionality
   const [onlineUsers, setOnlineUsers] = useState([]);
   const [messagingPermissions, setMessagingPermissions] = useState({});
