@@ -1329,11 +1329,26 @@ class NextChapterAPITest(unittest.TestCase):
         self.assertIn("identifier", data)
         self.assertIn("otp_sent", data)
         
+    def test_44_password_reset_request_nonexistent_email(self):
+        """Test password reset request with non-existent email"""
+        payload = {
+            "email": f"nonexistent_{self.random_string(8)}@example.com"
+        }
+        
+        response = requests.post(f"{self.base_url}/api/password-reset-request", json=payload)
+        self.assertEqual(response.status_code, 200)  # Should return 200 for security
+        data = response.json()
+        
+        # Should still return success message for security (don't reveal if user exists)
+        self.assertIn("message", data)
+        self.assertIn("identifier", data)
+        self.assertIn("otp_sent", data)
+        
         print(f"✅ Password reset request with non-existent email handled securely")
         print(f"  - Message: {data['message']}")
         print(f"  - Security: Does not reveal if user exists")
     
-    def test_36_password_reset_request_invalid_data(self):
+    def test_45_password_reset_request_invalid_data(self):
         """Test password reset request with invalid data"""
         # Test with no email or phone
         payload = {}
