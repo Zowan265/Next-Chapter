@@ -458,7 +458,12 @@ test_plan:
     - "Enhanced Chat Room Interface Implementation"
     - "Online Status System Implementation"
     - "Enhanced Subscription Display Implementation"
-  stuck_tasks: []
+  stuck_tasks:
+    - "Direct Chat from Matches Implementation"
+    - "Premium Messaging Restrictions Implementation"
+    - "Enhanced Chat Room Interface Implementation"
+    - "Online Status System Implementation"
+    - "Enhanced Subscription Display Implementation"
   test_all: false
   test_priority: "high_first"
 
