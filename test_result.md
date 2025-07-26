@@ -453,15 +453,10 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Favorites Page Implementation"
-    - "Matches Page Implementation"
-    - "Enhanced Chat Room UI"
-  stuck_tasks:
-    - "Favorites Page Implementation"
-    - "Matches Page Implementation"
-    - "Enhanced Chat Room UI"
+    - "Show Password Functionality"
+  stuck_tasks: []
   test_all: false
-  test_priority: "stuck_first"
+  test_priority: "high_first"
 
   - task: "Payment timeout sequence implementation"
     implemented: true
