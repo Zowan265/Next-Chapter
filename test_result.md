@@ -453,7 +453,11 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Show Password Functionality"
+    - "Direct Chat from Matches Implementation"
+    - "Premium Messaging Restrictions Implementation"
+    - "Enhanced Chat Room Interface Implementation"
+    - "Online Status System Implementation"
+    - "Enhanced Subscription Display Implementation"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
