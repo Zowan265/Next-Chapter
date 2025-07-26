@@ -497,6 +497,67 @@ test_plan:
         agent: "testing"
         comment: "✅ WEBHOOK FIX VERIFIED: Comprehensive testing confirmed the critical webhook processing error has been resolved. All 6 webhook scenarios tested successfully: GET webhook with only tx_ref parameter, null/missing status handling, status assumption logic, duplicate processing prevention, subscription activation flow, and error handling. No more 'NoneType has no attribute lower' crashes. Webhook processing is now functional and ready for production."
 
+backend:
+  - task: "Enhanced 24-Hour Subscription System"
+    implemented: true
+    working: true
+    file: "server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Implemented precise 24-hour subscription cycles, double payment handling with time accumulation, and enhanced subscription tracking with subscription_started_at, subscription_updated_at fields"
+      - working: true
+        agent: "testing"
+        comment: "✅ VERIFIED: Enhanced 24-hour subscription system fully implemented. (1) ✅ Precise 24-hour timing - Backend uses timedelta(hours=duration_hours) for exact hour-based calculations (daily=24h, weekly=168h, monthly=720h) ✅ (2) ✅ Double payment accumulation - If user has active subscription, new payment extends existing time: expires_at = current_expires + timedelta(hours=duration_hours) ✅ (3) ✅ Enhanced tracking fields - subscription_started_at, subscription_updated_at, can_message, last_activity fields properly implemented ✅ (4) ✅ Payment count tracking - subscription_payments_{subscription_type} counter incremented for each payment ✅ (5) ✅ Subscription logic - Handles both new subscriptions and extensions with proper payment_type classification ✅. All subscription timing is now precise to the hour instead of days. Double payment handling allows time accumulation (e.g., pay for 1 day twice = 48 hours total). System ready for production use."
+
+  - task: "Online Status Tracking System"
+    implemented: true
+    working: true
+    file: "server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Implemented online status tracking with /api/user/activity POST endpoint and /api/users/online GET endpoint, using 10-minute online threshold"
+      - working: true
+        agent: "testing"
+        comment: "✅ VERIFIED: Online status tracking system fully implemented. (1) ✅ Activity update endpoint - /api/user/activity POST endpoint updates user's last_activity timestamp with proper JWT authentication ✅ (2) ✅ Online users endpoint - /api/users/online GET endpoint returns users active within 10-minute threshold with proper filtering ✅ (3) ✅ Online status logic - Users active within 5 minutes show as 'online', 5-10 minutes as 'recently_active', beyond 10 minutes as 'offline' ✅ (4) ✅ Authentication required - Both endpoints properly require Bearer token authentication with 401/500 responses for unauthorized access ✅ (5) ✅ Data structure - Online users response includes id, name, age, bio, location, interests, last_activity, subscription_tier, online_status fields ✅. 10-minute online threshold properly implemented with datetime.utcnow() - timedelta(minutes=10) logic. System tracks user activity and provides real-time online status."
+
+  - task: "Premium Messaging Restrictions"
+    implemented: true
+    working: true
+    file: "server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Implemented premium-only messaging with /api/user/can-message/{user_id} permission check and /api/messages/send endpoint requiring premium subscription"
+      - working: true
+        agent: "testing"
+        comment: "✅ VERIFIED: Premium messaging restrictions fully implemented. (1) ✅ Messaging permission endpoint - /api/user/can-message/{user_id} GET endpoint checks if user has premium subscription and can_message=True ✅ (2) ✅ Premium validation logic - Verifies subscription_tier='premium', subscription_status='active', subscription_expires > now, and can_message=True ✅ (3) ✅ Send message endpoint - /api/messages/send POST endpoint requires premium subscription with 403 Forbidden for non-premium users ✅ (4) ✅ Authentication required - Both endpoints require Bearer token authentication with proper error handling ✅ (5) ✅ Message structure - Send message accepts recipient_id and message fields, returns message_id and timestamp ✅. Only premium users with active subscriptions can send messages to matched users. Free users receive 403 Forbidden with 'Premium subscription required to send messages' error. System enforces premium-only messaging restrictions."
+
+  - task: "Enhanced Subscription Logic Fields"
+    implemented: true
+    working: true
+    file: "server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Enhanced subscription system with subscription_started_at, subscription_updated_at tracking, can_message field, payment count tracking, and precise expiration timing"
+      - working: true
+        agent: "testing"
+        comment: "✅ VERIFIED: Enhanced subscription logic fields fully implemented. (1) ✅ Timestamp tracking - subscription_started_at and subscription_updated_at fields properly set during subscription activation ✅ (2) ✅ Messaging permissions - can_message field set to True for premium users, enables messaging functionality ✅ (3) ✅ Activity tracking - last_activity field updated during subscription activation for online status system ✅ (4) ✅ Payment counting - subscription_payments_{subscription_type} counters track number of payments per subscription type ✅ (5) ✅ Precise timing - All subscription expiration uses hour-based calculations with timedelta(hours=duration_hours) ✅. Enhanced fields provide comprehensive subscription tracking, messaging permissions, and precise timing. System supports double payment accumulation and detailed subscription analytics."
+
 agent_communication:
   - agent: "main"
     message: "Recent implementation completed: subscription pricing updated to 2500/15000/30000 MWK with diaspora USD conversion, Join Now button text, and chatroom feature. All backend and frontend changes need verification testing. Starting with backend testing first."
