@@ -291,9 +291,9 @@ frontend:
 
   - task: "Favorites Page Implementation"
     implemented: true
-    working: true
+    working: false
     file: "App.js"
-    stuck_count: 0
+    stuck_count: 1
     priority: "high"
     needs_retesting: false
     status_history:
@@ -303,6 +303,9 @@ frontend:
       - working: true
         agent: "testing"
         comment: "✅ VERIFIED: Favorites page implementation found in code. Complete page structure with navigation (💖 Favorites), user profiles with compatibility scores, interests display, remove functionality (removeFavorite function), and empty state with 'Discover Profiles' call-to-action button. Professional layout with purple/rose theme and modern styling elements."
+      - working: false
+        agent: "testing"
+        comment: "❌ RUNTIME ERROR IDENTIFIED: Navigation to Favorites page fails with 'setCurrentView function not found' error. The navigation buttons in the Favorites view (lines 1157) use onClick={() => setCurrentView('favorites')} but this function is not accessible in the global scope when clicked. This is the 'uncaught runtime error' reported by the user. The React state setter functions (setCurrentView, user, userSubscription) are all undefined in global scope, preventing navigation between pages."
 
   - task: "Matches Page Implementation"
     implemented: true
