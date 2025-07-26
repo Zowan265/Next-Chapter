@@ -74,43 +74,6 @@ function App() {
       lastActive: "30 minutes ago"
     }
   ]);
-  
-  // Matches state
-  const [matches, setMatches] = useState([
-    {
-      id: 1,
-      name: "Jennifer Adams",
-      age: 37,
-      location: "Mzuzu, Malawi",
-      bio: "Teacher and mother of two, looking for a genuine partner to share life's adventures.",
-      interests: ["Education", "Family", "Reading", "Gardening"],
-      image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=500&fit=crop&crop=face",
-      matchDate: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2), // 2 days ago
-      lastMessage: "Thank you for the lovely message! I'd love to get to know you better."
-    },
-    {
-      id: 2,
-      name: "Patricia Mwale",
-      age: 32,
-      location: "Zomba, Malawi",
-      bio: "Small business owner with a passion for community development and cultural preservation.",
-      interests: ["Business", "Culture", "Music", "Travel"],
-      image: "https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?w=400&h=500&fit=crop&crop=face",
-      matchDate: new Date(Date.now() - 1000 * 60 * 60 * 24), // 1 day ago
-      lastMessage: "It's wonderful to meet someone who shares similar values!"
-    },
-    {
-      id: 3,
-      name: "Monica Kalulu",
-      age: 28,
-      location: "London, UK",
-      bio: "Malawian living in London, working in healthcare and missing the warmth of home.",
-      interests: ["Healthcare", "Cooking", "Movies", "Home"],
-      image: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=400&h=500&fit=crop&crop=face",
-      matchDate: new Date(Date.now() - 1000 * 60 * 60 * 6), // 6 hours ago
-      lastMessage: "New match! Start a conversation"
-    }
-  ]);
 
   // Helper functions
   const formatMatchDate = (date) => {
