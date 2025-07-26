@@ -3433,12 +3433,32 @@ function App() {
                             <div className="text-sm text-gray-600">
                               <span className="font-medium">Last message:</span> {match.lastMessage}
                             </div>
-                            <button 
-                              onClick={() => simulateNewMatch()}
-                              className="px-6 py-2 bg-gradient-to-r from-purple-600 to-rose-500 text-white text-sm rounded-lg font-medium hover:from-purple-700 hover:to-rose-600 transition-all duration-300"
-                            >
-                              Send Message
-                            </button>
+                            <div className="flex items-center space-x-3">
+                              {/* Online Status */}
+                              {getOnlineStatusIndicator(match.last_activity, 
+                                onlineUsers.some(u => u.id === match.id)
+                              )}
+                              
+                              {/* Message Button with Premium Check */}
+                              <button 
+                                onClick={async () => {
+                                  const canMessage = await handleMessageAttempt(match.id, match.name);
+                                  if (canMessage) {
+                                    // Show message modal or navigate to chat
+                                    alert(`✅ You can message ${match.name}!\n\nThis feature will open the messaging interface.`);
+                                  }
+                                }}
+                                className="px-6 py-2 bg-gradient-to-r from-purple-600 to-rose-500 text-white text-sm rounded-lg font-medium hover:from-purple-700 hover:to-rose-600 transition-all duration-300 flex items-center space-x-2"
+                              >
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                                </svg>
+                                <span>Message</span>
+                                {userSubscription?.subscription_tier !== 'premium' && (
+                                  <span className="text-xs bg-white/20 px-2 py-1 rounded-full">👑</span>
+                                )}
+                              </button>
+                            </div>
                           </div>
                         </div>
                       </div>
