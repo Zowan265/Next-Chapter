@@ -1283,7 +1283,38 @@ class NextChapterAPITest(unittest.TestCase):
             self.demo_password_reset_otp = data["demo_otp"]
             print(f"  - Demo OTP: {data['demo_otp']}")
     
-    def test_35_password_reset_request_nonexistent_email(self):
+    def test_43_password_reset_request_valid_email(self):
+        """Test password reset request with valid email"""
+        # Use the test email from registration
+        payload = {
+            "email": self.test_email
+        }
+        
+        response = requests.post(f"{self.base_url}/api/password-reset-request", json=payload)
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        
+        # Verify response structure
+        self.assertIn("message", data)
+        self.assertIn("identifier", data)
+        self.assertIn("otp_sent", data)
+        self.assertEqual(data["identifier"], self.test_email)
+        self.assertTrue(data["otp_sent"])
+        
+        # Store for next test
+        self.password_reset_email = self.test_email
+        
+        print(f"✅ Password reset request successful")
+        print(f"  - Email: {data['identifier']}")
+        print(f"  - Message: {data['message']}")
+        print(f"  - OTP sent: {data['otp_sent']}")
+        
+        # Check for demo OTP in response (if email not configured)
+        if "demo_otp" in data:
+            self.demo_password_reset_otp = data["demo_otp"]
+            print(f"  - Demo OTP: {data['demo_otp']}")
+    
+    def test_44_password_reset_request_nonexistent_email(self):
         """Test password reset request with non-existent email"""
         payload = {
             "email": f"nonexistent_{self.random_string(8)}@example.com"
