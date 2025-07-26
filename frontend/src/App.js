@@ -702,6 +702,190 @@ function App() {
     }
   };
 
+  // Online status and messaging functionality
+  const [onlineUsers, setOnlineUsers] = useState([]);
+  const [messagingPermissions, setMessagingPermissions] = useState({});
+
+  // Update user activity for online status
+  useEffect(() => {
+    if (user) {
+      const updateActivity = async () => {
+        try {
+          await fetch(`${API_BASE_URL}/api/user/activity`, {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${localStorage.getItem('token')}`,
+              'Content-Type': 'application/json'
+            }
+          });
+        } catch (error) {
+          console.error('Error updating activity:', error);
+        }
+      };
+
+      // Update activity immediately and then every 5 minutes
+      updateActivity();
+      const activityInterval = setInterval(updateActivity, 5 * 60 * 1000);
+
+      // Update activity on user interactions
+      const handleUserActivity = () => updateActivity();
+      document.addEventListener('click', handleUserActivity);
+      document.addEventListener('keypress', handleUserActivity);
+
+      return () => {
+        clearInterval(activityInterval);
+        document.removeEventListener('click', handleUserActivity);
+        document.removeEventListener('keypress', handleUserActivity);
+      };
+    }
+  }, [user]);
+
+  // Fetch online users
+  const fetchOnlineUsers = async () => {
+    if (!user) return;
+    
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/users/online`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setOnlineUsers(data.online_users || []);
+      }
+    } catch (error) {
+      console.error('Error fetching online users:', error);
+    }
+  };
+
+  // Check messaging permission for a user
+  const checkMessagingPermission = async (userId) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/user/can-message/${userId}`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setMessagingPermissions(prev => ({
+          ...prev,
+          [userId]: data
+        }));
+        return data.can_message;
+      }
+    } catch (error) {
+      console.error('Error checking messaging permission:', error);
+    }
+    return false;
+  };
+
+  // Send message function
+  const sendMessage = async (recipientId, message) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/messages/send`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          recipient_id: recipientId,
+          message: message
+        })
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        return { success: true, data };
+      } else if (response.status === 403) {
+        return { 
+          success: false, 
+          error: 'Premium subscription required to send messages' 
+        };
+      } else {
+        return { 
+          success: false, 
+          error: 'Failed to send message' 
+        };
+      }
+    } catch (error) {
+      console.error('Error sending message:', error);
+      return { 
+        success: false, 
+        error: 'Network error occurred' 
+      };
+    }
+  };
+
+  // Get online status indicator
+  const getOnlineStatusIndicator = (lastActivity, isOnline = false) => {
+    if (isOnline) {
+      return (
+        <div className="flex items-center">
+          <div className="w-3 h-3 bg-green-500 rounded-full mr-2 animate-pulse"></div>
+          <span className="text-xs text-green-600 font-medium">Online</span>
+        </div>
+      );
+    }
+    
+    if (lastActivity) {
+      const now = new Date();
+      const lastActiveTime = new Date(lastActivity);
+      const diffMinutes = Math.floor((now - lastActiveTime) / (1000 * 60));
+      
+      if (diffMinutes < 5) {
+        return (
+          <div className="flex items-center">
+            <div className="w-3 h-3 bg-green-500 rounded-full mr-2 animate-pulse"></div>
+            <span className="text-xs text-green-600 font-medium">Online</span>
+          </div>
+        );
+      } else if (diffMinutes < 60) {
+        return (
+          <div className="flex items-center">
+            <div className="w-3 h-3 bg-yellow-500 rounded-full mr-2"></div>
+            <span className="text-xs text-yellow-600 font-medium">{diffMinutes}m ago</span>
+          </div>
+        );
+      } else {
+        const diffHours = Math.floor(diffMinutes / 60);
+        if (diffHours < 24) {
+          return (
+            <div className="flex items-center">
+              <div className="w-3 h-3 bg-gray-400 rounded-full mr-2"></div>
+              <span className="text-xs text-gray-500">{diffHours}h ago</span>
+            </div>
+          );
+        }
+      }
+    }
+    
+    return (
+      <div className="flex items-center">
+        <div className="w-3 h-3 bg-gray-400 rounded-full mr-2"></div>
+        <span className="text-xs text-gray-500">Offline</span>
+      </div>
+    );
+  };
+
+  // Handle message attempt
+  const handleMessageAttempt = async (userId, userName) => {
+    const canMessage = await checkMessagingPermission(userId);
+    
+    if (!canMessage) {
+      // Show premium required modal or redirect to subscription
+      alert(`💬 Premium Required\n\nYou need a premium subscription to message ${userName}.\n\n✨ Get Premium to:\n• Send unlimited messages\n• Chat with all matched users\n• Access premium features\n\nUpgrade now to start meaningful conversations!`);
+      setCurrentView('subscription');
+      return false;
+    }
+    
+    return true;
+  };
+
   // Enhanced payment verification system
   const verifyPaymentAndRedirect = async (transactionData) => {
     try {
