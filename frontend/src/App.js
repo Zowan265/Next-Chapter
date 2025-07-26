@@ -3726,6 +3726,11 @@ function App() {
                           <div>
                             <h3 className="text-xl font-bold bg-gradient-to-r from-purple-600 to-rose-500 bg-clip-text text-transparent">
                               {selectedChatRoom.name}
+                              {selectedMatchForChat && (
+                                <span className="text-sm font-normal text-gray-600 ml-2">
+                                  • Chatting with {selectedMatchForChat.name}
+                                </span>
+                              )}
                             </h3>
                             <div className="flex items-center space-x-3">
                               <p className="text-sm text-gray-600 flex items-center">
@@ -3735,18 +3740,54 @@ function App() {
                               <span className="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded-full">
                                 Premium Chat
                               </span>
+                              {selectedMatchForChat && (
+                                <span className="text-xs bg-pink-100 text-pink-700 px-2 py-1 rounded-full">
+                                  💕 Match Chat
+                                </span>
+                              )}
                             </div>
                           </div>
                         </div>
                         <div className="text-right">
-                          <button className="p-2 hover:bg-white/50 rounded-lg transition-colors">
+                          {selectedMatchForChat && (
+                            <div className="flex items-center space-x-2 mb-2">
+                              <div className="w-8 h-8 rounded-full overflow-hidden border-2 border-pink-300">
+                                <img 
+                                  src={selectedMatchForChat.image || `https://images.unsplash.com/photo-1494790108755-2616b612b371?w=100&h=100&fit=crop&crop=face`}
+                                  alt={selectedMatchForChat.name}
+                                  className="w-full h-full object-cover"
+                                />
+                              </div>
+                              <div className="text-xs text-gray-600">
+                                <div className="font-medium">{selectedMatchForChat.name}</div>
+                                {getOnlineStatusIndicator(selectedMatchForChat.last_activity, 
+                                  onlineUsers.some(u => u.id === selectedMatchForChat.id)
+                                )}
+                              </div>
+                            </div>
+                          )}
+                          <button 
+                            className="p-2 hover:bg-white/50 rounded-lg transition-colors"
+                            onClick={() => setSelectedMatchForChat(null)}
+                            title={selectedMatchForChat ? "End direct chat" : "Room options"}
+                          >
                             <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
                             </svg>
                           </button>
                         </div>
                       </div>
-                      <p className="text-sm text-gray-600 mt-2 italic">{selectedChatRoom.description}</p>
+                      <div className="flex items-center justify-between">
+                        <p className="text-sm text-gray-600 mt-2 italic">{selectedChatRoom.description}</p>
+                        {selectedMatchForChat && (
+                          <button 
+                            onClick={() => setSelectedMatchForChat(null)}
+                            className="text-xs text-gray-500 hover:text-gray-700 mt-2"
+                          >
+                            ← Return to room chat
+                          </button>
+                        )}
+                      </div>
                     </div>
 
                     {/* Enhanced Messages Area */}
