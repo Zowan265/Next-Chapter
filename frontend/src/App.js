@@ -3124,6 +3124,9 @@ function App() {
     
     return (
       <div className="min-h-screen bg-gradient-to-br from-purple-50 via-cream-50 to-rose-50">
+        {/* Match Notification */}
+        <MatchNotification />
+        
         {/* Enhanced Navigation */}
         <nav className="bg-white/80 backdrop-blur-md shadow-sm border-b border-purple-100">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
