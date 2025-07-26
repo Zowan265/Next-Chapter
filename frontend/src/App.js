@@ -109,6 +109,79 @@ function App() {
     }
   ]);
 
+  // Match Notification Component
+  const MatchNotification = () => {
+    if (!showMatchNotification || matchNotifications.length === 0) return null;
+    
+    const latestNotification = matchNotifications[0];
+    
+    return (
+      <div className="fixed top-4 right-4 z-50 max-w-sm">
+        <div className="bg-gradient-to-r from-pink-500 to-rose-500 text-white p-6 rounded-2xl shadow-2xl border border-white/20 backdrop-blur-sm animate-bounce">
+          <div className="flex items-center space-x-4">
+            <div className="flex-shrink-0">
+              <div className="w-16 h-16 rounded-full overflow-hidden border-4 border-white/30">
+                <img 
+                  src={latestNotification.user.image || "https://images.unsplash.com/photo-1494790108755-2616b612b371?w=100&h=100&fit=crop&crop=face"} 
+                  alt={latestNotification.user.name}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            </div>
+            <div className="flex-1">
+              <div className="flex items-center space-x-2 mb-1">
+                <span className="text-2xl">💕</span>
+                <h3 className="font-bold text-lg">It's a Match!</h3>
+              </div>
+              <p className="text-white/90 text-sm font-medium">
+                You and {latestNotification.user.name} liked each other
+              </p>
+              <div className="flex space-x-2 mt-3">
+                <button 
+                  onClick={() => {
+                    setCurrentView('matches');
+                    setShowMatchNotification(false);
+                    markNotificationAsRead(latestNotification.id);
+                  }}
+                  className="px-4 py-2 bg-white text-pink-600 rounded-lg font-medium text-sm hover:bg-gray-100 transition-colors"
+                >
+                  Send Message
+                </button>
+                <button 
+                  onClick={() => setShowMatchNotification(false)}
+                  className="px-4 py-2 bg-white/20 text-white rounded-lg font-medium text-sm hover:bg-white/30 transition-colors"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  // Simulate receiving a new match (for testing)
+  const simulateNewMatch = () => {
+    const sampleMatches = [
+      {
+        name: "Sarah Johnson",
+        age: 29,
+        image: "https://images.unsplash.com/photo-1494790108755-2616b612b371?w=100&h=100&fit=crop&crop=face",
+        location: "Lilongwe, Malawi"
+      },
+      {
+        name: "Grace Chikwanha", 
+        age: 33,
+        image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=face",
+        location: "Blantyre, Malawi"
+      }
+    ];
+    
+    const randomMatch = sampleMatches[Math.floor(Math.random() * sampleMatches.length)];
+    addMatchNotification(randomMatch);
+  };
+
   // Helper functions
   const formatMatchDate = (date) => {
     const now = new Date();
