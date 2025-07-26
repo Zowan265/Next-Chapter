@@ -327,9 +327,9 @@ frontend:
 
   - task: "Enhanced Chat Room UI"
     implemented: true
-    working: true
+    working: false
     file: "App.js"
-    stuck_count: 0
+    stuck_count: 1
     priority: "high"
     needs_retesting: false
     status_history:
@@ -339,6 +339,9 @@ frontend:
       - working: true
         agent: "testing"
         comment: "✅ VERIFIED: Enhanced Chat Room UI implementation found in code. Comprehensive chat room system with 4 themed rooms (General Discussion, Mature Connections, Malawian Hearts, Diaspora Connect), enhanced sidebar with member counts and activity indicators, gradient styling throughout, professional message bubbles with timestamps, premium-only access control, and modern visual design with purple/rose theme."
+      - working: false
+        agent: "testing"
+        comment: "❌ RUNTIME ERROR IDENTIFIED: Navigation to Chat Rooms page fails with 'setCurrentView function not found' error. The navigation buttons in the Chat view (lines 1014, 1167) use onClick={() => setCurrentView('chat')} but this function is not accessible in the global scope when clicked. This is the 'uncaught runtime error' reported by the user. The React state management is not properly handling navigation between views."
 
   - task: "Simplified subscription display (no free tier)"
     implemented: true
