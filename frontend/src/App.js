@@ -1420,40 +1420,65 @@ function App() {
             </div>
           </div>
 
-          {/* Chat Area */}
-          <div className="flex-1 flex flex-col">
+          {/* Enhanced Chat Area */}
+          <div className="flex-1 flex flex-col bg-white">
             {selectedChatRoom ? (
               <>
-                {/* Chat Header */}
-                <div className="bg-white shadow-sm border-b border-gray-200 p-4">
-                  <div className="flex items-center space-x-3">
-                    <div className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-bold ${getRoomColorClasses(selectedChatRoom.color)}`}>
-                      {selectedChatRoom.name.charAt(0)}
+                {/* Enhanced Chat Header */}
+                <div className="bg-gradient-to-r from-purple-50 to-rose-50 shadow-lg border-b border-purple-100 p-6">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-4">
+                      <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-white font-bold shadow-lg ${getRoomColorClasses(selectedChatRoom.color)}`}>
+                        {selectedChatRoom.name.charAt(0)}
+                      </div>
+                      <div>
+                        <h3 className="text-xl font-bold bg-gradient-to-r from-purple-600 to-rose-500 bg-clip-text text-transparent">
+                          {selectedChatRoom.name}
+                        </h3>
+                        <div className="flex items-center space-x-3">
+                          <p className="text-sm text-gray-600 flex items-center">
+                            <div className="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></div>
+                            {selectedChatRoom.members} members online
+                          </p>
+                          <span className="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded-full">
+                            Premium Chat
+                          </span>
+                        </div>
+                      </div>
                     </div>
-                    <div>
-                      <h3 className="font-semibold text-gray-800">{selectedChatRoom.name}</h3>
-                      <p className="text-sm text-gray-600">{selectedChatRoom.members} members online</p>
+                    <div className="text-right">
+                      <button className="p-2 hover:bg-white/50 rounded-lg transition-colors">
+                        <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
+                        </svg>
+                      </button>
                     </div>
                   </div>
+                  <p className="text-sm text-gray-600 mt-2 italic">{selectedChatRoom.description}</p>
                 </div>
 
-                {/* Messages Area */}
-                <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50">
+                {/* Enhanced Messages Area */}
+                <div className="flex-1 overflow-y-auto p-6 space-y-6 bg-gradient-to-b from-gray-50/50 to-purple-50/30">
                   {chatMessages[selectedChatRoom.id]?.map((message) => (
                     <div
                       key={message.id}
                       className={`flex ${message.isOwn ? 'justify-end' : 'justify-start'}`}
                     >
-                      <div className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${
+                      <div className={`max-w-xs lg:max-w-md px-5 py-3 rounded-2xl shadow-md ${
                         message.isOwn
-                          ? 'bg-purple-600 text-white'
-                          : 'bg-white shadow-sm border border-gray-200 text-gray-800'
+                          ? 'bg-gradient-to-r from-purple-600 to-rose-500 text-white'
+                          : 'bg-white border border-gray-200 text-gray-800'
                       }`}>
                         {!message.isOwn && (
-                          <p className="text-xs font-medium mb-1 text-purple-600">{message.sender}</p>
+                          <div className="flex items-center mb-2">
+                            <div className="w-6 h-6 bg-gradient-to-r from-purple-400 to-rose-400 rounded-full flex items-center justify-center text-white text-xs font-bold mr-2">
+                              {message.sender.charAt(0)}
+                            </div>
+                            <p className="text-xs font-bold text-purple-600">{message.sender}</p>
+                          </div>
                         )}
-                        <p className="text-sm">{message.message}</p>
-                        <p className={`text-xs mt-1 ${
+                        <p className="text-sm leading-relaxed">{message.message}</p>
+                        <p className={`text-xs mt-2 ${
                           message.isOwn ? 'text-purple-200' : 'text-gray-500'
                         }`}>
                           {formatChatTime(message.timestamp)}
@@ -1461,43 +1486,83 @@ function App() {
                       </div>
                     </div>
                   ))}
+                  
+                  {/* Online Members Indicator */}
+                  <div className="text-center py-2">
+                    <span className="text-xs text-gray-500 bg-white px-3 py-1 rounded-full shadow-sm">
+                      💬 {selectedChatRoom.members} members are actively chatting
+                    </span>
+                  </div>
                 </div>
 
-                {/* Message Input */}
-                <div className="bg-white border-t border-gray-200 p-4">
-                  <div className="flex space-x-3">
-                    <input
-                      type="text"
-                      value={newMessage}
-                      onChange={(e) => setNewMessage(e.target.value)}
-                      onKeyPress={(e) => e.key === 'Enter' && sendChatMessage()}
-                      placeholder={`Send a message to ${selectedChatRoom.name}...`}
-                      className="flex-1 px-4 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                    />
+                {/* Enhanced Message Input */}
+                <div className="bg-gradient-to-r from-purple-50 to-rose-50 border-t border-purple-100 p-6">
+                  <div className="flex items-center space-x-4">
+                    <button className="p-3 hover:bg-white/50 rounded-full transition-colors">
+                      <svg className="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                      </svg>
+                    </button>
+                    <div className="flex-1 relative">
+                      <input
+                        type="text"
+                        value={newMessage}
+                        onChange={(e) => setNewMessage(e.target.value)}
+                        onKeyPress={(e) => e.key === 'Enter' && sendChatMessage()}
+                        placeholder={`Share your thoughts in ${selectedChatRoom.name}...`}
+                        className="w-full px-6 py-4 bg-white border border-purple-200 rounded-2xl focus:ring-2 focus:ring-purple-500 focus:border-transparent shadow-sm text-sm"
+                      />
+                      <div className="absolute right-4 top-1/2 transform -translate-y-1/2 text-xs text-gray-400">
+                        Press Enter ↵
+                      </div>
+                    </div>
                     <button
                       onClick={sendChatMessage}
                       disabled={!newMessage.trim()}
-                      className="px-6 py-2 bg-purple-600 text-white rounded-full hover:bg-purple-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
+                      className="p-4 bg-gradient-to-r from-purple-600 to-rose-500 text-white rounded-2xl hover:from-purple-700 hover:to-rose-600 disabled:from-gray-300 disabled:to-gray-300 disabled:cursor-not-allowed transition-all duration-300 shadow-lg disabled:shadow-none"
                     >
-                      Send
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                      </svg>
                     </button>
+                  </div>
+                  <div className="text-center mt-2">
+                    <span className="text-xs text-gray-500">
+                      Be respectful and enjoy meaningful conversations! 💖
+                    </span>
                   </div>
                 </div>
               </>
             ) : (
-              /* No Chat Room Selected */
-              <div className="flex-1 flex items-center justify-center bg-gray-50">
-                <div className="text-center">
-                  <div className="text-6xl mb-4">💬</div>
-                  <h3 className="text-2xl font-semibold text-gray-800 mb-2">Welcome to Chat Rooms!</h3>
-                  <p className="text-gray-600 max-w-md">
-                    Select a chat room from the sidebar to start connecting with fellow NextChapter premium members.
-                  </p>
-                  <div className="mt-6 p-4 bg-purple-50 border border-purple-200 rounded-lg">
-                    <p className="text-purple-800 text-sm">
-                      <strong>👑 Premium Feature:</strong> Chat rooms are exclusively available to premium subscribers.
-                      Connect, share experiences, and build meaningful relationships in our curated community spaces.
+              /* Enhanced No Chat Room Selected */
+              <div className="flex-1 flex items-center justify-center bg-gradient-to-br from-purple-50/50 to-rose-50/50">
+                <div className="text-center max-w-lg px-8">
+                  <div className="mb-8">
+                    <div className="w-24 h-24 bg-gradient-to-r from-purple-600 to-rose-500 rounded-3xl flex items-center justify-center text-white text-4xl mx-auto mb-6 shadow-2xl">
+                      💬
+                    </div>
+                    <h3 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-rose-500 bg-clip-text text-transparent mb-4">
+                      Welcome to Premium Chat Rooms!
+                    </h3>
+                    <p className="text-gray-600 text-lg leading-relaxed mb-6">
+                      Select a chat room from the sidebar to start connecting with fellow NextChapter premium members. 
+                      Share experiences, build friendships, and discover meaningful relationships.
                     </p>
+                  </div>
+                  <div className="bg-white p-6 rounded-2xl shadow-lg border border-purple-100">
+                    <div className="flex items-center justify-center mb-4">
+                      <span className="text-2xl mr-2">👑</span>
+                      <span className="text-purple-800 font-bold">Premium Feature</span>
+                    </div>
+                    <p className="text-purple-700 text-sm">
+                      Chat rooms are exclusively available to premium subscribers. Connect, share experiences, 
+                      and build meaningful relationships in our curated community spaces.
+                    </p>
+                  </div>
+                  <div className="mt-6 flex justify-center space-x-4">
+                    <button className="px-6 py-3 bg-gradient-to-r from-purple-600 to-rose-500 text-white rounded-xl font-medium hover:from-purple-700 hover:to-rose-600 transition-all duration-300 shadow-lg">
+                      Choose a Room →
+                    </button>
                   </div>
                 </div>
               </div>
