@@ -3842,7 +3842,10 @@ function App() {
                             value={newMessage}
                             onChange={(e) => setNewMessage(e.target.value)}
                             onKeyPress={(e) => e.key === 'Enter' && sendChatMessage()}
-                            placeholder={`Share your thoughts in ${selectedChatRoom.name}...`}
+                            placeholder={selectedMatchForChat 
+                              ? `Send a private message to ${selectedMatchForChat.name}...`
+                              : `Share your thoughts in ${selectedChatRoom.name}...`
+                            }
                             className="w-full px-6 py-4 bg-white border border-purple-200 rounded-2xl focus:ring-2 focus:ring-purple-500 focus:border-transparent shadow-sm text-sm"
                           />
                           <div className="absolute right-4 top-1/2 transform -translate-y-1/2 text-xs text-gray-400">
