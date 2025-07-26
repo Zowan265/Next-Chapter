@@ -3050,11 +3050,30 @@ function App() {
                         </span>
                       </div>
                       {userSubscription.subscription_expires && (
-                        <div className="text-sm text-gray-600">
-                          <span>Expires: </span>
-                          <span className="font-medium">
-                            {new Date(userSubscription.subscription_expires).toLocaleDateString()}
-                          </span>
+                        <div className="text-sm text-gray-600 space-y-1">
+                          <div>
+                            <span>Expires: </span>
+                            <span className="font-medium">
+                              {new Date(userSubscription.subscription_expires).toLocaleDateString()} at {new Date(userSubscription.subscription_expires).toLocaleTimeString()}
+                            </span>
+                          </div>
+                          <div className="text-xs text-gray-500">
+                            {(() => {
+                              const now = new Date();
+                              const expires = new Date(userSubscription.subscription_expires);
+                              const diffMs = expires - now;
+                              const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+                              const diffMinutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+                              
+                              if (diffMs > 0) {
+                                return diffHours > 0 
+                                  ? `${diffHours} hours ${diffMinutes} minutes remaining`
+                                  : `${diffMinutes} minutes remaining`;
+                              } else {
+                                return 'Subscription expired';
+                              }
+                            })()}
+                          </div>
                         </div>
                       )}
                       <div className="bg-green-50 border border-green-200 rounded-lg p-3">
