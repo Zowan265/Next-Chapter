@@ -3119,7 +3119,7 @@ function App() {
   }
 
   // Enhanced Dashboard with swipeable profiles
-  if (currentView === 'dashboard' || (user && !['landing', 'auth', 'subscription'].includes(currentView))) {
+  if (currentView === 'dashboard' || (user && !['landing', 'auth', 'subscription', 'favorites', 'matches', 'chat'].includes(currentView))) {
     const currentProfile = profiles[currentProfileIndex];
     
     return (
