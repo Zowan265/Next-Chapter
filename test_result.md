@@ -309,9 +309,9 @@ frontend:
 
   - task: "Matches Page Implementation"
     implemented: true
-    working: true
+    working: false
     file: "App.js"
-    stuck_count: 0
+    stuck_count: 1
     priority: "high"
     needs_retesting: false
     status_history:
@@ -321,6 +321,9 @@ frontend:
       - working: true
         agent: "testing"
         comment: "✅ VERIFIED: Matches page implementation found in code. Complete matches interface with sample match data, 'It's a Match!' indicators, last message previews, formatMatchDate function for timeline, Send Message buttons, and professional layout. Matches state includes user profiles with match dates, locations, bios, and interests."
+      - working: false
+        agent: "testing"
+        comment: "❌ RUNTIME ERROR IDENTIFIED: Navigation to Matches page fails with 'setCurrentView function not found' error. The navigation buttons in the Matches view (lines 1007, 1310) use onClick={() => setCurrentView('matches')} but this function is not accessible in the global scope when clicked. This is the 'uncaught runtime error' reported by the user. The React state setter functions are not properly exposed for navigation functionality."
 
   - task: "Enhanced Chat Room UI"
     implemented: true
