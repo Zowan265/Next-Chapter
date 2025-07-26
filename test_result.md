@@ -564,67 +564,84 @@ backend:
 
   - task: "Direct Chat from Matches Implementation"
     implemented: true
-    working: "NA"
+    working: false
     file: "App.js"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Implemented comprehensive direct chat system with 'Start Chat' button in matches page, pre-selection of matched users, '💕 Match Chat' indicator in chat header, different colored message bubbles for direct messages, and system messages when direct chat starts."
+      - working: false
+        agent: "testing"
+        comment: "❌ CRITICAL ISSUE: Premium messaging and direct chat features are NOT accessible in the deployed application. Code analysis shows that key functions like 'startChatWithMatch', 'checkMessagingPermission', 'fetchOnlineUsers' are present in source code but not found in deployed version. OTP verification fails with 'Invalid verification code' error even with demo code 123456, preventing access to dashboard where these features would be visible. Frontend rebuild completed but features still not accessible."
 
   - task: "Premium Messaging Restrictions Implementation"
     implemented: true
-    working: "NA"
+    working: false
     file: "App.js"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Implemented premium-only messaging restrictions with upgrade prompts for non-premium users, premium indicators (👑) on message buttons, and proper permission checking via checkMessagingPermission and handleMessageAttempt functions."
+      - working: false
+        agent: "testing"
+        comment: "❌ CRITICAL ISSUE: Premium messaging restrictions not accessible due to authentication failure. Functions exist in source code but cannot be tested as dashboard is not reachable. OTP verification system blocking access to premium features."
 
   - task: "Enhanced Chat Room Interface Implementation"
     implemented: true
-    working: "NA"
+    working: false
     file: "App.js"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Enhanced chat room interface to show which matched user you're chatting with, dynamic message input placeholder showing recipient, system messages for direct chat initiation, and option to return to general room chat."
+      - working: false
+        agent: "testing"
+        comment: "❌ CRITICAL ISSUE: Enhanced chat room interface not accessible due to authentication barrier. Chat-related elements not found in deployed version, navigation elements (Dashboard, Matches, Chat, Favorites, Profile) not visible."
 
   - task: "Online Status System Implementation"
     implemented: true
-    working: "NA"
+    working: false
     file: "App.js"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Implemented comprehensive online status system with online users section in dashboard sidebar, green dot indicators for online users, different status indicators (online/recently active/offline), real-time activity tracking via fetchOnlineUsers and getOnlineStatusIndicator functions."
+      - working: false
+        agent: "testing"
+        comment: "❌ CRITICAL ISSUE: Online status system not accessible. No online status elements found in deployed version, messaging-related elements (Chat, Message, Send, Online, Match) not visible in UI."
 
   - task: "Enhanced Subscription Display Implementation"
     implemented: true
-    working: "NA"
+    working: false
     file: "App.js"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Enhanced subscription display with precise expiration timing (date and time), remaining hours and minutes calculation, 24-hour subscription cycles support, and double payment accumulation logic via getSubscriptionDisplayName and enhanced subscription tracking."
+      - working: false
+        agent: "testing"
+        comment: "❌ CRITICAL ISSUE: Enhanced subscription display not accessible. No subscription-related elements (Daily, Weekly, Monthly, Premium, MWK, USD) found in deployed version. Authentication failure prevents testing of subscription features."
 
 agent_communication:
   - agent: "main"
     message: "Recent implementation completed: subscription pricing updated to 2500/15000/30000 MWK with diaspora USD conversion, Join Now button text, and chatroom feature. All backend and frontend changes need verification testing. Starting with backend testing first."
+  - agent: "testing"
+    message: "🚨 CRITICAL DEPLOYMENT ISSUE IDENTIFIED: Comprehensive testing reveals that the newly implemented premium messaging and direct chat features are NOT accessible in the deployed application. KEY FINDINGS: (1) ❌ Code Analysis - Functions like 'startChatWithMatch', 'checkMessagingPermission', 'fetchOnlineUsers', 'getSubscriptionDisplayName', '💕 Match Chat' indicators are present in source code but not found in deployed version ❌ (2) ❌ Authentication Barrier - OTP verification fails with 'Invalid verification code' error even with demo code 123456, preventing access to dashboard where premium features would be visible ❌ (3) ❌ Missing UI Elements - Navigation elements (Dashboard, Matches, Chat, Favorites, Profile) not found, subscription elements (Daily, Weekly, Monthly, Premium, MWK, USD) not visible, messaging elements (Chat, Message, Send, Online, Match) not accessible ❌ (4) ❌ Frontend Rebuild Issue - Frontend was rebuilt and restarted but features still not accessible in deployed version ❌. ROOT CAUSE: Either the new premium messaging features haven't been properly deployed to the frontend, there's a build/deployment issue, or the features are only accessible after successful authentication which is currently failing. IMMEDIATE ACTION REQUIRED: Fix OTP verification system to allow dashboard access, or provide alternative authentication method to test premium messaging features."
   - agent: "testing"
     message: "🚀 NEW PREMIUM MESSAGING & ONLINE STATUS SYSTEM TESTING COMPLETE: Comprehensive testing of the newly implemented premium messaging and online status system has been completed successfully. All 4 major feature areas have been verified and are working correctly: (1) ✅ Enhanced 24-Hour Subscription System - Precise hour-based timing (24h/168h/720h), double payment accumulation logic, enhanced tracking fields (subscription_started_at, subscription_updated_at, can_message, last_activity), and payment count tracking all implemented correctly ✅ (2) ✅ Online Status Tracking System - /api/user/activity POST endpoint for activity updates, /api/users/online GET endpoint with 10-minute threshold, proper online status logic (online/recently_active/offline), and authentication requirements all working ✅ (3) ✅ Premium Messaging Restrictions - /api/user/can-message/{user_id} permission checks, /api/messages/send endpoint with premium-only access, 403 Forbidden responses for non-premium users, and proper subscription validation all implemented ✅ (4) ✅ Enhanced Subscription Logic Fields - All new fields (subscription_started_at, subscription_updated_at, can_message, payment counters) properly implemented with precise timing calculations ✅. TESTING METHODOLOGY: Endpoint structure verification, authentication requirement testing, response format validation, and logic verification through code analysis. All new premium messaging and online status features are production-ready and working as specified in the review request."
   - agent: "testing"
