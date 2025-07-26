@@ -1335,44 +1335,88 @@ function App() {
           </div>
         </nav>
 
-        <div className="flex h-screen pt-16">
-          {/* Chat Rooms Sidebar */}
-          <div className="w-1/3 bg-white shadow-lg border-r border-gray-200">
-            <div className="p-6 border-b border-gray-200">
-              <h2 className="text-2xl font-bold text-gray-800 mb-2">Premium Chat Rooms</h2>
-              <p className="text-gray-600 text-sm">Connect with fellow NextChapter members</p>
+        <div className="flex h-screen pt-16 bg-gradient-to-br from-purple-50/50 to-rose-50/50">
+          {/* Enhanced Chat Rooms Sidebar */}
+          <div className="w-1/3 bg-white/95 backdrop-blur-sm shadow-xl border-r border-purple-100">
+            <div className="p-6 border-b border-gradient-to-r from-purple-200 to-rose-200 bg-gradient-to-r from-purple-50 to-rose-50">
+              <div className="flex items-center space-x-3 mb-3">
+                <div className="w-10 h-10 bg-gradient-to-r from-purple-600 to-rose-500 rounded-full flex items-center justify-center text-white font-bold">
+                  💬
+                </div>
+                <div>
+                  <h2 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-rose-500 bg-clip-text text-transparent">
+                    Premium Chat Rooms
+                  </h2>
+                  <p className="text-gray-600 text-sm">Connect with fellow NextChapter members</p>
+                </div>
+              </div>
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-green-600 font-medium flex items-center">
+                  <div className="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></div>
+                  {chatRooms.reduce((total, room) => total + room.members, 0)} members online
+                </span>
+                <span className="text-purple-600">👑 Premium Feature</span>
+              </div>
             </div>
             
-            <div className="overflow-y-auto h-full">
+            <div className="overflow-y-auto h-full bg-gradient-to-b from-white to-purple-25">
               {chatRooms.map((room) => (
                 <div
                   key={room.id}
                   onClick={() => setSelectedChatRoom(room)}
-                  className={`p-4 border-b border-gray-100 cursor-pointer transition-all duration-200 hover:bg-purple-50 ${
-                    selectedChatRoom?.id === room.id ? 'bg-purple-100 border-l-4 border-purple-500' : ''
+                  className={`p-4 border-b border-purple-50 cursor-pointer transition-all duration-300 hover:bg-gradient-to-r hover:from-purple-50 hover:to-rose-50 hover:shadow-md ${
+                    selectedChatRoom?.id === room.id ? 'bg-gradient-to-r from-purple-100 to-rose-100 border-l-4 border-purple-500 shadow-lg' : ''
                   }`}
                 >
-                  <div className="flex items-start space-x-3">
-                    <div className={`w-12 h-12 rounded-full flex items-center justify-center text-white font-bold ${getRoomColorClasses(room.color)}`}>
+                  <div className="flex items-start space-x-4">
+                    <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-white font-bold shadow-lg ${getRoomColorClasses(room.color)}`}>
                       {room.name.charAt(0)}
+                      <div className="absolute -top-1 -right-1 w-5 h-5 bg-green-500 border-2 border-white rounded-full text-xs flex items-center justify-center">
+                        {room.members}
+                      </div>
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center justify-between mb-1">
-                        <h3 className="font-semibold text-gray-800 truncate">{room.name}</h3>
-                        <span className="text-xs text-gray-500">{formatChatTime(room.lastActivity)}</span>
+                      <div className="flex items-center justify-between mb-2">
+                        <h3 className="font-bold text-gray-800 truncate text-lg">{room.name}</h3>
+                        <div className="flex items-center space-x-1">
+                          <span className="text-xs text-gray-500">{formatChatTime(room.lastActivity)}</span>
+                          {selectedChatRoom?.id === room.id && (
+                            <div className="w-3 h-3 bg-gradient-to-r from-green-400 to-green-500 rounded-full animate-pulse shadow-sm"></div>
+                          )}
+                        </div>
                       </div>
-                      <p className="text-sm text-gray-600 mb-2">{room.description}</p>
-                      <p className="text-sm text-gray-500 truncate">{room.lastMessage}</p>
-                      <div className="flex items-center justify-between mt-2">
-                        <span className="text-xs text-gray-500">{room.members} members</span>
-                        {selectedChatRoom?.id === room.id && (
-                          <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                      <p className="text-sm text-gray-600 mb-2 italic">{room.description}</p>
+                      <p className="text-sm text-gray-700 truncate font-medium">{room.lastMessage}</p>
+                      <div className="flex items-center justify-between mt-3">
+                        <div className="flex items-center space-x-2">
+                          <span className="text-xs text-gray-500 flex items-center">
+                            <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                              <path d="M9 12a1 1 0 1 0 2 0 1 1 0 0 0-2 0z"/>
+                              <path fillRule="evenodd" d="M2 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V4zm2-1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1H4z" clipRule="evenodd"/>
+                            </svg>
+                            {room.members} active
+                          </span>
+                        </div>
+                        {room.members > 20 && (
+                          <span className="text-xs bg-orange-100 text-orange-800 px-2 py-1 rounded-full font-medium">
+                            🔥 Popular
+                          </span>
                         )}
                       </div>
                     </div>
                   </div>
                 </div>
               ))}
+              
+              {/* Sidebar Footer */}
+              <div className="p-4 bg-gradient-to-r from-purple-50 to-rose-50 border-t border-purple-100">
+                <div className="text-center">
+                  <p className="text-sm text-gray-600 mb-2">Enjoying the chat rooms?</p>
+                  <button className="text-xs text-purple-600 hover:text-purple-800 font-medium">
+                    Share feedback 📝
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
 
