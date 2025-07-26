@@ -981,6 +981,159 @@ function App() {
     return colors[color] || colors.purple;
   };
 
+  // Favorites View
+  if (currentView === 'favorites') {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-cream-50 to-rose-50">
+        {/* Navigation */}
+        <nav className="bg-white/80 backdrop-blur-md shadow-sm border-b border-purple-100">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex justify-between items-center h-16">
+              <div className="flex items-center space-x-8">
+                <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-rose-500 bg-clip-text text-transparent">
+                  NextChapter
+                </h1>
+                <div className="flex space-x-4">
+                  <button
+                    onClick={() => setCurrentView('dashboard')}
+                    className="text-gray-600 hover:text-purple-600 font-medium transition-colors px-4 py-2 rounded-lg"
+                  >
+                    🏠 Discover
+                  </button>
+                  <button className="px-4 py-2 rounded-lg font-medium bg-purple-100 text-purple-800">
+                    💖 Favorites
+                  </button>
+                  <button
+                    onClick={() => setCurrentView('matches')}
+                    className="text-gray-600 hover:text-purple-600 font-medium transition-colors px-4 py-2 rounded-lg"
+                  >
+                    💕 Matches
+                  </button>
+                  {userSubscription?.subscription_tier === 'premium' && (
+                    <button
+                      onClick={() => setCurrentView('chat')}
+                      className="text-gray-600 hover:text-purple-600 font-medium transition-colors px-4 py-2 rounded-lg"
+                    >
+                      💬 Chat Rooms
+                    </button>
+                  )}
+                </div>
+              </div>
+              <div className="flex items-center space-x-4">
+                <button
+                  onClick={() => setCurrentView('subscription')}
+                  className="text-purple-600 hover:text-purple-800 font-medium"
+                >
+                  Subscription
+                </button>
+                <button
+                  onClick={handleLogout}
+                  className="text-gray-600 hover:text-gray-800 font-medium"
+                >
+                  Logout
+                </button>
+              </div>
+            </div>
+          </div>
+        </nav>
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="mb-8">
+            <h2 className="text-3xl font-bold text-gray-800 mb-2">Your Favorites 💖</h2>
+            <p className="text-gray-600">Profiles you've shown special interest in</p>
+          </div>
+
+          {favorites.length === 0 ? (
+            <div className="text-center py-16">
+              <div className="text-6xl mb-4">💔</div>
+              <h3 className="text-2xl font-semibold text-gray-800 mb-2">No Favorites Yet</h3>
+              <p className="text-gray-600 mb-6">
+                Start exploring profiles and add them to your favorites by clicking the heart icon!
+              </p>
+              <button
+                onClick={() => setCurrentView('dashboard')}
+                className="px-8 py-3 bg-gradient-to-r from-purple-600 to-rose-500 text-white rounded-lg font-medium hover:from-purple-700 hover:to-rose-600 transition-all duration-300"
+              >
+                Discover Profiles
+              </button>
+            </div>
+          ) : (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {favorites.map((profile) => (
+                <div key={profile.id} className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
+                  <div className="relative">
+                    <img
+                      src={profile.image}
+                      alt={profile.name}
+                      className="w-full h-64 object-cover"
+                    />
+                    <div className="absolute top-4 right-4">
+                      <button
+                        onClick={() => removeFavorite(profile.id)}
+                        className="p-2 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors duration-200"
+                        title="Remove from favorites"
+                      >
+                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                        </svg>
+                      </button>
+                    </div>
+                    <div className="absolute bottom-4 left-4">
+                      <div className="bg-green-500 text-white text-xs px-2 py-1 rounded-full">
+                        {profile.compatibility}% Match
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="p-6">
+                    <div className="flex items-center justify-between mb-2">
+                      <h3 className="text-xl font-semibold text-gray-800">{profile.name}</h3>
+                      <span className="text-gray-500 text-sm">{profile.age} years</span>
+                    </div>
+                    
+                    <div className="flex items-center text-gray-600 text-sm mb-3">
+                      <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
+                      </svg>
+                      {profile.location}
+                    </div>
+                    
+                    <p className="text-gray-700 text-sm mb-4 line-clamp-2">{profile.bio}</p>
+                    
+                    <div className="flex flex-wrap gap-2 mb-4">
+                      {profile.interests.slice(0, 3).map((interest, index) => (
+                        <span
+                          key={index}
+                          className="px-2 py-1 bg-purple-100 text-purple-700 text-xs rounded-full"
+                        >
+                          {interest}
+                        </span>
+                      ))}
+                      {profile.interests.length > 3 && (
+                        <span className="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full">
+                          +{profile.interests.length - 3} more
+                        </span>
+                      )}
+                    </div>
+                    
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs text-gray-500">
+                        Active {profile.lastActive}
+                      </span>
+                      <button className="px-4 py-2 bg-gradient-to-r from-purple-600 to-rose-500 text-white text-sm rounded-lg font-medium hover:from-purple-700 hover:to-rose-600 transition-all duration-300">
+                        View Profile
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
+
   // Chat Rooms View
   if (currentView === 'chat') {
     return (
