@@ -3164,6 +3164,68 @@ function App() {
                   </div>
                 )}
                 
+                {/* Online Users Section */}
+                <div className="bg-white rounded-2xl shadow-lg p-6">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="font-semibold text-gray-800 flex items-center">
+                      <div className="w-3 h-3 bg-green-500 rounded-full mr-2 animate-pulse"></div>
+                      Online Now
+                    </h3>
+                    <button
+                      onClick={fetchOnlineUsers}
+                      className="text-purple-600 hover:text-purple-800 text-sm font-medium"
+                    >
+                      Refresh
+                    </button>
+                  </div>
+                  
+                  {onlineUsers.length > 0 ? (
+                    <div className="space-y-3 max-h-64 overflow-y-auto">
+                      {onlineUsers.slice(0, 5).map((user) => (
+                        <div key={user.id} className="flex items-center space-x-3 p-2 hover:bg-gray-50 rounded-lg cursor-pointer">
+                          <div className="w-10 h-10 bg-gradient-to-r from-purple-400 to-rose-400 rounded-full flex items-center justify-center text-white font-bold">
+                            {user.name.charAt(0)}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-medium text-gray-800 truncate">
+                              {user.name}, {user.age}
+                            </p>
+                            <div className="flex items-center justify-between">
+                              {getOnlineStatusIndicator(user.last_activity, true)}
+                              <button
+                                onClick={async () => {
+                                  const canMessage = await handleMessageAttempt(user.id, user.name);
+                                  if (canMessage) {
+                                    alert(`✅ You can message ${user.name}!`);
+                                  }
+                                }}
+                                className="text-xs text-purple-600 hover:text-purple-800 font-medium"
+                              >
+                                Message {userSubscription?.subscription_tier !== 'premium' && '👑'}
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                      {onlineUsers.length > 5 && (
+                        <div className="text-center py-2">
+                          <span className="text-xs text-gray-500">
+                            +{onlineUsers.length - 5} more online users
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="text-center py-4">
+                      <div className="text-gray-400 text-sm">
+                        <div className="text-2xl mb-2">😴</div>
+                        <p>No users online right now</p>
+                        <p className="text-xs mt-1">Check back later!</p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
                 {/* Test Match Notification */}
                 <div className="bg-white rounded-2xl shadow-lg p-6">
                   <h3 className="font-semibold text-gray-800 mb-3">🧪 Test Features</h3>
