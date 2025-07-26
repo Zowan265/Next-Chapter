@@ -182,6 +182,17 @@ function App() {
     addMatchNotification(randomMatch);
   };
 
+  // Fetch online users when dashboard loads
+  useEffect(() => {
+    if (user && currentView === 'dashboard') {
+      fetchOnlineUsers();
+      // Refresh online users every 2 minutes
+      const onlineUsersInterval = setInterval(fetchOnlineUsers, 2 * 60 * 1000);
+      
+      return () => clearInterval(onlineUsersInterval);
+    }
+  }, [user, currentView]);
+
   // Helper functions
   const formatMatchDate = (date) => {
     const now = new Date();
