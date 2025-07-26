@@ -3551,6 +3551,17 @@ function App() {
                     </button>
                   </div>
                 )}
+                
+                {/* Test Match Notification */}
+                <div className="bg-white rounded-2xl shadow-lg p-6">
+                  <h3 className="font-semibold text-gray-800 mb-3">🧪 Test Features</h3>
+                  <button
+                    onClick={simulateNewMatch}
+                    className="w-full bg-gradient-to-r from-pink-500 to-rose-500 text-white font-medium py-2 px-4 rounded-lg hover:from-pink-600 hover:to-rose-600 transition-colors"
+                  >
+                    💕 Simulate Match Notification
+                  </button>
+                </div>
 
                 {/* Special Offers */}
                 <div className="bg-gradient-to-br from-purple-500 to-rose-500 text-white rounded-2xl shadow-lg p-6">
