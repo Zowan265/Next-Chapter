@@ -513,47 +513,6 @@ function App() {
     }
   };
 
-  // Favorites functionality
-  const [favorites, setFavorites] = useState([
-    {
-      id: 1,
-      name: "Sarah Michelle",
-      age: 34,
-      location: "Lilongwe, Malawi",
-      bio: "Entrepreneur passionate about sustainable living and meaningful connections.",
-      interests: ["Travel", "Books", "Cooking", "Nature"],
-      image: "https://images.unsplash.com/photo-1494790108755-2616b612b371?w=400&h=500&fit=crop&crop=face",
-      compatibility: 92,
-      lastActive: "2 hours ago"
-    },
-    {
-      id: 2,
-      name: "Grace Temba",
-      age: 29,
-      location: "Blantyre, Malawi",
-      bio: "Medical professional who loves hiking and volunteering in community projects.",
-      interests: ["Healthcare", "Hiking", "Community Work", "Photography"],
-      image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=500&fit=crop&crop=face",
-      compatibility: 87,
-      lastActive: "1 hour ago"
-    },
-    {
-      id: 3,
-      name: "Linda Foster",
-      age: 41,
-      location: "Toronto, Canada",
-      bio: "Malawian diaspora working in finance, seeking genuine connections with shared values.",
-      interests: ["Finance", "Culture", "Music", "Family"],
-      image: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=400&h=500&fit=crop&crop=face",
-      compatibility: 89,
-      lastActive: "30 minutes ago"
-    }
-  ]);
-
-  const removeFavorite = (profileId) => {
-    setFavorites(favorites.filter(fav => fav.id !== profileId));
-  };
-
   // Matches functionality  
   const [matches, setMatches] = useState([
     {
@@ -599,6 +558,10 @@ function App() {
     if (diffInHours < 24) return `${diffInHours}h ago`;
     const diffInDays = Math.floor(diffInHours / 24);
     return `${diffInDays}d ago`;
+  };
+
+  const removeFavorite = (profileId) => {
+    setFavorites(favorites.filter(fav => fav.id !== profileId));
   };
 
   // Enhanced payment verification system
