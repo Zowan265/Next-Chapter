@@ -783,8 +783,8 @@ function App() {
     return false;
   };
 
-  // Send message function
-  const sendMessage = async (recipientId, message) => {
+  // Send message function with premium restrictions
+  const sendPrivateMessage = async (recipientId, message) => {
     try {
       const response = await fetch(`${API_BASE_URL}/api/messages/send`, {
         method: 'POST',
