@@ -1285,7 +1285,9 @@ function App() {
       sender: 'You',
       message: newMessage,
       timestamp: new Date(),
-      isOwn: true
+      isOwn: true,
+      isDirectMessage: selectedMatchForChat ? true : false,
+      recipient: selectedMatchForChat ? selectedMatchForChat.name : null
     };
 
     setChatMessages(prev => ({
@@ -1298,9 +1300,22 @@ function App() {
     // Update room's last activity
     setChatRooms(prev => prev.map(room => 
       room.id === selectedChatRoom.id 
-        ? { ...room, lastMessage: newMessage, lastActivity: new Date() }
+        ? { ...room, lastMessage: selectedMatchForChat 
+            ? `Private message to ${selectedMatchForChat.name}` 
+            : newMessage, lastActivity: new Date() }
         : room
     ));
+    
+    // If it's a direct message, also send via the backend API
+    if (selectedMatchForChat) {
+      sendPrivateMessage(selectedMatchForChat.id, newMessage)
+        .then(result => {
+          if (!result.success) {
+            console.error('Failed to send private message:', result.error);
+            // Could show error message to user here
+          }
+        });
+    }
   };
 
   const formatChatTime = (timestamp) => {
