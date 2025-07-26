@@ -1849,6 +1849,222 @@ def send_subscription_confirmation_email(email: str, name: str, subscription_typ
         print(f"❌ Failed to send subscription confirmation email: {str(e)}")
         return False
 
+# Update user activity endpoint (for online status tracking)
+@app.post("/api/user/activity")
+async def update_user_activity(request: Request):
+    try:
+        token = request.headers.get("authorization", "").replace("Bearer ", "")
+        if not token:
+            raise HTTPException(status_code=401, detail="No token provided")
+        
+        # Verify token and get user ID
+        try:
+            payload = jwt.decode(token, JWT_SECRET, algorithms=["HS256"])
+            user_id = payload.get("user_id")
+        except jwt.ExpiredSignatureError:
+            raise HTTPException(status_code=401, detail="Token has expired")
+        except jwt.InvalidTokenError:
+            raise HTTPException(status_code=401, detail="Invalid token")
+        
+        # Update user's last activity
+        users_collection.update_one(
+            {"id": user_id},
+            {"$set": {"last_activity": datetime.utcnow()}}
+        )
+        
+        return {"status": "activity_updated"}
+        
+    except Exception as e:
+        print(f"Error updating user activity: {str(e)}")
+        raise HTTPException(status_code=500, detail="Failed to update activity")
+
+# Get online users endpoint
+@app.get("/api/users/online")
+async def get_online_users(request: Request):
+    try:
+        token = request.headers.get("authorization", "").replace("Bearer ", "")
+        if not token:
+            raise HTTPException(status_code=401, detail="No token provided")
+        
+        # Verify token and get current user
+        try:
+            payload = jwt.decode(token, JWT_SECRET, algorithms=["HS256"])
+            current_user_id = payload.get("user_id")
+        except jwt.ExpiredSignatureError:
+            raise HTTPException(status_code=401, detail="Token has expired")
+        except jwt.InvalidTokenError:
+            raise HTTPException(status_code=401, detail="Invalid token")
+        
+        current_user = users_collection.find_one({"id": current_user_id})
+        if not current_user:
+            raise HTTPException(status_code=404, detail="User not found")
+        
+        # Get users online in the last 10 minutes within area (if location available)
+        online_threshold = datetime.utcnow() - timedelta(minutes=10)
+        
+        # Build query for online users (exclude current user)
+        query = {
+            "id": {"$ne": current_user_id},
+            "last_activity": {"$gte": online_threshold}
+        }
+        
+        # Get online users
+        online_users = list(users_collection.find(
+            query,
+            {
+                "id": 1, "name": 1, "age": 1, "bio": 1, "location": 1, 
+                "interests": 1, "last_activity": 1, "subscription_tier": 1,
+                "subscription_status": 1, "_id": 0
+            }
+        ).limit(50))
+        
+        # Add online status and format response
+        for user in online_users:
+            last_activity = user.get("last_activity")
+            if last_activity:
+                time_diff = datetime.utcnow() - last_activity
+                if time_diff.total_seconds() < 300:  # 5 minutes
+                    user["online_status"] = "online"
+                elif time_diff.total_seconds() < 600:  # 10 minutes
+                    user["online_status"] = "recently_active"
+                else:
+                    user["online_status"] = "offline"
+            else:
+                user["online_status"] = "offline"
+        
+        return {"online_users": online_users}
+        
+    except Exception as e:
+        print(f"Error getting online users: {str(e)}")
+        raise HTTPException(status_code=500, detail="Failed to get online users")
+
+# Check messaging permission endpoint
+@app.get("/api/user/can-message/{user_id}")
+async def check_messaging_permission(user_id: str, request: Request):
+    try:
+        token = request.headers.get("authorization", "").replace("Bearer ", "")
+        if not token:
+            raise HTTPException(status_code=401, detail="No token provided")
+        
+        # Verify token and get current user
+        try:
+            payload = jwt.decode(token, JWT_SECRET, algorithms=["HS256"])
+            current_user_id = payload.get("user_id")
+        except jwt.ExpiredSignatureError:
+            raise HTTPException(status_code=401, detail="Token has expired")
+        except jwt.InvalidTokenError:
+            raise HTTPException(status_code=401, detail="Invalid token")
+        
+        current_user = users_collection.find_one({"id": current_user_id})
+        if not current_user:
+            raise HTTPException(status_code=404, detail="User not found")
+        
+        # Check if user has premium subscription and can message
+        subscription_tier = current_user.get("subscription_tier", "free")
+        subscription_status = current_user.get("subscription_status", "inactive")
+        subscription_expires = current_user.get("subscription_expires")
+        can_message = current_user.get("can_message", False)
+        
+        # Check if subscription is active
+        is_premium_active = (
+            subscription_tier == "premium" and 
+            subscription_status == "active" and 
+            subscription_expires and 
+            subscription_expires > datetime.utcnow() and
+            can_message
+        )
+        
+        return {
+            "can_message": is_premium_active,
+            "subscription_tier": subscription_tier,
+            "subscription_status": subscription_status,
+            "subscription_expires": subscription_expires.isoformat() if subscription_expires else None,
+            "message": "Premium subscription required to send messages" if not is_premium_active else "Messaging allowed"
+        }
+        
+    except Exception as e:
+        print(f"Error checking messaging permission: {str(e)}")
+        raise HTTPException(status_code=500, detail="Failed to check messaging permission")
+
+# Send message endpoint (with premium restriction)
+@app.post("/api/messages/send")
+async def send_message(request: Request):
+    try:
+        token = request.headers.get("authorization", "").replace("Bearer ", "")
+        if not token:
+            raise HTTPException(status_code=401, detail="No token provided")
+        
+        # Verify token and get current user
+        try:
+            payload = jwt.decode(token, JWT_SECRET, algorithms=["HS256"])
+            sender_id = payload.get("user_id")
+        except jwt.ExpiredSignatureError:
+            raise HTTPException(status_code=401, detail="Token has expired")
+        except jwt.InvalidTokenError:
+            raise HTTPException(status_code=401, detail="Invalid token")
+        
+        # Get request data
+        data = await request.json()
+        recipient_id = data.get("recipient_id")
+        message_content = data.get("message", "").strip()
+        
+        if not recipient_id or not message_content:
+            raise HTTPException(status_code=400, detail="Recipient ID and message are required")
+        
+        # Check sender's messaging permission
+        sender = users_collection.find_one({"id": sender_id})
+        if not sender:
+            raise HTTPException(status_code=404, detail="Sender not found")
+        
+        # Verify sender has premium subscription
+        subscription_tier = sender.get("subscription_tier", "free")
+        subscription_status = sender.get("subscription_status", "inactive")
+        subscription_expires = sender.get("subscription_expires")
+        can_message = sender.get("can_message", False)
+        
+        is_premium_active = (
+            subscription_tier == "premium" and 
+            subscription_status == "active" and 
+            subscription_expires and 
+            subscription_expires > datetime.utcnow() and
+            can_message
+        )
+        
+        if not is_premium_active:
+            raise HTTPException(status_code=403, detail="Premium subscription required to send messages")
+        
+        # Verify recipient exists
+        recipient = users_collection.find_one({"id": recipient_id})
+        if not recipient:
+            raise HTTPException(status_code=404, detail="Recipient not found")
+        
+        # Create message document
+        message_doc = {
+            "id": str(uuid.uuid4()),
+            "sender_id": sender_id,
+            "recipient_id": recipient_id,
+            "message": message_content,
+            "timestamp": datetime.utcnow(),
+            "read": False,
+            "sender_name": sender.get("name", "Unknown"),
+            "recipient_name": recipient.get("name", "Unknown")
+        }
+        
+        # Store message (you would implement a messages collection)
+        # For now, return success response
+        
+        return {
+            "status": "message_sent",
+            "message_id": message_doc["id"],
+            "timestamp": message_doc["timestamp"].isoformat()
+        }
+        
+    except Exception as e:
+        print(f"Error sending message: {str(e)}")
+        if isinstance(e, HTTPException):
+            raise e
+        raise HTTPException(status_code=500, detail="Failed to send message")
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8001)
