@@ -3601,12 +3601,10 @@ function App() {
                             )}
                           </div>
                           
-                          <div className="flex items-center justify-between">
-                            <div className="text-sm text-gray-600">
-                              <span className="font-medium">Last message:</span> {match.lastMessage}
-                            </div>
-                            <div className="flex items-center space-x-3">
-                              {/* Online Users Section with better error handling */}
+                            <div className="flex items-center justify-between">
+                              <div className="text-sm text-gray-600">
+                                <span className="font-medium">Last message:</span> {match.lastMessage}
+                              </div>
                               <div className="flex items-center space-x-3">
                                 {/* Online Status */}
                                 {getOnlineStatusIndicator(match.last_activity, 
@@ -3628,7 +3626,7 @@ function App() {
                                   )}
                                 </button>
                               </div>
-                          </div>
+                            </div>
                         </div>
                       </div>
                     </div>
