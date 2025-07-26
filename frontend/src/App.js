@@ -1134,6 +1134,153 @@ function App() {
     );
   }
 
+  // Matches View
+  if (currentView === 'matches') {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-cream-50 to-rose-50">
+        {/* Navigation */}
+        <nav className="bg-white/80 backdrop-blur-md shadow-sm border-b border-purple-100">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex justify-between items-center h-16">
+              <div className="flex items-center space-x-8">
+                <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-rose-500 bg-clip-text text-transparent">
+                  NextChapter
+                </h1>
+                <div className="flex space-x-4">
+                  <button
+                    onClick={() => setCurrentView('dashboard')}
+                    className="text-gray-600 hover:text-purple-600 font-medium transition-colors px-4 py-2 rounded-lg"
+                  >
+                    🏠 Discover
+                  </button>
+                  <button
+                    onClick={() => setCurrentView('favorites')}
+                    className="text-gray-600 hover:text-purple-600 font-medium transition-colors px-4 py-2 rounded-lg"
+                  >
+                    💖 Favorites
+                  </button>
+                  <button className="px-4 py-2 rounded-lg font-medium bg-purple-100 text-purple-800">
+                    💕 Matches
+                  </button>
+                  {userSubscription?.subscription_tier === 'premium' && (
+                    <button
+                      onClick={() => setCurrentView('chat')}
+                      className="text-gray-600 hover:text-purple-600 font-medium transition-colors px-4 py-2 rounded-lg"
+                    >
+                      💬 Chat Rooms
+                    </button>
+                  )}
+                </div>
+              </div>
+              <div className="flex items-center space-x-4">
+                <button
+                  onClick={() => setCurrentView('subscription')}
+                  className="text-purple-600 hover:text-purple-800 font-medium"
+                >
+                  Subscription
+                </button>
+                <button
+                  onClick={handleLogout}
+                  className="text-gray-600 hover:text-gray-800 font-medium"
+                >
+                  Logout
+                </button>
+              </div>
+            </div>
+          </div>
+        </nav>
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="mb-8">
+            <h2 className="text-3xl font-bold text-gray-800 mb-2">Your Matches 💕</h2>
+            <p className="text-gray-600">People who liked you back - start meaningful conversations!</p>
+          </div>
+
+          {matches.length === 0 ? (
+            <div className="text-center py-16">
+              <div className="text-6xl mb-4">💔</div>
+              <h3 className="text-2xl font-semibold text-gray-800 mb-2">No Matches Yet</h3>
+              <p className="text-gray-600 mb-6">
+                Keep exploring profiles and showing interest. When someone likes you back, they'll appear here!
+              </p>
+              <button
+                onClick={() => setCurrentView('dashboard')}
+                className="px-8 py-3 bg-gradient-to-r from-purple-600 to-rose-500 text-white rounded-lg font-medium hover:from-purple-700 hover:to-rose-600 transition-all duration-300"
+              >
+                Discover Profiles
+              </button>
+            </div>
+          ) : (
+            <div className="space-y-6">
+              {matches.map((match) => (
+                <div key={match.id} className="bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl transition-shadow duration-300">
+                  <div className="flex items-start space-x-6">
+                    <div className="flex-shrink-0">
+                      <img
+                        src={match.image}
+                        alt={match.name}
+                        className="w-20 h-20 rounded-full object-cover border-4 border-purple-100"
+                      />
+                    </div>
+                    
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between mb-2">
+                        <div>
+                          <h3 className="text-xl font-semibold text-gray-800">{match.name}, {match.age}</h3>
+                          <div className="flex items-center text-gray-600 text-sm">
+                            <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                              <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
+                            </svg>
+                            {match.location}
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <div className="bg-pink-100 text-pink-800 text-xs px-2 py-1 rounded-full mb-1">
+                            💕 It's a Match!
+                          </div>
+                          <span className="text-xs text-gray-500">
+                            {formatMatchDate(match.matchDate)}
+                          </span>
+                        </div>
+                      </div>
+                      
+                      <p className="text-gray-700 text-sm mb-3">{match.bio}</p>
+                      
+                      <div className="flex flex-wrap gap-2 mb-4">
+                        {match.interests.slice(0, 4).map((interest, index) => (
+                          <span
+                            key={index}
+                            className="px-2 py-1 bg-purple-100 text-purple-700 text-xs rounded-full"
+                          >
+                            {interest}
+                          </span>
+                        ))}
+                        {match.interests.length > 4 && (
+                          <span className="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full">
+                            +{match.interests.length - 4} more
+                          </span>
+                        )}
+                      </div>
+                      
+                      <div className="flex items-center justify-between">
+                        <div className="text-sm text-gray-600">
+                          <span className="font-medium">Last message:</span> {match.lastMessage}
+                        </div>
+                        <button className="px-6 py-2 bg-gradient-to-r from-purple-600 to-rose-500 text-white text-sm rounded-lg font-medium hover:from-purple-700 hover:to-rose-600 transition-all duration-300">
+                          Send Message
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
+
   // Chat Rooms View
   if (currentView === 'chat') {
     return (
