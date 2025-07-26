@@ -1360,10 +1360,22 @@ class NextChapterAPITest(unittest.TestCase):
         self.assertIn("detail", data)
         self.assertIn("email or phone number must be provided", data["detail"])
         
+    def test_45_password_reset_request_invalid_data(self):
+        """Test password reset request with invalid data"""
+        # Test with no email or phone
+        payload = {}
+        
+        response = requests.post(f"{self.base_url}/api/password-reset-request", json=payload)
+        self.assertEqual(response.status_code, 400)
+        data = response.json()
+        
+        self.assertIn("detail", data)
+        self.assertIn("email or phone number must be provided", data["detail"])
+        
         print(f"✅ Password reset request with invalid data rejected")
         print(f"  - Error: {data['detail']}")
     
-    def test_37_password_reset_with_valid_otp(self):
+    def test_46_password_reset_with_valid_otp(self):
         """Test password reset with valid OTP"""
         if not hasattr(self, 'password_reset_email'):
             print("⚠️ Skipping password reset test - no reset request made")
