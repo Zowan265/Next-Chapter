@@ -3813,11 +3813,15 @@ function App() {
                           className={`flex ${message.isOwn ? 'justify-end' : 'justify-start'}`}
                         >
                           <div className={`max-w-xs lg:max-w-md px-5 py-3 rounded-2xl shadow-md ${
-                            message.isOwn
+                            message.isSystemMessage
+                              ? 'bg-blue-100 border border-blue-200 text-blue-800 mx-auto text-center'
+                              : message.isDirectMessage && message.isOwn
+                              ? 'bg-gradient-to-r from-pink-600 to-rose-500 text-white'
+                              : message.isOwn
                               ? 'bg-gradient-to-r from-purple-600 to-rose-500 text-white'
                               : 'bg-white border border-gray-200 text-gray-800'
                           }`}>
-                            {!message.isOwn && (
+                            {!message.isOwn && !message.isSystemMessage && (
                               <div className="flex items-center mb-2">
                                 <div className="w-6 h-6 bg-gradient-to-r from-purple-400 to-rose-400 rounded-full flex items-center justify-center text-white text-xs font-bold mr-2">
                                   {message.sender.charAt(0)}
@@ -3825,9 +3829,23 @@ function App() {
                                 <p className="text-xs font-bold text-purple-600">{message.sender}</p>
                               </div>
                             )}
+                            
+                            {/* Direct message indicator */}
+                            {message.isDirectMessage && message.isOwn && (
+                              <div className="text-xs text-pink-200 mb-1 flex items-center">
+                                <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                  <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"/>
+                                  <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"/>
+                                </svg>
+                                Private to {message.recipient}
+                              </div>
+                            )}
+                            
                             <p className="text-sm leading-relaxed">{message.message}</p>
                             <p className={`text-xs mt-2 ${
-                              message.isOwn ? 'text-purple-200' : 'text-gray-500'
+                              message.isSystemMessage 
+                                ? 'text-blue-600'
+                                : message.isOwn ? 'text-purple-200' : 'text-gray-500'
                             }`}>
                               {formatChatTime(message.timestamp)}
                             </p>
