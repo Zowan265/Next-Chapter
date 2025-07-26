@@ -1640,27 +1640,52 @@ async def paychangu_webhook(request: Request):
                 print(f"⚠️ Transaction {transaction_id} already processed - skipping duplicate webhook")
                 return {"status": "already_processed"}
             
-            # Calculate subscription end date
+            # Enhanced subscription timing - precise 24-hour cycles from verification
             now = datetime.utcnow()
-            if subscription_type == "daily":
-                expires_at = now + timedelta(days=1)
-            elif subscription_type == "weekly":
-                expires_at = now + timedelta(days=7)
-            elif subscription_type == "monthly":
-                expires_at = now + timedelta(days=30)
-            else:
-                expires_at = now + timedelta(days=1)  # Default to 1 day
             
-            # Update user subscription
+            # Get current subscription to check for existing time and handle double payments
+            user_doc = users_collection.find_one({"id": user_id})
+            current_expires = user_doc.get("subscription_expires") if user_doc else None
+            
+            # Calculate subscription duration in hours based on type
+            if subscription_type == "daily":
+                duration_hours = 24
+            elif subscription_type == "weekly": 
+                duration_hours = 24 * 7  # 168 hours
+            elif subscription_type == "monthly":
+                duration_hours = 24 * 30  # 720 hours
+            else:
+                duration_hours = 24  # Default to 24 hours
+            
+            # Handle double payment accumulation - if user already has active subscription, add to existing time
+            if current_expires and current_expires > now:
+                # User has active subscription - add new duration to existing time
+                expires_at = current_expires + timedelta(hours=duration_hours)
+                payment_type = "extension"
+                print(f"✅ Extending existing subscription for user {user_id} - adding {duration_hours} hours")
+            else:
+                # New subscription or expired subscription - start from now
+                expires_at = now + timedelta(hours=duration_hours)
+                payment_type = "new"
+                print(f"✅ New subscription for user {user_id} - {duration_hours} hours from now")
+            
+            # Update user subscription with precise timing
             users_collection.update_one(
                 {"id": user_id},
                 {
                     "$set": {
                         "subscription_tier": "premium",
-                        "subscription_status": "active",
+                        "subscription_status": "active", 
                         "subscription_expires": expires_at,
+                        "subscription_started_at": now,
                         "subscription_updated_at": now,
-                        "daily_likes_used": 0  # Reset likes count
+                        "subscription_type": subscription_type,
+                        "daily_likes_used": 0,  # Reset likes count
+                        "can_message": True,    # Enable messaging
+                        "last_activity": now    # Track user activity
+                    },
+                    "$inc": {
+                        f"subscription_payments_{subscription_type}": 1  # Track payment count
                     }
                 }
             )
