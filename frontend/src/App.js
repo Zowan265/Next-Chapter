@@ -508,6 +508,39 @@ function App() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
+  
+  // Notification system for matches
+  const [matchNotifications, setMatchNotifications] = useState([]);
+  const [showMatchNotification, setShowMatchNotification] = useState(false);
+
+  // Function to create match notifications
+  const addMatchNotification = (matchUser) => {
+    const notification = {
+      id: Date.now(),
+      user: matchUser,
+      timestamp: new Date(),
+      read: false
+    };
+    
+    setMatchNotifications(prev => [notification, ...prev]);
+    setShowMatchNotification(true);
+    
+    // Auto hide after 5 seconds
+    setTimeout(() => {
+      setShowMatchNotification(false);
+    }, 5000);
+  };
+
+  // Mark notification as read
+  const markNotificationAsRead = (notificationId) => {
+    setMatchNotifications(prev => 
+      prev.map(notification => 
+        notification.id === notificationId 
+          ? { ...notification, read: true }
+          : notification
+      )
+    );
+  };
 
   // Payment timeout timer function
   const startPaymentTimeoutTimer = () => {
