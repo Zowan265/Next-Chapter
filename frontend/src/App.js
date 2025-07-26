@@ -420,6 +420,11 @@ function App() {
   // Payment timeout state
   const [paymentTimeoutTimer, setPaymentTimeoutTimer] = useState(0);
   const [paymentTimedOut, setPaymentTimedOut] = useState(false);
+  
+  // Password visibility state
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
 
   // Payment timeout timer function
   const startPaymentTimeoutTimer = () => {
