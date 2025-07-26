@@ -513,6 +513,94 @@ function App() {
     }
   };
 
+  // Favorites functionality
+  const [favorites, setFavorites] = useState([
+    {
+      id: 1,
+      name: "Sarah Michelle",
+      age: 34,
+      location: "Lilongwe, Malawi",
+      bio: "Entrepreneur passionate about sustainable living and meaningful connections.",
+      interests: ["Travel", "Books", "Cooking", "Nature"],
+      image: "https://images.unsplash.com/photo-1494790108755-2616b612b371?w=400&h=500&fit=crop&crop=face",
+      compatibility: 92,
+      lastActive: "2 hours ago"
+    },
+    {
+      id: 2,
+      name: "Grace Temba",
+      age: 29,
+      location: "Blantyre, Malawi",
+      bio: "Medical professional who loves hiking and volunteering in community projects.",
+      interests: ["Healthcare", "Hiking", "Community Work", "Photography"],
+      image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=500&fit=crop&crop=face",
+      compatibility: 87,
+      lastActive: "1 hour ago"
+    },
+    {
+      id: 3,
+      name: "Linda Foster",
+      age: 41,
+      location: "Toronto, Canada",
+      bio: "Malawian diaspora working in finance, seeking genuine connections with shared values.",
+      interests: ["Finance", "Culture", "Music", "Family"],
+      image: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=400&h=500&fit=crop&crop=face",
+      compatibility: 89,
+      lastActive: "30 minutes ago"
+    }
+  ]);
+
+  const removeFavorite = (profileId) => {
+    setFavorites(favorites.filter(fav => fav.id !== profileId));
+  };
+
+  // Matches functionality  
+  const [matches, setMatches] = useState([
+    {
+      id: 1,
+      name: "Jennifer Adams",
+      age: 37,
+      location: "Mzuzu, Malawi",
+      bio: "Teacher and mother of two, looking for a genuine partner to share life's adventures.",
+      interests: ["Education", "Family", "Reading", "Gardening"],
+      image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=500&fit=crop&crop=face",
+      matchDate: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2), // 2 days ago
+      lastMessage: "Thank you for the lovely message! I'd love to get to know you better."
+    },
+    {
+      id: 2,
+      name: "Patricia Mwale",
+      age: 32,
+      location: "Zomba, Malawi",
+      bio: "Small business owner with a passion for community development and cultural preservation.",
+      interests: ["Business", "Culture", "Music", "Travel"],
+      image: "https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?w=400&h=500&fit=crop&crop=face",
+      matchDate: new Date(Date.now() - 1000 * 60 * 60 * 24), // 1 day ago
+      lastMessage: "It's wonderful to meet someone who shares similar values!"
+    },
+    {
+      id: 3,
+      name: "Monica Kalulu",
+      age: 28,
+      location: "London, UK",
+      bio: "Malawian living in London, working in healthcare and missing the warmth of home.",
+      interests: ["Healthcare", "Cooking", "Movies", "Home"],
+      image: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=400&h=500&fit=crop&crop=face",
+      matchDate: new Date(Date.now() - 1000 * 60 * 60 * 6), // 6 hours ago
+      lastMessage: "New match! Start a conversation"
+    }
+  ]);
+
+  const formatMatchDate = (date) => {
+    const now = new Date();
+    const diffInHours = Math.floor((now - date) / (1000 * 60 * 60));
+    
+    if (diffInHours < 1) return 'Just matched!';
+    if (diffInHours < 24) return `${diffInHours}h ago`;
+    const diffInDays = Math.floor(diffInHours / 24);
+    return `${diffInDays}d ago`;
+  };
+
   // Enhanced payment verification system
   const verifyPaymentAndRedirect = async (transactionData) => {
     try {
