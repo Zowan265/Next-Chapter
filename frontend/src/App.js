@@ -3506,18 +3506,13 @@ function App() {
                               View Profile
                             </button>
                             <button 
-                              onClick={async () => {
-                                const canMessage = await handleMessageAttempt(profile.id, profile.name);
-                                if (canMessage) {
-                                  alert(`✅ You can message ${profile.name}!\n\nThis feature will open the messaging interface.`);
-                                }
-                              }}
+                              onClick={() => startChatWithMatch(profile)}
                               className="px-4 py-1 bg-white border border-purple-300 text-purple-600 text-xs rounded-lg font-medium hover:bg-purple-50 transition-all duration-300 flex items-center justify-center space-x-1"
                             >
                               <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                               </svg>
-                              <span>Message</span>
+                              <span>Chat</span>
                               {userSubscription?.subscription_tier !== 'premium' && (
                                 <span className="text-xs">👑</span>
                               )}
